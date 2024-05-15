@@ -1,0 +1,7 @@
+{
+  "name": "skyportal-mobile-ionic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
