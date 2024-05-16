@@ -47,7 +47,9 @@ const App = () => (
           </div>
         </div>
         <div className="lower">
-          <IonButton shape="round">Log in</IonButton>
+          <IonButton shape="round" size="large" strong>
+            Log in
+          </IonButton>
         </div>
       </div>
     </IonContent>
