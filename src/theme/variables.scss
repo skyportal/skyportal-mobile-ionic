@@ -1,5 +1,11 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 :root {
   --ion-color-primary: #457B9D;
   --ion-color-primary-rgb: 69,123,157;
