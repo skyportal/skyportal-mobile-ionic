@@ -1,14 +1,4 @@
-import {
-  IonApp,
-  IonButton,
-  IonContent,
-  IonHeader,
-  IonRouterOutlet,
-  IonTitle,
-  IonToolbar,
-  setupIonicReact,
-} from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
+import { IonApp, IonButton, IonContent, setupIonicReact } from "@ionic/react";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -32,11 +22,9 @@ import "@ionic/react/css/display.css";
  * For more info, please see:
  * https://ionicframework.com/docs/theming/dark-mode
  */
-
 /* import '@ionic/react/css/palettes/dark.always.css'; */
 /* import '@ionic/react/css/palettes/dark.class.css'; */
 // import '@ionic/react/css/palettes/dark.system.css';
-
 /* Theme variables */
 import "./theme/variables.scss";
 import "./App.scss";
@@ -59,7 +47,7 @@ const App = () => (
           </div>
         </div>
         <div className="lower">
-          <IonButton class="ion-align-self-stretch">Log in</IonButton>
+          <IonButton shape="round">Log in</IonButton>
         </div>
       </div>
     </IonContent>
