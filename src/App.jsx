@@ -30,22 +30,34 @@ import "./theme/variables.scss";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router";
 import OnboardingScreen from "./screens/OnboardingScreen/OnboardingScreen.jsx";
+import React from "react";
+import { AppContext } from "./lib/context.js";
 
 setupIonicReact();
 
-const App = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/onboarding">
-          <OnboardingScreen />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/onboarding" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+const App = () => {
+  const [userInfo, setUserInfo] = React.useState({
+    name: undefined,
+    token: undefined,
+    instance: null,
+    axiosClient: null,
+  });
+  return (
+    <AppContext.Provider value={{ userInfo, setUserInfo }}>
+      <IonApp>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route exact path="/onboarding">
+              <OnboardingScreen />
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/onboarding" />
+            </Route>
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+    </AppContext.Provider>
+  );
+};
 
 export default App;

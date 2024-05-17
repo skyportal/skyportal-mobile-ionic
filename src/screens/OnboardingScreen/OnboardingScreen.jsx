@@ -11,7 +11,7 @@ const OnboardingScreen = () => {
       <IonContent class="content">
         <div className="container">
           <OnboardingUpper page={page} />
-          <OnboardingLower />
+          <OnboardingLower page={page} />
         </div>
       </IonContent>
     </IonPage>
