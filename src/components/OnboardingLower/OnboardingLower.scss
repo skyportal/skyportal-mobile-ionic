@@ -1,0 +1,30 @@
+.lower {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 2rem;
+  gap: 4rem;
+
+  .instance-container {
+    .select {
+      --background: white;
+      --border-radius: 50rem;
+      --padding-start: 1.5rem;
+      --padding-end: 1.5rem;
+      --padding-top: 1rem;
+      --padding-bottom: 1rem;
+    }
+  }
+
+  .login-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    ion-button {
+      ion-icon {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}

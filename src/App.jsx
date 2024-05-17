@@ -1,4 +1,4 @@
-import { IonApp, IonButton, IonContent, setupIonicReact } from "@ionic/react";
+import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -27,33 +27,37 @@ import "@ionic/react/css/display.css";
 // import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import "./theme/variables.scss";
-import "./App.scss";
+import { IonReactRouter } from "@ionic/react-router";
+import { Redirect, Route } from "react-router";
+import OnboardingScreen from "./screens/OnboardingScreen/OnboardingScreen.jsx";
+import React from "react";
+import { AppContext } from "./lib/context.js";
 
 setupIonicReact();
 
-const App = () => (
-  <IonApp>
-    <IonContent class="content">
-      <div className="container">
-        <div className="upper">
-          <div className="logo-n-text">
-            <img src="/images/logo.png" alt="logo" />
-            <h1>SkyPortal</h1>
-          </div>
-          <div className="tagline">
-            Welcome to SkyPortal Mobile.
-            <br />
-            An Astronomical Data Platform.
-          </div>
-        </div>
-        <div className="lower">
-          <IonButton shape="round" size="large" strong>
-            Log in
-          </IonButton>
-        </div>
-      </div>
-    </IonContent>
-  </IonApp>
-);
+const App = () => {
+  const [userInfo, setUserInfo] = React.useState({
+    name: undefined,
+    token: undefined,
+    instance: null,
+    axiosClient: null,
+  });
+  return (
+    <AppContext.Provider value={{ userInfo, setUserInfo }}>
+      <IonApp>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route exact path="/onboarding">
+              <OnboardingScreen />
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/onboarding" />
+            </Route>
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+    </AppContext.Provider>
+  );
+};
 
 export default App;

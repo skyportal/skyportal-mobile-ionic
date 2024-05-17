@@ -1,0 +1,21 @@
+.upper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 2rem;
+  gap: 3rem;
+
+  .logo-n-text {
+    h1 {
+      color: #1D3557;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+  }
+  .tagline {
+    font-size: 1.2rem;
+    color: #457B9D;
+    text-align: center;
+  }
+}
