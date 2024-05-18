@@ -6,12 +6,13 @@ import { useState } from "react";
 
 const OnboardingScreen = () => {
   const [page, setPage] = useState("welcome");
+  console.log("history", history);
   return (
     <IonPage>
       <IonContent class="content">
         <div className="container">
           <OnboardingUpper page={page} />
-          <OnboardingLower page={page} />
+          <OnboardingLower page={page} setPage={setPage} />
         </div>
       </IonContent>
     </IonPage>

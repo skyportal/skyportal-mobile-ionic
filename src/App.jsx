@@ -32,6 +32,7 @@ import { Redirect, Route } from "react-router";
 import OnboardingScreen from "./screens/OnboardingScreen/OnboardingScreen.jsx";
 import React from "react";
 import { AppContext } from "./lib/context.js";
+import CheckQRCodeScreen from "./screens/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
 
 setupIonicReact();
 
@@ -49,6 +50,9 @@ const App = () => {
           <IonRouterOutlet>
             <Route exact path="/onboarding">
               <OnboardingScreen />
+            </Route>
+            <Route path="/check-creds">
+              <CheckQRCodeScreen />
             </Route>
             <Route exact path="/">
               <Redirect to="/onboarding" />
