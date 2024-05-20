@@ -1,15 +1,38 @@
 import { IonButton, IonIcon, IonSelect, IonSelectOption } from "@ionic/react";
 import "./OnboardingLower.scss";
 import { INSTANCES } from "../../lib/constants.js";
-import { useState } from "react";
+import { useContext } from "react";
 import { qrCode } from "ionicons/icons";
+import { AppContext } from "../../lib/context.js";
+import { CapacitorBarcodeScanner } from "@capacitor/barcode-scanner";
+import { Html5QrcodeSupportedFormats } from "html5-qrcode";
+import { useHistory } from "react-router";
 
-const OnboardingLower = ({ page }) => {
-  const [instance, setInstance] = useState(null);
+const OnboardingLower = ({ page, setPage }) => {
+  const history = useHistory();
+  const { userInfo, setUserInfo } = useContext(AppContext);
+  let token = import.meta.env.VITE_ICARE_TOKEN ?? "test";
+  async function handleScanQRCode() {
+    try {
+      const result = await CapacitorBarcodeScanner.scanBarcode({
+        hint: Html5QrcodeSupportedFormats.QR_CODE,
+      });
+      token = result.ScanResult;
+    } catch (error) {
+      console.error(error);
+    }
+    history.push(`/check-creds?token=${token}`);
+  }
+
   if (page === "welcome")
     return (
       <div className="lower">
-        <IonButton shape="round" size="large" strong>
+        <IonButton
+          shape="round"
+          size="large"
+          onClick={() => setPage("login")}
+          strong
+        >
           Log in
         </IonButton>
       </div>
@@ -22,7 +45,9 @@ const OnboardingLower = ({ page }) => {
             class="select"
             label={"Instance"}
             placeholder="Select an instance"
-            onIonChange={(e) => setInstance(e.detail.value)}
+            onIonChange={(e) =>
+              setUserInfo({ ...userInfo, instance: e.detail.value })
+            }
           >
             {INSTANCES.map((instance) => (
               <IonSelectOption key={instance.name} value={instance}>
@@ -32,11 +57,16 @@ const OnboardingLower = ({ page }) => {
           </IonSelect>
         </div>
         <div className="login-methods">
-          <IonButton shape="round" disabled={instance === null} strong>
+          <IonButton
+            onClick={() => handleScanQRCode()}
+            shape="round"
+            disabled={userInfo.instance === null}
+            strong
+          >
             <IonIcon slot="start" icon={qrCode}></IonIcon>
             Scan QR code
           </IonButton>
-          <IonButton shape="round" disabled={instance === null} strong>
+          <IonButton shape="round" disabled={userInfo.instance === null} strong>
             Log in with token
           </IonButton>
         </div>

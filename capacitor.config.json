@@ -1,0 +1,10 @@
+{
+  "appId": "io.skyportal.app",
+  "appName": "SkyPortal",
+  "webDir": "dist",
+  "plugins": {
+    "CapacitorHttp": {
+      "enable": true
+    }
+  }
+}
