@@ -7,6 +7,8 @@
     "start": "vite --host --port=8100",
     "dev": "vite",
     "build": "vite build",
+    "build-sync": "vite build --mode development && npx cap sync android",
+    "deploy:android": "npx cap run android",
     "preview": "vite preview",
     "test.unit": "vitest",
     "lint": "eslint"

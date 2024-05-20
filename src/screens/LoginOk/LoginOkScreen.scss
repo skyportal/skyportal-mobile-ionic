@@ -1,0 +1,27 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4.5rem 0;
+  gap: 2.5rem;
+
+  .check-icon {
+    font-size: 10rem;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+
+    .success-hint {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+    .welcome-hint {
+      font-size: 1.2rem;
+    }
+  }
+}

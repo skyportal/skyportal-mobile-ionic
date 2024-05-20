@@ -11,7 +11,7 @@ import { useHistory } from "react-router";
 const OnboardingLower = ({ page, setPage }) => {
   const history = useHistory();
   const { userInfo, setUserInfo } = useContext(AppContext);
-  let token = "test";
+  let token = import.meta.env.VITE_ICARE_TOKEN ?? "test";
   async function handleScanQRCode() {
     try {
       const result = await CapacitorBarcodeScanner.scanBarcode({
