@@ -6,7 +6,6 @@ import { useState } from "react";
 
 const OnboardingScreen = () => {
   const [page, setPage] = useState("welcome");
-  console.log("history", history);
   return (
     <IonPage>
       <IonContent class="content">

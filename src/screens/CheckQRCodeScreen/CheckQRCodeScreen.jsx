@@ -15,7 +15,7 @@ export const CheckQRCodeScreen = () => {
   useEffect(() => {
     const platform = Capacitor.getPlatform();
     checkToken(token, userInfo.instance, platform).then((res) => {
-      setUserInfo({ ...userInfo, name: res.first_name });
+      setUserInfo({ ...userInfo, name: res.first_name, token });
       history.push("/login-ok");
     });
   }, []);

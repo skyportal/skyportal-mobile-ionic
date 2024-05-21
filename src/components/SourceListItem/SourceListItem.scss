@@ -1,0 +1,49 @@
+.source-list-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background-color: white;
+  gap: 0.5rem;
+
+  .header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+
+    .ids {
+      display: flex;
+      gap: 0.6rem;
+
+      .sky-id {
+        font-weight: 500;
+      }
+      .tns-name {
+        color: #717983;
+      }
+    }
+
+    .icon {
+      color: #a9adb1;
+      font-size: 1.2rem;
+    }
+  }
+
+  .created,
+  .coords > * {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+
+    .label {
+      color: #717983;
+    }
+  }
+  .coords {
+    display: flex;
+    flex-direction: column;
+  }
+}

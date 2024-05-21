@@ -2,7 +2,6 @@ import "./SourceListScreen.scss";
 import {
   IonContent,
   IonHeader,
-  IonList,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -12,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchSources } from "../../lib/sources.js";
 import { AppContext } from "../../lib/context.js";
 import { Capacitor } from "@capacitor/core";
+import { SourceListItem } from "../../components/SourceListItem/SourceListItem.jsx";
 
 export const SourceListScreen = () => {
   const { userInfo } = useContext(AppContext);
@@ -24,7 +24,13 @@ export const SourceListScreen = () => {
   } = useQuery({
     queryKey: ["sources", page, numPerPage, userInfo.token],
     queryFn: () =>
-      fetchSources(page, numPerPage, userInfo.token, Capacitor.getPlatform()),
+      fetchSources(
+        page,
+        numPerPage,
+        userInfo.instance.url,
+        userInfo.token,
+        Capacitor.getPlatform(),
+      ),
   });
   return (
     <IonPage>
@@ -34,23 +40,14 @@ export const SourceListScreen = () => {
             <IonTitle>Sources</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonList>
+        <div className="source-list">
           {status === "loading" && <p>Loading...</p>}
-          {status === "error" && (
-            <p>
-              Error: {error.message}{" "}
-              <button onClick={() => refetch()}>Retry</button>
-            </p>
-          )}
+          {status === "error" && <p>Error: {error.message} </p>}
           {status === "success" &&
             sources.map((source) => (
-              <div key={source.id}>
-                <p>{source.id}</p>
-                <p>{source.ra}</p>
-                <p>{source.dec}</p>
-              </div>
+              <SourceListItem key={source.id} source={source} />
             ))}
-        </IonList>
+        </div>
       </IonContent>
     </IonPage>
   );
