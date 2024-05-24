@@ -6,12 +6,12 @@ import { AppContext } from "../../lib/context.js";
 import { useHistory } from "react-router";
 
 export const LoginOkScreen = () => {
-  const { userInfo, setUserInfo } = useContext(AppContext);
+  const { userInfo } = useContext(AppContext);
   const history = useHistory();
 
   useEffect(() => {
     setTimeout(() => {
-      history.push("/source-list");
+      history.push("/app");
     }, 2000);
   }, []);
 

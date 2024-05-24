@@ -34,8 +34,8 @@ import React from "react";
 import { AppContext } from "./lib/context.js";
 import CheckQRCodeScreen from "./screens/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
 import { LoginOkScreen } from "./screens/LoginOk/LoginOkScreen.jsx";
-import { SourceListScreen } from "./screens/SourceList/SourceListScreen.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MainScreen } from "./screens/Home/MainScreen.jsx";
 
 setupIonicReact();
 const queryClient = new QueryClient();
@@ -62,8 +62,8 @@ const App = () => {
               <Route path="/login-ok">
                 <LoginOkScreen />
               </Route>
-              <Route path="/source-list">
-                <SourceListScreen />
+              <Route path="/app">
+                <MainScreen />
               </Route>
               <Route exact path="/">
                 <Redirect to="/onboarding" />
