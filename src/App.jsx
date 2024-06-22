@@ -36,6 +36,7 @@ import CheckQRCodeScreen from "./screens/CheckQRCodeScreen/CheckQRCodeScreen.jsx
 import { LoginOkScreen } from "./screens/LoginOk/LoginOkScreen.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MainScreen } from "./screens/Home/MainScreen.jsx";
+import { ScanningScreen } from "./screens/ScanningScreen/ScanningScreen.jsx";
 
 setupIonicReact();
 const queryClient = new QueryClient();
@@ -65,8 +66,11 @@ const App = () => {
               <Route path="/app">
                 <MainScreen />
               </Route>
+              <Route path="/scanning">
+                <ScanningScreen />
+              </Route>
               <Route exact path="/">
-                <Redirect to="/onboarding" />
+                <Redirect to="/scanning" />
               </Route>
             </IonRouterOutlet>
           </IonReactRouter>
