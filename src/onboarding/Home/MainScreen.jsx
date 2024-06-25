@@ -9,10 +9,11 @@ import {
   IonTabs,
 } from "@ionic/react";
 import { Redirect, Route } from "react-router";
-import { SourceListScreen } from "../SourceList/SourceListScreen.jsx";
-import { CandidateListScreen } from "../CandidateList/CandidateListScreen.jsx";
-import { EventListScreen } from "../EventList/EventListScreen.jsx";
+import { SourceListScreen } from "../../sources/SourceList/SourceListScreen.jsx";
+import { CandidateListScreen } from "../../scanning/CandidateList/CandidateListScreen.jsx";
+import { EventListScreen } from "../../events/EventList/EventListScreen.jsx";
 import { compassOutline, list, radioOutline } from "ionicons/icons";
+import { ScanningScreen } from "../../scanning/ScanningScreen/ScanningScreen.jsx";
 
 export const MainScreen = () => {
   return (
@@ -23,8 +24,8 @@ export const MainScreen = () => {
           <Route path="/app/source-list">
             <SourceListScreen />
           </Route>
-          <Route path="/app/candidate-list">
-            <CandidateListScreen />
+          <Route path="/app/scanning">
+            <ScanningScreen />
           </Route>
           <Route path="/app/event-list">
             <EventListScreen />
@@ -37,7 +38,7 @@ export const MainScreen = () => {
             <IonLabel>Source</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="candidate-list" href="/app/candidate-list">
+          <IonTabButton tab="scanning" href="/app/scanning">
             <IonIcon icon={compassOutline} />
             <IonLabel>Candidates</IonLabel>
           </IonTabButton>

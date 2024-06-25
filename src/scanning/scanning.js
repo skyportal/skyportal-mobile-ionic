@@ -1,42 +1,5 @@
-import { CapacitorHttp } from "@capacitor/core";
-import { mockCandidates, mockSources } from "../../config.js";
-
-/**
- * Fetch sources from the API
- * @param {number} page - page number
- * @param {number} numPerPage - number of sources per page
- * @param {string} instanceUrl - SkyPortal instance URL
- * @param {string} token - SkyPortal token
- * @param {string} platform - Platform
- * @returns {Promise<any[]>}
- */
-export async function fetchSources(
-  page,
-  numPerPage,
-  instanceUrl,
-  token,
-  platform,
-) {
-  if (platform === "web") {
-    return mockSources;
-  }
-  let response = await CapacitorHttp.get({
-    url: `${instanceUrl}/api/sources`,
-    headers: {
-      Authorization: `token ${token}`,
-    },
-    params: {
-      pageNumber: `${page}`,
-      numPerPage: `${numPerPage}`,
-      includeColorMagnitude: "true",
-      includeThumbnails: "true",
-      includeDetectionStats: "true",
-      includeLabellers: "true",
-      includeHosts: "true",
-    },
-  });
-  return response.data.data.sources;
-}
+import { mockCandidates } from "../../config.js";
+import { Capacitor, CapacitorHttp } from "@capacitor/core";
 
 export const THUMBNAIL_TYPES = {
   new: "new",
@@ -46,6 +9,7 @@ export const THUMBNAIL_TYPES = {
   ls: "ls",
   ps1: "ps1",
 };
+
 
 /**
  * @typedef {"new" | "ref" | "sub" | "sdss" | "ls" | "ps1"} ThumbnailType
@@ -89,6 +53,8 @@ export const getThumbnailAltAndLink = (name, ra, dec) => {
   }
   return { alt, link };
 };
+
+
 /**
  * Get the header for the thumbnail
  * @param {ThumbnailType} type - Thumbnail type
@@ -105,8 +71,25 @@ export const getThumbnailHeader = (type) => {
   }
 };
 
-export async function searchCandidates() {
-  return mockCandidates.data.candidates;
+export async function searchCandidates({ token, instanceUrl, platform }) {
+  if (platform === "web") {
+    return mockCandidates
+  }
+  let response = await CapacitorHttp.get({
+    url: `${instanceUrl}/api/candidates`,
+    headers: {
+      Authorization: `token ${token}`,
+    },
+    params: {
+      pageNumber: "1",
+      numPerPage: "50",
+      groupIDs: "4",
+      savedStatus: "all",
+      listNameReject: "rejected_candidates",
+      startDate: "2022-07-27T00:27:30.000Z",
+    }
+  })
+  return response.data.data.candidates;
 }
 
 export function getThumbnailImageUrl(candidate, type) {

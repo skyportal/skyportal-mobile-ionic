@@ -2,8 +2,8 @@ import { IonContent, IonPage, IonSpinner } from "@ionic/react";
 import "./CheckQRCodeScreen.scss";
 import { useHistory, useLocation } from "react-router";
 import { useContext, useEffect } from "react";
-import { checkToken } from "../../lib/auth.js";
-import { AppContext } from "../../lib/context.js";
+import { checkToken } from "../auth.js";
+import { AppContext } from "../../util/context.js";
 import { Capacitor } from "@capacitor/core";
 
 export const CheckQRCodeScreen = () => {

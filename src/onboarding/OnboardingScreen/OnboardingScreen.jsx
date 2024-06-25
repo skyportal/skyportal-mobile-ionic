@@ -1,6 +1,6 @@
 import { IonContent, IonPage } from "@ionic/react";
-import OnboardingUpper from "../../components/OnboardingUpper/OnboardingUpper.jsx";
-import OnboardingLower from "../../components/OnboardingLower/OnboardingLower.jsx";
+import OnboardingUpper from "../OnboardingUpper/OnboardingUpper.jsx";
+import OnboardingLower from "../OnboardingLower/OnboardingLower.jsx";
 import "./OnboardingScreen.scss";
 import { useState } from "react";
 

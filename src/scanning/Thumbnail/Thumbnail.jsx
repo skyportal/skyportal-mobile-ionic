@@ -1,8 +1,5 @@
 import "./Thumbnail.scss";
-import {
-  getThumbnailAltAndLink,
-  getThumbnailHeader,
-} from "../../lib/sources.js";
+import { getThumbnailAltAndLink, getThumbnailHeader } from "../scanning.js";
 
 export const Thumbnail = ({ name, ra, dec, url }) => {
   const { alt, link } = getThumbnailAltAndLink(name, ra, dec);

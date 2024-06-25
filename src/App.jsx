@@ -29,14 +29,14 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.scss";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router";
-import OnboardingScreen from "./screens/OnboardingScreen/OnboardingScreen.jsx";
+import OnboardingScreen from "./onboarding/OnboardingScreen/OnboardingScreen.jsx";
 import React from "react";
-import { AppContext } from "./lib/context.js";
-import CheckQRCodeScreen from "./screens/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
-import { LoginOkScreen } from "./screens/LoginOk/LoginOkScreen.jsx";
+import { AppContext } from "./util/context.js";
+import CheckQRCodeScreen from "./onboarding/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
+import { LoginOkScreen } from "./onboarding/LoginOk/LoginOkScreen.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { MainScreen } from "./screens/Home/MainScreen.jsx";
-import { ScanningScreen } from "./screens/ScanningScreen/ScanningScreen.jsx";
+import { MainScreen } from "./onboarding/Home/MainScreen.jsx";
+import { ScanningScreen } from "./scanning/ScanningScreen/ScanningScreen.jsx";
 
 setupIonicReact();
 const queryClient = new QueryClient();
@@ -66,11 +66,8 @@ const App = () => {
               <Route path="/app">
                 <MainScreen />
               </Route>
-              <Route path="/scanning">
-                <ScanningScreen />
-              </Route>
               <Route exact path="/">
-                <Redirect to="/scanning" />
+                <Redirect to="/onboarding" />
               </Route>
             </IonRouterOutlet>
           </IonReactRouter>

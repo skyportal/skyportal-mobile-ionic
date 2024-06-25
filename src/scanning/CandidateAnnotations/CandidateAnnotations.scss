@@ -1,0 +1,11 @@
+.candidate-annotations {
+  display: flex;
+  width: 100%;
+
+  .pinned-annotations {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+}
