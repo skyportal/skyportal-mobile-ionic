@@ -1,5 +1,5 @@
-import { mockCandidates } from "../../config.js";
-import { Capacitor, CapacitorHttp } from "@capacitor/core";
+import mockCandidates from "../../mock/candidates.json";
+import { CapacitorHttp } from "@capacitor/core";
 
 export const THUMBNAIL_TYPES = {
   new: "new",
@@ -9,7 +9,6 @@ export const THUMBNAIL_TYPES = {
   ls: "ls",
   ps1: "ps1",
 };
-
 
 /**
  * @typedef {"new" | "ref" | "sub" | "sdss" | "ls" | "ps1"} ThumbnailType
@@ -54,7 +53,6 @@ export const getThumbnailAltAndLink = (name, ra, dec) => {
   return { alt, link };
 };
 
-
 /**
  * Get the header for the thumbnail
  * @param {ThumbnailType} type - Thumbnail type
@@ -73,7 +71,7 @@ export const getThumbnailHeader = (type) => {
 
 export async function searchCandidates({ token, instanceUrl, platform }) {
   if (platform === "web") {
-    return mockCandidates
+    return mockCandidates;
   }
   let response = await CapacitorHttp.get({
     url: `${instanceUrl}/api/candidates`,
@@ -87,8 +85,8 @@ export async function searchCandidates({ token, instanceUrl, platform }) {
       savedStatus: "all",
       listNameReject: "rejected_candidates",
       startDate: "2022-07-27T00:27:30.000Z",
-    }
-  })
+    },
+  });
   return response.data.data.candidates;
 }
 
