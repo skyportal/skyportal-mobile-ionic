@@ -10,10 +10,10 @@ import {
 } from "@ionic/react";
 import { Redirect, Route } from "react-router";
 import { SourceListScreen } from "../../sources/SourceList/SourceListScreen.jsx";
-import { CandidateListScreen } from "../../scanning/CandidateList/CandidateListScreen.jsx";
 import { EventListScreen } from "../../events/EventList/EventListScreen.jsx";
 import { compassOutline, list, radioOutline } from "ionicons/icons";
-import { ScanningScreen } from "../../scanning/ScanningScreen/ScanningScreen.jsx";
+import { ScanningOptionsScreen } from "../../scanning/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
+import { ScanningHomeScreen } from "../../scanning/ScanningHomeScreen/ScanningHomeScreen.jsx";
 
 export const MainScreen = () => {
   return (
@@ -25,10 +25,13 @@ export const MainScreen = () => {
             <SourceListScreen />
           </Route>
           <Route path="/app/scanning">
-            <ScanningScreen />
+            <ScanningHomeScreen />
           </Route>
           <Route path="/app/event-list">
             <EventListScreen />
+          </Route>
+          <Route path="/app/scanning-options">
+            <ScanningOptionsScreen />
           </Route>
         </IonRouterOutlet>
 

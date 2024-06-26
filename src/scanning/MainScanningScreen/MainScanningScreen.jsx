@@ -1,14 +1,24 @@
-import "./ScanningScreen.scss";
-import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
-import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
-import { useQuery } from "@tanstack/react-query";
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import { useContext, useState } from "react";
-import { CandidateAnnotations } from "../CandidateAnnotations/CandidateAnnotations.jsx";
-import { getThumbnailImageUrl, searchCandidates, THUMBNAIL_TYPES } from "../scanning.js";
 import { AppContext } from "../../util/context.js";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getThumbnailImageUrl,
+  searchCandidates,
+  THUMBNAIL_TYPES,
+} from "../scanning.js";
 import { Capacitor } from "@capacitor/core";
+import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
+import { CandidateAnnotations } from "../CandidateAnnotations/CandidateAnnotations.jsx";
 
-export const ScanningScreen = () => {
+export const MainScanningScreen = () => {
   const { userInfo } = useContext(AppContext);
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
   const {
@@ -17,11 +27,12 @@ export const ScanningScreen = () => {
     error,
   } = useQuery({
     queryKey: ["candidates"],
-    queryFn: () => searchCandidates({
-      token: userInfo.token,
-      instanceUrl: userInfo.instance.url,
-      platform: Capacitor.getPlatform(),
-    }),
+    queryFn: () =>
+      searchCandidates({
+        token: userInfo.token,
+        instanceUrl: userInfo.instance.url,
+        platform: Capacitor.getPlatform(),
+      }),
   });
   if (status === "pending") {
     return <p>Loading...</p>;
@@ -38,7 +49,7 @@ export const ScanningScreen = () => {
             <IonTitle>Scanning</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <div className="scanning-container">
+        <div className="main-scanning-screen-container">
           <div className="scanning-card">
             <div className="thumbnails-container">
               {Object.keys(THUMBNAIL_TYPES).map((type) => (

@@ -36,7 +36,6 @@ import CheckQRCodeScreen from "./onboarding/CheckQRCodeScreen/CheckQRCodeScreen.
 import { LoginOkScreen } from "./onboarding/LoginOk/LoginOkScreen.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MainScreen } from "./onboarding/Home/MainScreen.jsx";
-import { ScanningScreen } from "./scanning/ScanningScreen/ScanningScreen.jsx";
 
 setupIonicReact();
 const queryClient = new QueryClient();
