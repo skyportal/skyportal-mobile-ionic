@@ -14,6 +14,7 @@ import { EventListScreen } from "../../events/EventList/EventListScreen.jsx";
 import { compassOutline, list, radioOutline } from "ionicons/icons";
 import { ScanningOptionsScreen } from "../../scanning/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
 import { ScanningHomeScreen } from "../../scanning/ScanningHomeScreen/ScanningHomeScreen.jsx";
+import { MainScanningScreen } from "../../scanning/MainScanningScreen/MainScanningScreen.jsx";
 
 export const MainScreen = () => {
   return (
@@ -24,14 +25,17 @@ export const MainScreen = () => {
           <Route path="/app/source-list">
             <SourceListScreen />
           </Route>
-          <Route path="/app/scanning">
+          <Route exact path="/app/scanning">
             <ScanningHomeScreen />
           </Route>
           <Route path="/app/event-list">
             <EventListScreen />
           </Route>
-          <Route path="/app/scanning-options">
+          <Route path="/app/scanning/options">
             <ScanningOptionsScreen />
+          </Route>
+          <Route path="/app/scanning/main">
+            <MainScanningScreen />
           </Route>
         </IonRouterOutlet>
 

@@ -22,7 +22,7 @@ export const ScanningHomeScreen = () => {
         <div className="scanning-home-screen-content">
           <IonButton
             size="large"
-            onClick={() => history.push("/app/scanning-options")}
+            onClick={() => history.push("/app/scanning/options")}
           >
             Start scanning
           </IonButton>

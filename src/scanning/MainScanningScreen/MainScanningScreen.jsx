@@ -1,11 +1,5 @@
-import {
-  IonButton,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import "./MainScanningScreen.scss";
+import { IonButton, IonContent, IonPage } from "@ionic/react";
 import { useContext, useState } from "react";
 import { AppContext } from "../../util/context.js";
 import { useQuery } from "@tanstack/react-query";
@@ -44,11 +38,6 @@ export const MainScanningScreen = () => {
   return (
     <IonPage>
       <IonContent>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Scanning</IonTitle>
-          </IonToolbar>
-        </IonHeader>
         <div className="main-scanning-screen-container">
           <div className="scanning-card">
             <div className="thumbnails-container">

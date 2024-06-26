@@ -20,8 +20,10 @@ import { searchCandidates } from "../scanning.js";
 import { AppContext } from "../../util/context.js";
 import { Capacitor } from "@capacitor/core";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router";
 
 export const ScanningOptionsScreen = () => {
+  const history = useHistory();
   const { userInfo } = useContext(AppContext);
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
   const {
@@ -46,6 +48,7 @@ export const ScanningOptionsScreen = () => {
   } = useForm();
   const onSubmit = (data) => {
     console.log(data);
+    history.push("/app/scanning/main");
   };
   const savedStatusSelectOptions = [
     { value: "all", label: "regardless of saved status" },
