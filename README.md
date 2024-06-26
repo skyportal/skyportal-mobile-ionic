@@ -8,7 +8,7 @@ React and is available for both iOS and Android.
 ### Node.js and npm
 
 To run the app locally, you will need to have Node.js and npm installed. You can install them
-using [nvm](https://github.com/nvm-sh/nvm) or just install any version from the [node website](https://nodejs.org/).
+using [nvm](https://github.com/nvm-sh/nvm) or just install a recent version from the [node website](https://nodejs.org/).
 
 ### Android Studio
 
