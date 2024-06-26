@@ -57,8 +57,6 @@ ionic cap run android --list
 Then, open the `capacitor.config.json` file and set the `device` property to the device ID you just got. Finally, you
 can run the following command to preview the app on your device:
 
-```bash
-
 If you want to preview the app in a browser, you can use the following command:
 ```bash
 npm run dev
