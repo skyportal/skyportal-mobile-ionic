@@ -6,6 +6,7 @@
   "scripts": {
     "start": "vite --host --port=8100",
     "dev": "vite",
+    "dev:external": "ionic cap run android -l --external",
     "dev:device": "ionic cap run android -l --external --target=$DEVICE",
     "build": "vite build",
     "build-sync": "vite build --mode development && npx cap sync android",
