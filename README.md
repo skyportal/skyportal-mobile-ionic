@@ -17,11 +17,14 @@ Android SDK Platform-Tools. You can follow the instructions [here](https://devel
 install Android Studio. Then, open Android Studio, go to **Tools -> SDK Manager** and install the latest stable Android
 SDK and Android SDK Platform-Tools as shown below ![img.png](doc/android_studio_sdk_install.png)
 You will also have to set the ANDROID_HOME environment variable to the path of the Android SDK. You can do that by
-adding the following line to your `.bashrc` or `.zshrc` file:
+setting the ANDROID_HOME variable to your installation path for the Android SDK. You can do it by adding the following line to your `.bashrc` or `.zshrc` file:
 
 ```bash
-export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_HOME=<your-installation-path>/Android/Sdk
 ```
+
+Usually, the default installation path is `/Users/<your-username>/Library/Android/Sdk` on macOS and
+`C:\Users\<your-username>\AppData\Local\Android\sdk` on Windows.
 
 ### Xcode (macOS only)
 
