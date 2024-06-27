@@ -12,8 +12,7 @@ using [nvm](https://github.com/nvm-sh/nvm) or just install a recent version from
 
 ### Android Studio
 
-To be able to build the Android version, you will need to have Android Studio installed with the Android SDK and the
-Android SDK Platform-Tools. You can follow the instructions [here](https://developer.android.com/studio/install) to
+To be able to build the Android version, you will need to have Android Studio installed with the Android SDK. You can follow the instructions [here](https://developer.android.com/studio/install) to
 install Android Studio. Then, open Android Studio, go to **Tools -> SDK Manager** and install the latest stable Android
 SDK and Android SDK Platform-Tools as shown below ![img.png](doc/android_studio_sdk_install.png)
 You will also have to set the ANDROID_HOME environment variable to the path of the Android SDK. You can do that by
@@ -49,8 +48,16 @@ npm install
 npm run dev:external
 ```
 
-This will allow you to preview the app directly on your device with hot-reload enabled. It will ask you to choose your
-device among a list of connected devices. But you can set your device to be the default one and skip this selection
+Please note that your device **needs to be connected to your computer with a USB cable and have USB debugging enabled (you can also use wireless debugging). Enabling
+debugging mode is different for each device, so you might need to look up how to do it for your device. But it usually requires
+you to first activate the developer options by tapping multiple times on the build number in your phone settings. Then, you can enable
+USB debugging in the developer options.
+
+The above commands will spin up the development server and ask you to choose your device among a list of connected devices. Select
+the device you want to deploy the app to. If it is your first time deploying on this device, you might get a prompt asking you to
+trust the computer. Accept it and the app will be deployed to your device.
+
+You can also set your device to be the default one and skip the selection
 step. To do that, first get your device ID by running the following command:
 
 ```bash
