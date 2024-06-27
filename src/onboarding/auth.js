@@ -1,13 +1,7 @@
 import { CapacitorHttp } from "@capacitor/core";
-import { mockUser } from "../../config.js";
+import mockUser from "../../mock/user.json";
 
 export const checkToken = async (token, instance, platform) => {
-  // const response = await axios.get(`${instance.url}/api/internal/profile`, {
-  //   headers: {
-  //     Authorization: `token ${token}`,
-  //   },
-  // });
-  // return response.data.data;
   if (platform === "web") {
     return mockUser;
   }

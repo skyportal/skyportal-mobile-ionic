@@ -8,10 +8,10 @@ import {
 } from "@ionic/react";
 import { useContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchSources } from "../../lib/sources.js";
-import { AppContext } from "../../lib/context.js";
+import { fetchSources } from "../sources.js";
+import { AppContext } from "../../util/context.js";
 import { Capacitor } from "@capacitor/core";
-import { SourceListItem } from "../../components/SourceListItem/SourceListItem.jsx";
+import { SourceListItem } from "../SourceListItem/SourceListItem.jsx";
 
 export const SourceListScreen = () => {
   const { userInfo } = useContext(AppContext);

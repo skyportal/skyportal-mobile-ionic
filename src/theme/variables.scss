@@ -13,6 +13,15 @@ h6 {
   box-sizing: border-box;
 }
 
+ion-select {
+  --background: white;
+  --border-radius: 50rem;
+  --padding-start: 1.5rem;
+  --padding-end: 1.5rem;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+}
+
 :root {
   --ion-color-primary: #457b9d;
   --ion-color-primary-rgb: 69, 123, 157;

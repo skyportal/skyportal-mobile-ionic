@@ -2,7 +2,7 @@ import { IonContent, IonIcon, IonPage } from "@ionic/react";
 import "./LoginOkScreen.scss";
 import { checkmarkCircleSharp } from "ionicons/icons";
 import { useContext, useEffect } from "react";
-import { AppContext } from "../../lib/context.js";
+import { AppContext } from "../../util/context.js";
 import { useHistory } from "react-router";
 
 export const LoginOkScreen = () => {

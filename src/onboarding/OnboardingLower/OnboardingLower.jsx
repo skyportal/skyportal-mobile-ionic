@@ -1,9 +1,9 @@
 import { IonButton, IonIcon, IonSelect, IonSelectOption } from "@ionic/react";
 import "./OnboardingLower.scss";
-import { INSTANCES } from "../../lib/constants.js";
+import { INSTANCES } from "../../util/constants.js";
 import { useContext } from "react";
 import { qrCode } from "ionicons/icons";
-import { AppContext } from "../../lib/context.js";
+import { AppContext } from "../../util/context.js";
 import { CapacitorBarcodeScanner } from "@capacitor/barcode-scanner";
 import { Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useHistory } from "react-router";

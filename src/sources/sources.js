@@ -1,5 +1,5 @@
 import { CapacitorHttp } from "@capacitor/core";
-import { mockSources } from "../../config.js";
+import mockSources from "../../mock/sources.json";
 
 /**
  * Fetch sources from the API
