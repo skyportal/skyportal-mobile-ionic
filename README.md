@@ -78,7 +78,8 @@ If you want to preview the app in a browser, you can use the following command:
 npm run dev
 ```
 
-Keep in mind that some features might not work as expected in the browser.
+Please keep in mind that some features might not work as expected in the browser. For example device features like the camera
+or notifications might not work and may require some mocking.
 
 ## Directory structure
 ### `src/`
