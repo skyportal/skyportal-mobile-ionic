@@ -14,8 +14,8 @@ using [nvm](https://github.com/nvm-sh/nvm) or just install a recent version from
 
 To be able to build the Android version, you will need to have Android Studio installed with the Android SDK. You can follow the instructions [here](https://developer.android.com/studio/install) to
 install Android Studio. Then, open Android Studio, go to **Tools -> SDK Manager** and install the latest stable Android
-SDK and Android SDK Platform-Tools as shown below ![img.png](doc/android_studio_sdk_install.png)
-You will also have to set the ANDROID_HOME environment variable to the path of the Android SDK. You can do that by
+SDK as shown below ![img.png](doc/android_studio_sdk_install.png)
+You will also have to set the `ANDROID_HOME` environment variable to the path of the Android SDK. You can do that by
 setting the ANDROID_HOME variable to your installation path for the Android SDK. You can do it by adding the following line to your `.bashrc` or `.zshrc` file:
 
 ```bash
@@ -24,6 +24,12 @@ export ANDROID_HOME=<your-installation-path>/Android/Sdk
 
 Usually, the default installation path is `/Users/<your-username>/Library/Android/Sdk` on macOS and
 `C:\Users\<your-username>\AppData\Local\Android\sdk` on Windows.
+
+Additionally, you might have to add the `platform-tools` directory to your `PATH` environment variable. You can do that by adding the following line to your `.bashrc` or `.zshrc` file:
+
+```bash
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+```
 
 ### Xcode (macOS only)
 
