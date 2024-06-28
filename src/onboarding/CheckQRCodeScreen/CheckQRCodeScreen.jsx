@@ -31,7 +31,7 @@ export const CheckQRCodeScreen = () => {
   });
   useEffect(() => {
     // @ts-ignore
-    loginMutation.mutate({ token, instance: instance.url });
+    loginMutation.mutate({ token, instanceUrl: instance.url });
   }, []);
 
   return (

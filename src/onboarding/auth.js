@@ -27,15 +27,15 @@ import mockUser from "../../mock/user.json";
  * Check the token and fetch the user from the API
  * @param {Object} params
  * @param {string} params.token - The token to use to fetch the user
- * @param {string} params.instance - The instance to use to fetch the user
+ * @param {string} params.instanceUrl - The url of the instance to use to fetch the user
  * @returns {Promise<User>} - The user from the API
  */
-export const checkTokenAndFetchUser = async ({ token, instance }) => {
+export const checkTokenAndFetchUser = async ({ token, instanceUrl }) => {
   if (Capacitor.getPlatform() === "web") {
     return mockUser.data;
   }
   const response = await CapacitorHttp.get({
-    url: `${instance}/api/internal/profile`,
+    url: `${instanceUrl}/api/internal/profile`,
     headers: {
       Authorization: `token ${token}`,
     },

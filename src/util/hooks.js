@@ -1,8 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PREFERENCES, QUERY_KEYS } from "./constants.js";
 import { searchCandidates } from "../scanning/scanning.js";
 import { fetchSources } from "../sources/sources.js";
-import { getPreference } from "./preferences.js";
+import { getPreference, setPreference } from "./preferences.js";
+import config from "../config.js";
+import { checkTokenAndFetchUser } from "../onboarding/auth.js";
+import { useEffect, useState } from "react";
 
 /**
  * @typedef {"success" | "error" | "pending"} QueryStatus
@@ -100,4 +103,48 @@ export const useFetchSources = ({ page, numPerPage }) => {
     status,
     error,
   };
+};
+
+export const useSkipOnboarding = () => {
+  const [state, setState] = useState({
+    skipOnboarding: false,
+    status: "loading",
+  });
+  const queryClient = useQueryClient();
+  if (
+    !config.SKIP_ONBOARDING ||
+    !config.INSTANCE_URL ||
+    !config.INSTANCE_NAME ||
+    !config.TOKEN
+  ) {
+    console.error("Missing configuration");
+    console.error(config);
+  }
+  let mutation = useMutation({
+    mutationFn: () =>
+      checkTokenAndFetchUser({
+        token: config.TOKEN,
+        instanceUrl: config.INSTANCE_URL,
+      }),
+    onSuccess: async (user) => {
+      console.log("User", user);
+      queryClient.setQueryData([QUERY_KEYS.USER], user);
+      await setPreference({ key: PREFERENCES.USER, value: user });
+      const userInfo = {
+        token: config.TOKEN,
+        instance: { url: config.INSTANCE_URL, name: config.INSTANCE_NAME },
+      };
+      queryClient.setQueryData([QUERY_KEYS.USER_INFO], userInfo);
+      await setPreference({ key: PREFERENCES.USER_INFO, value: userInfo });
+      setState({ skipOnboarding: true, status: "success" });
+    },
+    onError: (error) => {
+      console.error("Error fetching user", error);
+      setState({ skipOnboarding: false, status: "error" });
+    },
+  });
+  useEffect(() => {
+    mutation.mutate();
+  }, []);
+  return state;
 };

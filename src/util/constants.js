@@ -30,4 +30,5 @@ export const QUERY_KEYS = {
   CANDIDATES: "candidates",
   SOURCES: "sources",
   USER: "user",
+  USER_INFO: "userInfo",
 };
