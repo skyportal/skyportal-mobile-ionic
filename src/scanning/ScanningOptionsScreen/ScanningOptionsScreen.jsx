@@ -14,23 +14,15 @@ import {
   IonToggle,
   IonToolbar,
 } from "@ionic/react";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { searchCandidates } from "../scanning.js";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
+import { useSearchCandidates } from "../../util/hooks.js";
 
 export const ScanningOptionsScreen = () => {
   const history = useHistory();
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
-  const {
-    data: candidates,
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["candidates"],
-    queryFn: () => searchCandidates(),
-  });
+  const { candidates, status, error } = useSearchCandidates();
   const {
     register,
     handleSubmit,

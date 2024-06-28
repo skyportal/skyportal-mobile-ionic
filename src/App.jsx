@@ -35,7 +35,6 @@ import CheckQRCodeScreen from "./onboarding/CheckQRCodeScreen/CheckQRCodeScreen.
 import { LoginOkScreen } from "./onboarding/LoginOk/LoginOkScreen.jsx";
 import { MainScreen } from "./onboarding/Home/MainScreen.jsx";
 import { useUser } from "./util/hooks.js";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 setupIonicReact();
 
@@ -44,34 +43,31 @@ const App = () => {
   if (user === undefined) {
     return <p>Loading...</p>;
   }
-  const queryClient = new QueryClient();
   return (
-    <QueryClientProvider client={queryClient}>
-      <IonApp>
-        <IonReactRouter>
-          <IonRouterOutlet>
-            <Route exact path="/onboarding">
-              {
-                /* If the user is logged in, redirect them to the app */
-                user !== null ? <Redirect to="/app" /> : <OnboardingScreen />
-              }
-            </Route>
-            <Route path="/check-creds">
-              <CheckQRCodeScreen />
-            </Route>
-            <Route path="/login-ok">
-              <LoginOkScreen />
-            </Route>
-            <Route path="/app">
-              <MainScreen />
-            </Route>
-            <Route exact path="/">
-              <Redirect to="/onboarding" />
-            </Route>
-          </IonRouterOutlet>
-        </IonReactRouter>
-      </IonApp>
-    </QueryClientProvider>
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route exact path="/onboarding">
+            {
+              /* If the user is logged in, redirect them to the app */
+              user !== null ? <Redirect to="/app" /> : <OnboardingScreen />
+            }
+          </Route>
+          <Route path="/check-creds">
+            <CheckQRCodeScreen />
+          </Route>
+          <Route path="/login-ok">
+            <LoginOkScreen />
+          </Route>
+          <Route path="/app">
+            <MainScreen />
+          </Route>
+          <Route exact path="/">
+            <Redirect to="/onboarding" />
+          </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
   );
 };
 

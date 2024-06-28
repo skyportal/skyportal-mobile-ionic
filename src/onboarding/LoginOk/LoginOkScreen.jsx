@@ -6,14 +6,19 @@ import { useHistory } from "react-router";
 import { useUser } from "../../util/hooks.js";
 
 export const LoginOkScreen = () => {
-  const user = useUser();
   const history = useHistory();
+  const { user } = useUser();
 
   useEffect(() => {
-    setTimeout(() => {
-      history.replace("/app");
-    }, 2000);
-  }, []);
+    /** @type {any} */
+    let timer;
+    if (user) {
+      timer = setTimeout(() => {
+        history.replace("/app");
+      }, 2000);
+    }
+    return () => clearTimeout(timer);
+  }, [user]);
 
   return (
     <IonPage>

@@ -25,3 +25,9 @@ export const QUERY_PARAMS = {
   TOKEN: "token",
   INSTANCE: "instance",
 };
+
+export const QUERY_KEYS = {
+  CANDIDATES: "candidates",
+  SOURCES: "sources",
+  USER: "user",
+};

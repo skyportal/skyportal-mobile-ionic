@@ -7,21 +7,16 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchSources } from "../sources.js";
 import { SourceListItem } from "../SourceListItem/SourceListItem.jsx";
+import { useFetchSources } from "../../util/hooks.js";
 
 export const SourceListScreen = () => {
   const [page, setPage] = useState(1);
   const [numPerPage, setNumPerPage] = useState(10);
-  const {
-    data: sources,
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["sources", page, numPerPage],
-    queryFn: () => fetchSources(page, numPerPage),
-  });
+  const { sources, status, error } = useFetchSources({ page, numPerPage });
+  if (!sources) {
+    return <p>Loading...</p>;
+  }
   return (
     <IonPage>
       <IonContent>

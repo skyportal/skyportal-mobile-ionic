@@ -1,26 +1,16 @@
 import "./MainScanningScreen.scss";
 import { IonButton, IonContent, IonPage } from "@ionic/react";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import {
-  getThumbnailImageUrl,
-  searchCandidates,
-  THUMBNAIL_TYPES,
-} from "../scanning.js";
+import { getThumbnailImageUrl, THUMBNAIL_TYPES } from "../scanning.js";
 import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
 import { CandidateAnnotations } from "../CandidateAnnotations/CandidateAnnotations.jsx";
+import { useSearchCandidates } from "../../util/hooks.js";
 
 export const MainScanningScreen = () => {
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
-  const {
-    data: candidates,
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["candidates"],
-    queryFn: () => searchCandidates(),
-  });
-  if (status === "pending") {
+  const { candidates, status, error } = useSearchCandidates();
+
+  if (!candidates || status === "pending") {
     return <p>Loading...</p>;
   }
   if (status === "error") {

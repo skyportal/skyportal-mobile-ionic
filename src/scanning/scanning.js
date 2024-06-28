@@ -1,7 +1,18 @@
 import mockCandidates from "../../mock/candidates.json";
 import { Capacitor, CapacitorHttp } from "@capacitor/core";
-import { getPreference } from "../util/preferences.js";
-import { PREFERENCES } from "../util/constants.js";
+
+/**
+ * @typedef {Object} CandidateThumbnail
+ * @property {string} type - Thumbnail type
+ * @property {string} public_url - URL of the thumbnail
+ */
+
+/**
+ * @typedef {Object} Candidate
+ * @property {CandidateThumbnail[]} thumbnails - Thumbnails of the candidate
+ * @property {number} ra - Right ascension
+ * @property {number} dec - Declination
+ */
 
 export const THUMBNAIL_TYPES = {
   new: "new",
@@ -71,15 +82,21 @@ export const getThumbnailHeader = (type) => {
   }
 };
 
-export async function searchCandidates() {
+/**
+ * Returns the candidates from the API
+ * @param {Object} params
+ * @param {string} params.instanceUrl - The URL of the instance
+ * @param {string} params.token - The token to use to fetch the candidates
+ * @returns {Promise<Candidate[]>}
+ */
+export async function searchCandidates({ instanceUrl, token }) {
   if (Capacitor.getPlatform() === "web") {
-    return mockCandidates;
+    return mockCandidates.data.candidates;
   }
-  const userInfo = await getPreference({ key: PREFERENCES.USER_INFO });
   let response = await CapacitorHttp.get({
-    url: `${userInfo.instance.url}/api/candidates`,
+    url: `${instanceUrl}/api/candidates`,
     headers: {
-      Authorization: `token ${userInfo.token}`,
+      Authorization: `token ${token}`,
     },
     params: {
       pageNumber: "1",
@@ -92,18 +109,6 @@ export async function searchCandidates() {
   });
   return response.data.data.candidates;
 }
-
-/**
- * @typedef {Object} CandidateThumbnail
- * @property {string} type - Thumbnail type
- * @property {string} public_url - URL of the thumbnail
- */
-
-/**
- * @typedef {Object} Candidate
- * @property {CandidateThumbnail[]} thumbnails - Thumbnails of the candidate
- *
- */
 
 /**
  * Get the URL of the thumbnail image
