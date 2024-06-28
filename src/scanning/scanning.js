@@ -93,11 +93,10 @@ export async function searchCandidates({ instanceUrl, token }) {
   if (Capacitor.getPlatform() === "web") {
     return mockCandidates.data.candidates;
   }
-  const userInfo = await getPreference({ key: PREFERENCES.USER_INFO });
   let response = await CapacitorHttp.get({
-    url: `${userInfo.instance.url}/api/candidates`,
+    url: `${instanceUrl}/api/candidates`,
     headers: {
-      Authorization: `token ${userInfo.token}`,
+      Authorization: `token ${token}`,
     },
     params: {
       pageNumber: "1",
