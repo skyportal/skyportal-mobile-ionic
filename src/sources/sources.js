@@ -1,27 +1,24 @@
-import { CapacitorHttp } from "@capacitor/core";
+import { Capacitor, CapacitorHttp } from "@capacitor/core";
 import mockSources from "../../mock/sources.json";
+import { getPreference } from "../util/preferences.js";
+import { PREFERENCES } from "../util/constants.js";
 
 /**
  * Fetch sources from the API
  * @param {number} page - page number
  * @param {number} numPerPage - number of sources per page
- * @param {string} instanceUrl - SkyPortal instance URL
- * @param {string} token - SkyPortal token
- * @param {string} platform - Platform
  * @returns {Promise<any[]>}
  */
-export async function fetchSources(
-  page,
-  numPerPage,
-  instanceUrl,
-  token,
-  platform,
-) {
-  if (platform === "web") {
-    return mockSources;
+export async function fetchSources(page, numPerPage) {
+  if (Capacitor.getPlatform() === "web") {
+    return mockSources.data.sources;
   }
+  // @ts-ignore
+  const { instance, token } = await getPreference({
+    key: PREFERENCES.USER_INFO,
+  });
   let response = await CapacitorHttp.get({
-    url: `${instanceUrl}/api/sources`,
+    url: `${instance.url}/api/sources`,
     headers: {
       Authorization: `token ${token}`,
     },

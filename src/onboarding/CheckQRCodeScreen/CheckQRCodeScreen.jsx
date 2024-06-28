@@ -1,24 +1,39 @@
 import { IonContent, IonPage, IonSpinner } from "@ionic/react";
 import "./CheckQRCodeScreen.scss";
 import { useHistory, useLocation } from "react-router";
-import { useContext, useEffect } from "react";
-import { checkToken } from "../auth.js";
-import { AppContext } from "../../util/context.js";
-import { Capacitor } from "@capacitor/core";
+import { useEffect, useState } from "react";
+import { checkTokenAndFetchUser } from "../auth.js";
+import { PREFERENCES, QUERY_PARAMS } from "../../util/constants.js";
+import { setPreference } from "../../util/preferences.js";
+import { useMutation } from "@tanstack/react-query";
 
 export const CheckQRCodeScreen = () => {
   const history = useHistory();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const token = params.get("token");
-  const { userInfo, setUserInfo } = useContext(AppContext);
-  useEffect(() => {
-    const platform = Capacitor.getPlatform();
-    checkToken(token, userInfo.instance, platform).then((res) => {
-      setUserInfo({ ...userInfo, name: res.first_name, token });
+  const [token] = useState(params.get(QUERY_PARAMS.TOKEN) ?? "");
+  const [instanceParam] = useState(params.get(QUERY_PARAMS.INSTANCE) ?? "");
+  const instance = JSON.parse(instanceParam);
+  const loginMutation = useMutation({
+    // @ts-ignore
+    mutationFn: async (variables) => await checkTokenAndFetchUser(variables),
+    onSuccess: async (data) => {
+      await setPreference({
+        key: PREFERENCES.USER_INFO,
+        value: { token, instance },
+      });
+      await setPreference({ key: PREFERENCES.USER, value: data });
       history.push("/login-ok");
-    });
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+  useEffect(() => {
+    // @ts-ignore
+    loginMutation.mutate({ token, instance: instance.url });
   }, []);
+
   return (
     <IonPage>
       <IonContent>

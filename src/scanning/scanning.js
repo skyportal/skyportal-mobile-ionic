@@ -1,5 +1,7 @@
 import mockCandidates from "../../mock/candidates.json";
-import { CapacitorHttp } from "@capacitor/core";
+import { Capacitor, CapacitorHttp } from "@capacitor/core";
+import { getPreference } from "../util/preferences.js";
+import { PREFERENCES } from "../util/constants.js";
 
 export const THUMBNAIL_TYPES = {
   new: "new",
@@ -69,14 +71,15 @@ export const getThumbnailHeader = (type) => {
   }
 };
 
-export async function searchCandidates({ token, instanceUrl, platform }) {
-  if (platform === "web") {
+export async function searchCandidates() {
+  if (Capacitor.getPlatform() === "web") {
     return mockCandidates;
   }
+  const userInfo = await getPreference({ key: PREFERENCES.USER_INFO });
   let response = await CapacitorHttp.get({
-    url: `${instanceUrl}/api/candidates`,
+    url: `${userInfo.instance.url}/api/candidates`,
     headers: {
-      Authorization: `token ${token}`,
+      Authorization: `token ${userInfo.token}`,
     },
     params: {
       pageNumber: "1",
@@ -90,8 +93,30 @@ export async function searchCandidates({ token, instanceUrl, platform }) {
   return response.data.data.candidates;
 }
 
+/**
+ * @typedef {Object} CandidateThumbnail
+ * @property {string} type - Thumbnail type
+ * @property {string} public_url - URL of the thumbnail
+ */
+
+/**
+ * @typedef {Object} Candidate
+ * @property {CandidateThumbnail[]} thumbnails - Thumbnails of the candidate
+ *
+ */
+
+/**
+ * Get the URL of the thumbnail image
+ * @param {Candidate} candidate
+ * @param {string} type
+ * @returns {string}
+ */
 export function getThumbnailImageUrl(candidate, type) {
-  let res = candidate.thumbnails.find((t) => t.type === type).public_url;
+  let thumbnail = candidate.thumbnails.find((t) => t.type === type);
+  if (!thumbnail) {
+    throw new Error(`No thumbnail of type ${type} found`);
+  }
+  let res = thumbnail.public_url;
   if (type === "new" || type === "ref" || type === "sub") {
     res = "https://preview.fritz.science" + res;
   }

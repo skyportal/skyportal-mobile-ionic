@@ -1,12 +1,41 @@
-import { CapacitorHttp } from "@capacitor/core";
+import { Capacitor, CapacitorHttp } from "@capacitor/core";
 import mockUser from "../../mock/user.json";
 
-export const checkToken = async (token, instance, platform) => {
-  if (platform === "web") {
-    return mockUser;
+/**
+ * @template T
+ * @typedef {Object} SkyPortalResponse
+ * @property {string} status - The status of the response
+ * @property {T} data - The data from the response
+ */
+
+/**
+ * @typedef {Object} User
+ * @property {string} username - The username of the user
+ * @property {string} first_name - The first name of the user
+ * @property {string} last_name - The last name of the user
+ * @property {string|null} contact_email - The email of the user
+ * @property {string|null} contact_phone - The phone number of the user
+ */
+
+/**
+ * @typedef {Object} UserInfo
+ * @property {string} token - The token of the user
+ * @property {import("../util/constants.js").SkyPortalInstance} instance - The instance of the user
+ */
+
+/**
+ * Check the token and fetch the user from the API
+ * @param {Object} params
+ * @param {string} params.token - The token to use to fetch the user
+ * @param {string} params.instance - The instance to use to fetch the user
+ * @returns {Promise<User>} - The user from the API
+ */
+export const checkTokenAndFetchUser = async ({ token, instance }) => {
+  if (Capacitor.getPlatform() === "web") {
+    return mockUser.data;
   }
   const response = await CapacitorHttp.get({
-    url: `${instance.url}/api/internal/profile`,
+    url: `${instance}/api/internal/profile`,
     headers: {
       Authorization: `token ${token}`,
     },
