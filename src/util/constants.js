@@ -31,4 +31,5 @@ export const QUERY_KEYS = {
   SOURCES: "sources",
   USER: "user",
   USER_INFO: "userInfo",
+  GROUPS: "groups",
 };

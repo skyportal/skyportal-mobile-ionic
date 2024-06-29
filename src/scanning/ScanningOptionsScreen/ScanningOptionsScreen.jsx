@@ -7,11 +7,9 @@ import {
   IonHeader,
   IonModal,
   IonPage,
-  IonSearchbar,
   IonSelect,
   IonSelectOption,
   IonTitle,
-  IonToggle,
   IonToolbar,
 } from "@ionic/react";
 import { useState } from "react";
@@ -74,41 +72,54 @@ export const ScanningOptionsScreen = () => {
             className="scanning-options-form"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <section className="dates-section">
+            <fieldset className="dates-section">
+              <legend>Dates</legend>
               <label htmlFor="start-date">Start date:</label>
-              <IonDatetimeButton datetime="datetime"></IonDatetimeButton>
+              <IonDatetimeButton datetime="datetime-start"></IonDatetimeButton>
               <label htmlFor="end-date">End date:</label>
-              <IonDatetimeButton datetime="datetime"></IonDatetimeButton>
-            </section>
-
-            <section className="filtering-section">
+              <IonDatetimeButton datetime="datetime-end"></IonDatetimeButton>
               <IonModal keepContentsMounted={true}>
-                <IonDatetime id="datetime"></IonDatetime>
+                <IonDatetime id="datetime-start"></IonDatetime>
               </IonModal>
-              <div className="saved-status-container">
-                <label htmlFor="saved-status">Show candidates...</label>
-                <IonSelect
-                  id="saved-status"
-                  label="Filter"
-                  placeholder="Select a filtering option"
-                >
-                  {savedStatusSelectOptions.map((option) => (
-                    <IonSelectOption key={option.value} value={option.value}>
-                      {option.label}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-              </div>
-              <IonToggle>Hide rejected</IonToggle>
-            </section>
+              <IonModal keepContentsMounted={true}>
+                <IonDatetime id="datetime-end"></IonDatetime>
+              </IonModal>
+            </fieldset>
 
-            <section className="project-section">
-              <IonSearchbar placeholder="Search project"></IonSearchbar>
-              <IonSelect
-                label="Junk group"
-                placeholder="Select a junk group"
-              ></IonSelect>
-            </section>
+            <fieldset className="filtering-section">
+              <legend>Filtering</legend>
+              <div className="filtering-lines">
+                <div className="filtering-line">
+                  <IonSelect
+                    name="includeOrExclude"
+                    aria-label="include or exclude"
+                    interface="popover"
+                    value="include"
+                  >
+                    <IonSelectOption value="include">Include</IonSelectOption>
+                    <IonSelectOption value="exclude">Exclude</IonSelectOption>
+                  </IonSelect>
+                  candidates
+                </div>
+                <div className="filtering-line">
+                  saved to
+                  <IonSelect
+                    name="anyOrAll"
+                    aria-label="filtering option"
+                    interface="popover"
+                    value="all"
+                  >
+                    <IonSelectOption value="all">all</IonSelectOption>
+                    <IonSelectOption value="any">any</IonSelectOption>
+                  </IonSelect>
+                  of the selected groups
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset className="discarding-section">
+              <legend>Discarding</legend>
+            </fieldset>
             <IonButton type="submit">Start</IonButton>
           </form>
         </div>

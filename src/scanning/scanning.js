@@ -14,6 +14,16 @@ import { Capacitor, CapacitorHttp } from "@capacitor/core";
  * @property {number} dec - Declination
  */
 
+/**
+ * @typedef {Object} Group
+ * @property {number} id - Group ID
+ * @property {string} [nickname] - Group nickname
+ * @property {string} name - Group name
+ * @property {string} [description] - Group description
+ * @property {boolean} private - Is the group private
+ * @property {boolean} single_user_group - Is the group a single user group
+ */
+
 export const THUMBNAIL_TYPES = {
   new: "new",
   ref: "ref",
@@ -126,4 +136,20 @@ export function getThumbnailImageUrl(candidate, type) {
     res = "https://preview.fritz.science" + res;
   }
   return res;
+}
+
+/**
+ * @param {Object} params
+ * @param {string} params.instanceUrl
+ * @param {string} params.token
+ * @returns {Promise<{user_groups: Group[], user_accessible_groups: Group[], all_groups: Group[]}>}
+ */
+export async function fetchGroups({ instanceUrl, token }) {
+  let response = await CapacitorHttp.get({
+    url: `${instanceUrl}/api/groups`,
+    headers: {
+      Authorization: `token ${token}`,
+    },
+  });
+  return response.data.data;
 }

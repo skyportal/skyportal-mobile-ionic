@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PREFERENCES, QUERY_KEYS } from "./constants.js";
-import { searchCandidates } from "../scanning/scanning.js";
+import { fetchGroups, searchCandidates } from "../scanning/scanning.js";
 import { fetchSources } from "../sources/sources.js";
 import { getPreference, setPreference } from "./preferences.js";
 import config from "../config.js";
@@ -148,4 +148,26 @@ export const useSkipOnboarding = () => {
     mutation.mutate();
   }, []);
   return state;
+};
+
+export const useUserAccessibleGroups = () => {
+  const { userInfo } = useUserInfo();
+  const {
+    data: groups,
+    status,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.GROUPS],
+    queryFn: () =>
+      fetchGroups({
+        instanceUrl: userInfo?.instance.url ?? "",
+        token: userInfo?.token ?? "",
+      }),
+    enabled: !!userInfo,
+  });
+  return {
+    userAccessibleGroups: groups?.user_accessible_groups,
+    status,
+    error,
+  };
 };
