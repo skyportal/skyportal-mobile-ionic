@@ -1,10 +1,13 @@
 import "./ScanningOptionsScreen.scss";
 import {
   IonButton,
+  IonChip,
   IonContent,
   IonDatetime,
   IonDatetimeButton,
   IonHeader,
+  IonIcon,
+  IonLabel,
   IonModal,
   IonPage,
   IonSelect,
@@ -12,14 +15,21 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
-import { useSearchCandidates } from "../../util/hooks.js";
+import {
+  useSearchCandidates,
+  useUserAccessibleGroups,
+} from "../../util/hooks.js";
+import { add } from "ionicons/icons";
+import { AppTypeAhead } from "../TypeAhead/AppTypeAhead.jsx";
 
 export const ScanningOptionsScreen = () => {
   const history = useHistory();
-  const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
+  const { userAccessibleGroups } = useUserAccessibleGroups();
+  /** @type {[import("../scanning").Group[], function]} */
+  const [selectedGroups, setSelectedGroups] = useState([]);
   const { candidates, status, error } = useSearchCandidates();
   const {
     register,
@@ -28,6 +38,25 @@ export const ScanningOptionsScreen = () => {
     reset,
     getValues,
   } = useForm();
+  /** @type {React.MutableRefObject<any>} */
+  const modal = useRef(null);
+
+  if (!userAccessibleGroups) {
+    return <p>Loading...</p>;
+  }
+
+  /**
+   * @param {string[]} selectedGroupIds
+   */
+  function groupSelectionChange(selectedGroupIds) {
+    setSelectedGroups(
+      userAccessibleGroups?.filter((group) =>
+        selectedGroupIds.includes(`${group.id}`),
+      ),
+    );
+    modal.current?.dismiss();
+  }
+
   /**
    * @param {Object} data
    */
@@ -114,6 +143,32 @@ export const ScanningOptionsScreen = () => {
                   </IonSelect>
                   of the selected groups
                 </div>
+                <div className="selected-groups">
+                  <IonChip id="add-group" color="primary" outline={true}>
+                    <IonLabel>Add</IonLabel>
+                    <IonIcon icon={add}></IonIcon>
+                  </IonChip>
+                  {selectedGroups.map((group) => (
+                    <IonChip key={group.id}>{group.name}</IonChip>
+                  ))}
+                </div>
+                <IonModal
+                  ref={modal}
+                  trigger="add-group"
+                  isOpen={false}
+                  onDidDismiss={() => {}}
+                >
+                  <AppTypeAhead
+                    title="Select groups"
+                    items={userAccessibleGroups.map((group) => ({
+                      value: `${group.id}`,
+                      text: group.name,
+                    }))}
+                    onSelectionCancel={() => modal.current?.dismiss()}
+                    onSelectionChange={groupSelectionChange}
+                    selectedItems={selectedGroups.map((group) => `${group.id}`)}
+                  ></AppTypeAhead>
+                </IonModal>
               </div>
             </fieldset>
 

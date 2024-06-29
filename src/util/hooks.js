@@ -150,6 +150,9 @@ export const useSkipOnboarding = () => {
   return state;
 };
 
+/**
+ * @returns {{userAccessibleGroups: import("../scanning/scanning.js").Group[]|undefined, status: QueryStatus, error: any|undefined}}
+ */
 export const useUserAccessibleGroups = () => {
   const { userInfo } = useUserInfo();
   const {
