@@ -8,7 +8,7 @@ import {
 } from "@ionic/react";
 import { useState } from "react";
 import { SourceListItem } from "../SourceListItem/SourceListItem.jsx";
-import { useFetchSources } from "../../util/hooks.js";
+import { useFetchSources } from "../../common/hooks.js";
 
 export const SourceListScreen = () => {
   const [page, setPage] = useState(1);

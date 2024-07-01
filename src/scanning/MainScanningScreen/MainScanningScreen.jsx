@@ -4,7 +4,7 @@ import { useState } from "react";
 import { getThumbnailImageUrl, THUMBNAIL_TYPES } from "../scanning.js";
 import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
 import { CandidateAnnotations } from "../CandidateAnnotations/CandidateAnnotations.jsx";
-import { useSearchCandidates } from "../../util/hooks.js";
+import { useSearchCandidates } from "../../common/hooks.js";
 
 export const MainScanningScreen = () => {
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);

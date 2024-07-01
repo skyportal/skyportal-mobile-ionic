@@ -1,6 +1,6 @@
 import { IonButton, IonIcon, IonSelect, IonSelectOption } from "@ionic/react";
 import "./OnboardingLower.scss";
-import { INSTANCES, QUERY_PARAMS } from "../../util/constants.js";
+import { INSTANCES, QUERY_PARAMS } from "../../common/constants.js";
 import { useState } from "react";
 import { qrCode } from "ionicons/icons";
 import { CapacitorBarcodeScanner } from "@capacitor/barcode-scanner";

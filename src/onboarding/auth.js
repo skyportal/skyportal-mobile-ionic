@@ -20,7 +20,7 @@ import mockUser from "../../mock/user.json";
 /**
  * @typedef {Object} UserInfo
  * @property {string} token - The token of the user
- * @property {import("../util/constants.js").SkyPortalInstance} instance - The instance of the user
+ * @property {import("../common/constants.js").SkyPortalInstance} instance - The instance of the user
  */
 
 /**

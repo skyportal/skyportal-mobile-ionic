@@ -21,10 +21,10 @@ import { useHistory } from "react-router";
 import {
   useSearchCandidates,
   useUserAccessibleGroups,
-} from "../../util/hooks.js";
+} from "../../common/hooks.js";
 import { add, create } from "ionicons/icons";
-import { AppTypeAhead } from "../TypeAhead/AppTypeAhead.jsx";
-import { SingleSearchSelect } from "../../SingleSearchSelect/SingleSearchSelect.jsx";
+import { AppTypeAhead } from "../../common/TypeAhead/AppTypeAhead.jsx";
+import { SingleSearchSelect } from "../../common/SingleSearchSelect/SingleSearchSelect.jsx";
 
 export const ScanningOptionsScreen = () => {
   const history = useHistory();

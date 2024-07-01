@@ -3,8 +3,8 @@ import "./CheckQRCodeScreen.scss";
 import { useHistory, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import { checkTokenAndFetchUser } from "../auth.js";
-import { PREFERENCES, QUERY_PARAMS } from "../../util/constants.js";
-import { setPreference } from "../../util/preferences.js";
+import { PREFERENCES, QUERY_PARAMS } from "../../common/constants.js";
+import { setPreference } from "../../common/preferences.js";
 import { useMutation } from "@tanstack/react-query";
 
 export const CheckQRCodeScreen = () => {
