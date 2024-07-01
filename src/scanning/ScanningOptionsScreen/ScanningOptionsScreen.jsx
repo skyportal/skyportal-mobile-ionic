@@ -23,7 +23,7 @@ import {
   useUserAccessibleGroups,
 } from "../../common/hooks.js";
 import { add, create } from "ionicons/icons";
-import { AppTypeAhead } from "../../common/TypeAhead/AppTypeAhead.jsx";
+import { MultiSearchSelect } from "../../common/TypeAhead/MultiSearchSelect.jsx";
 import { SingleSearchSelect } from "../../common/SingleSearchSelect/SingleSearchSelect.jsx";
 
 export const ScanningOptionsScreen = () => {
@@ -175,7 +175,7 @@ export const ScanningOptionsScreen = () => {
                   isOpen={false}
                   onDidDismiss={() => {}}
                 >
-                  <AppTypeAhead
+                  <MultiSearchSelect
                     title="Select groups"
                     items={userAccessibleGroups.map((group) => ({
                       value: `${group.id}`,
@@ -184,7 +184,7 @@ export const ScanningOptionsScreen = () => {
                     onSelectionCancel={() => modal.current?.dismiss()}
                     onSelectionChange={groupSelectionChange}
                     selectedItems={selectedGroups.map((group) => `${group.id}`)}
-                  ></AppTypeAhead>
+                  ></MultiSearchSelect>
                 </IonModal>
               </div>
             </fieldset>

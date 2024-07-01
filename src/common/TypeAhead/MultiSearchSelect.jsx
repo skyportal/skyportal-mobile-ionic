@@ -1,6 +1,6 @@
 // From the Ionic website: https://ionicframework.com/docs/api/select#typeahead-component
 
-import "./TypeAhead.scss";
+import "./MultiSearchSelect.scss";
 import { useState } from "react";
 import {
   IonButton,
@@ -24,7 +24,7 @@ import {
  * @param {Function} props.onSelectionCancel
  * @returns {JSX.Element}
  */
-export const AppTypeAhead = ({
+export const MultiSearchSelect = ({
   title,
   items,
   selectedItems,
