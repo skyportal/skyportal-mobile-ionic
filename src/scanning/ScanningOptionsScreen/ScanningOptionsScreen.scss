@@ -3,22 +3,32 @@
   align-items: center;
   height: 100%;
 
+  ion-chip.add {
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-light);
+  }
+
   .scanning-options-form {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
     height: 100%;
-    padding: 1rem;
-    gap: 1rem;
+    gap: 2rem;
+    padding: 1rem 0.5rem 0;
 
     fieldset {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
       width: 100%;
-      padding: 1rem;
-      border-radius: 1rem;
+      border: none;
+
+      legend {
+        font-weight: bold;
+        padding-inline: 0;
+        color: black;
+      }
     }
 
     .saved-status-container {
@@ -39,7 +49,7 @@
     }
 
     .filtering-section {
-      min-height: 16rem;
+      //min-height: 16rem;
       ion-select {
         --background: none;
         --border-color: var(--ion-color-primary);
@@ -57,6 +67,31 @@
         display: flex;
         align-items: center;
         gap: 0.8rem;
+      }
+    }
+    .discarding-section {
+      .junk-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+    }
+    .form-footer {
+      display: flex;
+      flex: 1;
+      padding-bottom: 4rem;
+      justify-content: center;
+      align-items: end;
+      width: 100%;
+      gap: 1rem;
+
+      ion-button {
+        --background: var(--ion-color-primary);
+        --color: var(--ion-color-light);
+        --padding-start: 4rem;
+        --padding-end: 4rem;
+        --padding-top: 1rem;
+        --padding-bottom: 1rem;
       }
     }
   }

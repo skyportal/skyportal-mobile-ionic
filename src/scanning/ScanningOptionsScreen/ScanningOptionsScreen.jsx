@@ -22,14 +22,17 @@ import {
   useSearchCandidates,
   useUserAccessibleGroups,
 } from "../../util/hooks.js";
-import { add } from "ionicons/icons";
+import { add, create } from "ionicons/icons";
 import { AppTypeAhead } from "../TypeAhead/AppTypeAhead.jsx";
+import { SingleSearchSelect } from "../../SingleSearchSelect/SingleSearchSelect.jsx";
 
 export const ScanningOptionsScreen = () => {
   const history = useHistory();
   const { userAccessibleGroups } = useUserAccessibleGroups();
   /** @type {[import("../scanning").Group[], function]} */
   const [selectedGroups, setSelectedGroups] = useState([]);
+  /** @type {[any, function]} */
+  const [junkGroup, setJunkGroup] = useState(null);
   const { candidates, status, error } = useSearchCandidates();
   const {
     register,
@@ -40,6 +43,8 @@ export const ScanningOptionsScreen = () => {
   } = useForm();
   /** @type {React.MutableRefObject<any>} */
   const modal = useRef(null);
+  /** @type {React.MutableRefObject<any>} */
+  const junkGroupSelectionModal = useRef(null);
 
   if (!userAccessibleGroups) {
     return <p>Loading...</p>;
@@ -55,6 +60,18 @@ export const ScanningOptionsScreen = () => {
       ),
     );
     modal.current?.dismiss();
+  }
+
+  /**
+   * @param {string} selectedGroupId
+   */
+  function junkGroupSelectionChange(selectedGroupId) {
+    setJunkGroup(
+      userAccessibleGroups?.find((group) =>
+        selectedGroupId.includes(`${group.id}`),
+      ),
+    );
+    junkGroupSelectionModal.current?.dismiss();
   }
 
   /**
@@ -102,7 +119,7 @@ export const ScanningOptionsScreen = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <fieldset className="dates-section">
-              <legend>Dates</legend>
+              <legend>Dates (local time)</legend>
               <label htmlFor="start-date">Start date:</label>
               <IonDatetimeButton datetime="datetime-start"></IonDatetimeButton>
               <label htmlFor="end-date">End date:</label>
@@ -144,9 +161,9 @@ export const ScanningOptionsScreen = () => {
                   of the selected groups
                 </div>
                 <div className="selected-groups">
-                  <IonChip id="add-group" color="primary" outline={true}>
+                  <IonChip id="add-group" className="add">
                     <IonLabel>Add</IonLabel>
-                    <IonIcon icon={add}></IonIcon>
+                    <IonIcon icon={add} color="light"></IonIcon>
                   </IonChip>
                   {selectedGroups.map((group) => (
                     <IonChip key={group.id}>{group.name}</IonChip>
@@ -174,8 +191,46 @@ export const ScanningOptionsScreen = () => {
 
             <fieldset className="discarding-section">
               <legend>Discarding</legend>
+              <div className="junk-group">
+                <IonLabel>Junk group:</IonLabel>
+                {junkGroup !== null ? (
+                  <>
+                    <IonChip id="selectJunkGroup" className="add">
+                      <IonLabel> {junkGroup.name}</IonLabel>
+                      <IonIcon icon={create} color="light"></IonIcon>
+                    </IonChip>
+                  </>
+                ) : (
+                  <IonButton id="selectJunkGroup" size="small" fill="outline">
+                    Select group
+                  </IonButton>
+                )}
+                <IonModal
+                  ref={junkGroupSelectionModal}
+                  trigger="selectJunkGroup"
+                  isOpen={false}
+                  onDidDismiss={() => {}}
+                >
+                  <SingleSearchSelect
+                    title="Select junk group"
+                    items={userAccessibleGroups.map((group) => ({
+                      value: `${group.id}`,
+                      text: group.name,
+                    }))}
+                    onSelectionCancel={() =>
+                      junkGroupSelectionModal.current?.dismiss()
+                    }
+                    onSelectionChange={junkGroupSelectionChange}
+                    previouslySelectedItem={junkGroup?.id?.toString() ?? null}
+                  ></SingleSearchSelect>
+                </IonModal>
+              </div>
             </fieldset>
-            <IonButton type="submit">Start</IonButton>
+            <div className="form-footer">
+              <IonButton type="submit" shape="round">
+                Scan
+              </IonButton>
+            </div>
           </form>
         </div>
       </IonContent>
