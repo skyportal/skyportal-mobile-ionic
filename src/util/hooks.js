@@ -106,28 +106,30 @@ export const useFetchSources = ({ page, numPerPage }) => {
 };
 
 export const useSkipOnboarding = () => {
+  /** @type {[{skipOnboarding: boolean, status: QueryStatus, error: any}, Function]} */
   const [state, setState] = useState({
     skipOnboarding: false,
-    status: "loading",
+    status: "pending",
+    error: undefined,
   });
   const queryClient = useQueryClient();
-  if (
-    !config.SKIP_ONBOARDING ||
-    !config.INSTANCE_URL ||
-    !config.INSTANCE_NAME ||
-    !config.TOKEN
-  ) {
-    console.error("Missing configuration");
-    console.error(config);
-  }
   let mutation = useMutation({
-    mutationFn: () =>
-      checkTokenAndFetchUser({
+    mutationFn: () => {
+      if (!config.SKIP_ONBOARDING) {
+        throw new Error("Onboarding is not skipped");
+      }
+      if (
+        config.SKIP_ONBOARDING &&
+        (!config.INSTANCE_URL || !config.INSTANCE_NAME || !config.TOKEN)
+      ) {
+        throw new Error("Missing configuration");
+      }
+      return checkTokenAndFetchUser({
         token: config.TOKEN,
         instanceUrl: config.INSTANCE_URL,
-      }),
+      });
+    },
     onSuccess: async (user) => {
-      console.log("User", user);
       queryClient.setQueryData([QUERY_KEYS.USER], user);
       await setPreference({ key: PREFERENCES.USER, value: user });
       const userInfo = {
@@ -136,11 +138,10 @@ export const useSkipOnboarding = () => {
       };
       queryClient.setQueryData([QUERY_KEYS.USER_INFO], userInfo);
       await setPreference({ key: PREFERENCES.USER_INFO, value: userInfo });
-      setState({ skipOnboarding: true, status: "success" });
+      setState({ skipOnboarding: true, status: "success", error: state.error });
     },
     onError: (error) => {
-      console.error("Error fetching user", error);
-      setState({ skipOnboarding: false, status: "error" });
+      setState({ skipOnboarding: false, status: "error", error });
     },
   });
   useEffect(() => {

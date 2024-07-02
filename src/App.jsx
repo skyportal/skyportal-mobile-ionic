@@ -39,9 +39,9 @@ import { useSkipOnboarding, useUser } from "./util/hooks.js";
 setupIonicReact();
 
 const App = () => {
-  const { skipOnboarding, status } = useSkipOnboarding();
-  const user = useUser();
-  if (user === undefined || status === "loading") {
+  const { skipOnboarding, status: skipOnboardingStatus } = useSkipOnboarding();
+  const { user, status: userStatus } = useUser();
+  if (userStatus === "pending" || skipOnboardingStatus === "pending") {
     return <p>Loading...</p>;
   }
   return (
