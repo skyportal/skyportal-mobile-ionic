@@ -1,16 +1,18 @@
 import "./ScanningOptionsDate.scss";
-import { IonDatetime, IonDatetimeButton, IonModal } from "@ionic/react";
+import { IonDatetimeButton, IonModal } from "@ionic/react";
 import moment from "moment-timezone";
+import { ErrorMessage } from "../../../common/ErrorMessage/ErrorMessage.jsx";
+import { ControlledDateTime } from "../../../common/ControlledDateTime/ControlledDateTime.jsx";
 
 /**
  * Date selection section of the scanning options
  * @param {Object} props
- * @param {import("react-hook-form").UseFormRegister<any>} props.register
  * @param {import("react-hook-form").UseFormGetValues<any>} props.getValues
+ * @param {import("react-hook-form").Control<any,any>} props.control
  * @param {Partial<import("react-hook-form").FieldErrorsImpl<import("react-hook-form").DeepRequired<import("react-hook-form").FieldValues>>> & {root?: Record<string, import("react-hook-form").GlobalError> & import("react-hook-form").GlobalError}} props.errors
  * @returns {JSX.Element}
  */
-export const ScanningOptionsDate = ({ register, getValues, errors }) => {
+export const ScanningOptionsDate = ({ getValues, control, errors }) => {
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return (
@@ -26,56 +28,59 @@ export const ScanningOptionsDate = ({ register, getValues, errors }) => {
         <IonDatetimeButton datetime="datetime-end"></IonDatetimeButton>
       </div>
       <IonModal keepContentsMounted={true}>
-        {
-          // @ts-ignore
-          <IonDatetime
-            {...register("startDate", {
-              required: true,
-              setValueAs: (value) => moment.tz(value, userTimeZone),
-              validate: (value) => {
-                if (
-                  moment.tz(value, userTimeZone) >
-                  moment.tz(getValues("endDate"), userTimeZone)
-                ) {
-                  return "Start date must be before end date";
-                } else if (moment.tz(value, userTimeZone) > moment()) {
-                  return "Start date must be in the past";
-                }
-                return true;
-              },
-            })}
-            id="datetime-start"
-          ></IonDatetime>
-        }
+        <ControlledDateTime
+          name="startDate"
+          dateTimeId="datetime-start"
+          control={control}
+          maxDate={moment().format()}
+          rules={{
+            required: "Start date is required",
+            max: {
+              value: moment().format(),
+              message: "Start date must be before now",
+            },
+            validate: (value) => {
+              if (
+                moment.tz(value, userTimeZone) >
+                moment.tz(getValues("endDate"), userTimeZone)
+              ) {
+                return "Start date must be before end date";
+              } else if (moment.tz(value, userTimeZone) > moment()) {
+                return "Start date must be in the past";
+              }
+              return true;
+            },
+          }}
+        />
       </IonModal>
       <IonModal keepContentsMounted={true}>
         {
-          // @ts-ignore
-          <IonDatetime
-            {...register("endDate", {
-              required: true,
+          <ControlledDateTime
+            name="endDate"
+            dateTimeId="datetime-end"
+            control={control}
+            maxDate={moment().format()}
+            rules={{
+              required: "End date is required",
+              max: {
+                value: moment().format(),
+                message: "End date must be before now",
+              },
               validate: (value) => {
-                if (moment.tz(value, userTimeZone) > moment()) {
+                if (
+                  moment.tz(value, userTimeZone).toDate() > moment().toDate()
+                ) {
                   return "End date must be in the past";
                 }
                 return true;
               },
-            })}
-            id="datetime-end"
-          ></IonDatetime>
+            }}
+          />
         }
       </IonModal>
       <div className="error-container">
-        {errors["startDate"] && (
-          <p className="error">
-            {/* @ts-ignore */}
-            {errors["startDate"].message || "start date is required"}
-          </p>
-        )}
-        {errors["endDate"] && (
-          // @ts-ignore
-          <p className="error">{errors["endDate"].message}</p>
-        )}
+        <ErrorMessage errors={errors} name="startDate" />
+        <ErrorMessage errors={errors} name="endDate" />
       </div>
     </fieldset>
   );

@@ -52,7 +52,7 @@ export const ScanningOptionsForm = () => {
   return (
     <form className="scanning-options-form" onSubmit={handleSubmit(onSubmit)}>
       <ScanningOptionsDate
-        register={register}
+        control={control}
         getValues={getValues}
         errors={errors}
       />
