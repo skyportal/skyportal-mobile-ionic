@@ -13,7 +13,6 @@ import { SourceListScreen } from "../../sources/SourceList/SourceListScreen.jsx"
 import { EventListScreen } from "../../events/EventList/EventListScreen.jsx";
 import { compassOutline, list, radioOutline } from "ionicons/icons";
 import { ScanningOptionsScreen } from "../../scanning/scanningOptions/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
-import { ScanningHomeScreen } from "../../scanning/ScanningHomeScreen/ScanningHomeScreen.jsx";
 import { MainScanningScreen } from "../../scanning/scanningSession/MainScanningScreen/MainScanningScreen.jsx";
 
 export const MainScreen = () => {
@@ -26,7 +25,7 @@ export const MainScreen = () => {
             <SourceListScreen />
           </Route>
           <Route exact path="/app/scanning">
-            <ScanningHomeScreen />
+            <ScanningOptionsScreen />
           </Route>
           <Route path="/app/event-list">
             <EventListScreen />
