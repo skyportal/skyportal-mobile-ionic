@@ -18,17 +18,19 @@ import {
 /**
  * @param {Object} props
  * @param {string} props.title
+ * @param {React.MutableRefObject<any>} props.modal
  * @param {Array<{text: string, value: string}>} props.items
  * @param {Array<string>} props.selectedItems
- * @param {Function} props.onSelectionChange
- * @param {Function} props.onSelectionCancel
+ * @param {(selectedItems: Array<string>) => void} props.onSelectionChange
+ * @param {() => any} [props.onSelectionCancel]
  * @returns {JSX.Element}
  */
 export const MultiSearchSelect = ({
   title,
+  modal,
   items,
   selectedItems,
-  onSelectionCancel,
+  onSelectionCancel = () => modal.current?.dismiss(),
   onSelectionChange,
 }) => {
   const [filteredItems, setFilteredItems] = useState([...items]);
@@ -51,9 +53,8 @@ export const MultiSearchSelect = ({
   };
 
   const confirmChanges = () => {
-    if (onSelectionChange !== undefined) {
-      onSelectionChange(workingSelectedValues);
-    }
+    onSelectionChange(workingSelectedValues);
+    modal.current?.dismiss();
   };
 
   /**

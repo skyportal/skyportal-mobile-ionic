@@ -1,0 +1,16 @@
+.program-section {
+  gap: 0.5rem;
+  ion-select {
+    --background: none;
+    --border-color: var(--ion-color-primary);
+    --highlight-height: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    width: max-content;
+  }
+  ion-select::part(text) {
+    color: var(--ion-color-primary);
+  }
+}
