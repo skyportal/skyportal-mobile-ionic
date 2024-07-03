@@ -1,57 +1,102 @@
 import "./ScanningOptionsDiscarding.scss";
-import { IonButton, IonChip, IonIcon, IonLabel, IonModal } from "@ionic/react";
-import { create } from "ionicons/icons";
-import { SingleSearchSelect } from "../../../common/SingleSearchSelect/SingleSearchSelect.jsx";
+import { IonChip, IonIcon, IonLabel, IonModal, IonRadio } from "@ionic/react";
+import { add } from "ionicons/icons";
+import { ControlledMultiSearchSelect } from "../../../common/TypeAhead/ControlledMultiSearchSelect.jsx";
+import { ErrorMessage } from "../../../common/ErrorMessage/ErrorMessage.jsx";
+import { ControlledRadioGroup } from "../../../common/ControlledRadioGroup/ControlledRadioGroup.jsx";
 
 /**
  * Discarding section of the scanning options
  * @param {Object} props
- * @param {import("../../scanning.js").Group} props.junkGroup
+ * @param {Partial<import("react-hook-form").FieldErrorsImpl<import("react-hook-form").DeepRequired<import("react-hook-form").FieldValues>>> & {root?: Record<string, import("react-hook-form").GlobalError> & import("react-hook-form").GlobalError}} props.errors
+ * @param {import("react-hook-form").Control<any,any>} props.control
+ * @param {import("react-hook-form").UseFormWatch<any>} props.watch
  * @param {import("../../scanning.js").Group[]} props.userAccessibleGroups
  * @param {React.MutableRefObject<any>} props.modal
- * @param {(selectedGroupId: string) => void} props.junkGroupSelectionChange
  * @returns {JSX.Element}
  */
 export const ScanningOptionsDiscarding = ({
-  junkGroup,
+  errors,
+  control,
+  watch,
   userAccessibleGroups,
   modal,
-  junkGroupSelectionChange,
 }) => {
   return (
     <fieldset className="discarding-section">
       <legend>Discarding</legend>
       <div className="junk-group">
-        <IonLabel>Junk group:</IonLabel>
-        {junkGroup !== null ? (
-          <>
-            <IonChip id="selectJunkGroup" className="add">
-              <IonLabel> {junkGroup.name}</IonLabel>
-              <IonIcon icon={create} color="light"></IonIcon>
-            </IonChip>
-          </>
-        ) : (
-          <IonButton id="selectJunkGroup" size="small" fill="outline">
-            Select group
-          </IonButton>
-        )}
+        <IonChip id="add-junk" className="add">
+          <IonLabel>Add</IonLabel>
+          <IonIcon icon={add} color="light"></IonIcon>
+        </IonChip>
+        {watch("junkGroups")
+          .map((/** @type {string} */ groupId) =>
+            userAccessibleGroups.find((group) => group.id === +groupId),
+          )
+          .map((/** @type {import("../../scanning.js").Group} */ group) => (
+            <IonChip key={group.id}>{group.name}</IonChip>
+          ))}
         <IonModal
           ref={modal}
-          trigger="selectJunkGroup"
+          trigger="add-junk"
           isOpen={false}
           onDidDismiss={() => {}}
         >
-          <SingleSearchSelect
-            title="Select junk group"
+          <ControlledMultiSearchSelect
+            name="junkGroups"
+            control={control}
+            modal={modal}
             items={userAccessibleGroups.map((group) => ({
-              value: `${group.id}`,
               text: group.name,
+              value: `${group.id}`,
             }))}
-            onSelectionCancel={() => modal.current?.dismiss()}
-            onSelectionChange={junkGroupSelectionChange}
-            previouslySelectedItem={junkGroup?.id?.toString() ?? null}
-          ></SingleSearchSelect>
+          />
         </IonModal>
+      </div>
+      {watch("junkGroups").length > 0 && (
+        <div className="discard-behavior">
+          <IonLabel>Discard button behavior</IonLabel>
+          <ControlledRadioGroup
+            name="discardBehavior"
+            control={control}
+            rules={{
+              validate: (value, formValues) => {
+                if (value !== "specific" && formValues.junkGroups.length < 2) {
+                  return '"Save to a specific junk group" is the only valid option when there are less than 2 junk groups selected';
+                }
+                return true;
+              },
+            }}
+          >
+            <IonRadio
+              value="specific"
+              labelPlacement="end"
+              disabled={watch("junkGroups").length < 2}
+            >
+              Save to a specific junk group
+            </IonRadio>
+            <br />
+            <IonRadio
+              value="all"
+              labelPlacement="end"
+              disabled={watch("junkGroups").length < 2}
+            >
+              Save to a all junk groups
+            </IonRadio>
+            <br />
+            <IonRadio
+              value="ask"
+              labelPlacement="end"
+              disabled={watch("junkGroups").length < 2}
+            >
+              Ask every time
+            </IonRadio>
+          </ControlledRadioGroup>
+        </div>
+      )}
+      <div className="error-container">
+        <ErrorMessage errors={errors} name="discardBehavior" />
       </div>
     </fieldset>
   );

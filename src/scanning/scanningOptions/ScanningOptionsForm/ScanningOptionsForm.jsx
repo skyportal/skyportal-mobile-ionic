@@ -5,7 +5,7 @@ import { ScanningOptionsDiscarding } from "../ScanningOptionsDiscarding/Scanning
 import { IonButton } from "@ionic/react";
 import { useForm } from "react-hook-form";
 import moment from "moment-timezone";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useUserAccessibleGroups } from "../../../common/hooks.js";
 import { SAVED_STATUS } from "../../../common/constants.js";
 import { useHistory } from "react-router";
@@ -19,6 +19,8 @@ export const ScanningOptionsForm = () => {
     filteringType: "include",
     filteringAnyOrAll: "all",
     selectedGroups: [],
+    junkGroups: [],
+    discardBehavior: "specific",
   };
 
   const {
@@ -82,8 +84,6 @@ export const ScanningOptionsForm = () => {
   /** @type {React.MutableRefObject<any>} */
   const junkGroupSelectionModal = useRef(null);
   const { userAccessibleGroups } = useUserAccessibleGroups();
-  /** @type {[any, function]} */
-  const [junkGroup, setJunkGroup] = useState(null);
 
   if (!userAccessibleGroups) {
     return <p>Loading...</p>;
@@ -105,17 +105,11 @@ export const ScanningOptionsForm = () => {
         watch={watch}
       />
       <ScanningOptionsDiscarding
+        errors={errors}
+        control={control}
+        watch={watch}
         modal={junkGroupSelectionModal}
-        junkGroup={junkGroup}
         userAccessibleGroups={userAccessibleGroups}
-        junkGroupSelectionChange={(selectedGroupId) => {
-          setJunkGroup(
-            userAccessibleGroups.find((group) =>
-              selectedGroupId.includes(`${group.id}`),
-            ),
-          );
-          junkGroupSelectionModal.current?.dismiss();
-        }}
       />
       <div className="form-footer">
         <IonButton type="submit" shape="round">

@@ -11,12 +11,12 @@ import { ScanningOptionsForm } from "../ScanningOptionsForm/ScanningOptionsForm.
 export const ScanningOptionsScreen = () => {
   return (
     <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Scanning options</IonTitle>
+        </IonToolbar>
+      </IonHeader>
       <IonContent>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Scanning options</IonTitle>
-          </IonToolbar>
-        </IonHeader>
         <div className="scanning-options-container">
           <ScanningOptionsForm />
         </div>
