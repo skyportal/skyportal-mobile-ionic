@@ -12,9 +12,9 @@ import { Redirect, Route } from "react-router";
 import { SourceListScreen } from "../../sources/SourceList/SourceListScreen.jsx";
 import { EventListScreen } from "../../events/EventList/EventListScreen.jsx";
 import { compassOutline, list, radioOutline } from "ionicons/icons";
-import { ScanningOptionsScreen } from "../../scanning/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
+import { ScanningOptionsScreen } from "../../scanning/scanningOptions/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
 import { ScanningHomeScreen } from "../../scanning/ScanningHomeScreen/ScanningHomeScreen.jsx";
-import { MainScanningScreen } from "../../scanning/MainScanningScreen/MainScanningScreen.jsx";
+import { MainScanningScreen } from "../../scanning/scanningSession/MainScanningScreen/MainScanningScreen.jsx";
 
 export const MainScreen = () => {
   return (

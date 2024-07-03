@@ -6,7 +6,7 @@ import { IonButton } from "@ionic/react";
 import { useForm } from "react-hook-form";
 import moment from "moment-timezone";
 import { useRef, useState } from "react";
-import { useUserAccessibleGroups } from "../../common/hooks.js";
+import { useUserAccessibleGroups } from "../../../common/hooks.js";
 
 export const ScanningOptionsForm = () => {
   const defaultValues = {
@@ -40,7 +40,7 @@ export const ScanningOptionsForm = () => {
   /** @type {React.MutableRefObject<any>} */
   const junkGroupSelectionModal = useRef(null);
   const { userAccessibleGroups } = useUserAccessibleGroups();
-  /** @type {[import("../scanning").Group[], function]} */
+  /** @type {[import("../../scanning.js").Group[], function]} */
   const [selectedGroups, setSelectedGroups] = useState([]);
   /** @type {[any, function]} */
   const [junkGroup, setJunkGroup] = useState(null);

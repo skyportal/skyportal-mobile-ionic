@@ -1,16 +1,16 @@
 import "./ScanningOptionsProgram.scss";
 import { IonChip, IonIcon, IonLabel, IonModal, IonToggle } from "@ionic/react";
 import { add } from "ionicons/icons";
-import { ControlledMultiSearchSelect } from "../../common/TypeAhead/ControlledMultiSearchSelect.jsx";
+import { ControlledMultiSearchSelect } from "../../../common/TypeAhead/ControlledMultiSearchSelect.jsx";
 import { Controller } from "react-hook-form";
 import { CandidateFiltering } from "../CandidateFiltering/CandidateFiltering.jsx";
 
 /**
  * Program selection section of the scanning options
  * @param {Object} props
- * @param {import("../scanning").Group[]} props.selectedGroups
+ * @param {import("../../scanning.js").Group[]} props.selectedGroups
  * @param {(selectedGroupIds: string[]) => void} props.onSelectedGroupsChange
- * @param {import("../scanning").Group[]} props.userAccessibleGroups
+ * @param {import("../../scanning.js").Group[]} props.userAccessibleGroups
  * @param {React.MutableRefObject<any>} props.modal
  * @param {import("react-hook-form").Control<any,any>} props.control
  * @param {import("react-hook-form").UseFormWatch<any>} props.watch

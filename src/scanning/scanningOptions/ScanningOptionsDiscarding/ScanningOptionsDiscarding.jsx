@@ -1,13 +1,13 @@
 import "./ScanningOptionsDiscarding.scss";
 import { IonButton, IonChip, IonIcon, IonLabel, IonModal } from "@ionic/react";
 import { create } from "ionicons/icons";
-import { SingleSearchSelect } from "../../common/SingleSearchSelect/SingleSearchSelect.jsx";
+import { SingleSearchSelect } from "../../../common/SingleSearchSelect/SingleSearchSelect.jsx";
 
 /**
  * Discarding section of the scanning options
  * @param {Object} props
- * @param {import("../scanning").Group} props.junkGroup
- * @param {import("../scanning").Group[]} props.userAccessibleGroups
+ * @param {import("../../scanning.js").Group} props.junkGroup
+ * @param {import("../../scanning.js").Group[]} props.userAccessibleGroups
  * @param {React.MutableRefObject<any>} props.modal
  * @param {(selectedGroupId: string) => void} props.junkGroupSelectionChange
  * @returns {JSX.Element}
