@@ -82,8 +82,6 @@ export const ScanningOptionsForm = () => {
   /** @type {React.MutableRefObject<any>} */
   const junkGroupSelectionModal = useRef(null);
   const { userAccessibleGroups } = useUserAccessibleGroups();
-  /** @type {[import("../../scanning.js").Group[], function]} */
-  const [selectedGroups, setSelectedGroups] = useState([]);
   /** @type {[any, function]} */
   const [junkGroup, setJunkGroup] = useState(null);
 
@@ -104,14 +102,6 @@ export const ScanningOptionsForm = () => {
         errors={errors}
         modal={groupSelectionModal}
         userAccessibleGroups={userAccessibleGroups}
-        selectedGroups={selectedGroups}
-        onSelectedGroupsChange={(selectedItems) => {
-          setSelectedGroups(
-            userAccessibleGroups.filter((group) =>
-              selectedItems.includes(`${group.id}`),
-            ),
-          );
-        }}
         watch={watch}
       />
       <ScanningOptionsDiscarding

@@ -8,8 +8,6 @@ import { CandidateFiltering } from "../CandidateFiltering/CandidateFiltering.jsx
 /**
  * Program selection section of the scanning options
  * @param {Object} props
- * @param {import("../../scanning.js").Group[]} props.selectedGroups
- * @param {(selectedGroupIds: string[]) => void} props.onSelectedGroupsChange
  * @param {import("../../scanning.js").Group[]} props.userAccessibleGroups
  * @param {React.MutableRefObject<any>} props.modal
  * @param {import("react-hook-form").Control<any,any>} props.control
@@ -19,8 +17,6 @@ import { CandidateFiltering } from "../CandidateFiltering/CandidateFiltering.jsx
  * @returns {JSX.Element}
  */
 export const ScanningOptionsProgram = ({
-  selectedGroups,
-  onSelectedGroupsChange,
   userAccessibleGroups,
   modal,
   control,
@@ -51,13 +47,12 @@ export const ScanningOptionsProgram = ({
         >
           <ControlledMultiSearchSelect
             control={control}
+            name="selectedGroups"
             modal={modal}
             items={userAccessibleGroups.map((group) => ({
               value: `${group.id}`,
               text: group.name,
             }))}
-            selectedItems={selectedGroups.map((group) => `${group.id}`)}
-            onSelectedItemsChange={onSelectedGroupsChange}
           />
         </IonModal>
       </div>
