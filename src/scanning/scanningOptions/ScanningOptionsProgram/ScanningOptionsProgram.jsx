@@ -36,9 +36,13 @@ export const ScanningOptionsProgram = ({
           <IonLabel>Add</IonLabel>
           <IonIcon icon={add} color="light"></IonIcon>
         </IonChip>
-        {selectedGroups.map((group) => (
-          <IonChip key={group.id}>{group.name}</IonChip>
-        ))}
+        {watch("selectedGroups")
+          .map((/** @type {string} */ groupId) =>
+            userAccessibleGroups.find((group) => group.id === +groupId),
+          )
+          .map((/** @type {import("../../scanning.js").Group} */ group) => (
+            <IonChip key={group.id}>{group.name}</IonChip>
+          ))}
         <IonModal
           ref={modal}
           trigger="add-group"

@@ -38,6 +38,9 @@ export const QUERY_KEYS = {
  * @typedef {"all" | "savedToAllSelected" | "savedToAnySelected" | "savedToAnyAccessible" | "notSavedToAnyAccessible" | "notSavedToAnySelected" | "notSavedToAllSelected"} SavedStatus
  */
 
+/**
+ * @type {Object.<SavedStatus, string>}
+ */
 export const SAVED_STATUS = {
   ALL: "all",
   SAVED_TO_ALL_SELECTED: "savedToAllSelected",

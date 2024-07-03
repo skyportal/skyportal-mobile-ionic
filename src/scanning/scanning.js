@@ -97,9 +97,21 @@ export const getThumbnailHeader = (type) => {
  * @param {Object} params
  * @param {string} params.instanceUrl - The URL of the instance
  * @param {string} params.token - The token to use to fetch the candidates
+ * @param {string} params.startDate - The start date of the candidates
+ * @param {string|null} [params.endDate=null] - The end date of the candidates
+ * @param {import("../common/constants").SavedStatus} params.savedStatus - The saved status of the candidates
+ * @param {string} params.groupIDs - The group IDs to search for
  * @returns {Promise<Candidate[]>}
  */
-export async function searchCandidates({ instanceUrl, token }) {
+export async function searchCandidates({
+  instanceUrl,
+  token,
+  startDate,
+  endDate,
+  savedStatus,
+  groupIDs,
+}) {
+  // example: https://preview.fritz.science/api/candidates?pageNumber=1&numPerPage=50&groupIDs=4&savedStatus=savedToAnySelected&listNameReject=rejected_candidates&startDate=2024-07-01T21%3A27%3A27.232Z
   if (Capacitor.getPlatform() === "web") {
     return mockCandidates.data.candidates;
   }
@@ -111,10 +123,11 @@ export async function searchCandidates({ instanceUrl, token }) {
     params: {
       pageNumber: "1",
       numPerPage: "50",
-      groupIDs: "4",
-      savedStatus: "all",
+      groupIDs,
+      savedStatus,
       listNameReject: "rejected_candidates",
-      startDate: "2022-07-27T00:27:30.000Z",
+      startDate,
+      endDate: endDate || "",
     },
   });
   return response.data.data.candidates;

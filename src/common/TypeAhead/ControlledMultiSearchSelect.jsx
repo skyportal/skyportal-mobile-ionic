@@ -31,12 +31,12 @@ export const ControlledMultiSearchSelect = ({
           return true;
         },
       }}
-      render={({ field: { ref, onChange, value } }) => (
+      render={({ field: { onChange, value } }) => (
         <MultiSearchSelect
           modal={modal}
           title="Select groups"
           items={items}
-          selectedItems={selectedItems}
+          selectedItems={value}
           onSelectionChange={(selectedItems) => {
             onChange(selectedItems);
             onSelectedItemsChange(selectedItems);

@@ -4,17 +4,32 @@ import { useState } from "react";
 import { getThumbnailImageUrl, THUMBNAIL_TYPES } from "../../scanning.js";
 import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
 import { CandidateAnnotations } from "../CandidateAnnotations/CandidateAnnotations.jsx";
-import { useSearchCandidates } from "../../../common/hooks.js";
+import { useQueryParams, useSearchCandidates } from "../../../common/hooks.js";
 
 export const MainScanningScreen = () => {
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
-  const { candidates, status, error } = useSearchCandidates();
+  const params = useQueryParams();
+  const { candidates, status, error } = useSearchCandidates({
+    startDate: params.startDate,
+    endDate: params.endDate,
+    savedStatus: params.savedStatus,
+    groupIDs: params.groupIDs,
+  });
 
   if (!candidates || status === "pending") {
     return <p>Loading...</p>;
   }
   if (status === "error") {
     return <p>Error: {error.message}</p>;
+  }
+  if (candidates.length === 0) {
+    return (
+      <IonPage>
+        <IonContent>
+          <p>No candidates found</p>
+        </IonContent>
+      </IonPage>
+    );
   }
   const currentCandidate = candidates[currentCandidateIndex];
   return (

@@ -7,8 +7,11 @@ import { useForm } from "react-hook-form";
 import moment from "moment-timezone";
 import { useRef, useState } from "react";
 import { useUserAccessibleGroups } from "../../../common/hooks.js";
+import { SAVED_STATUS } from "../../../common/constants.js";
+import { useHistory } from "react-router";
 
 export const ScanningOptionsForm = () => {
+  const history = useHistory();
   const defaultValues = {
     startDate: moment().subtract(1, "day").format(),
     endDate: moment().format(),
@@ -29,10 +32,49 @@ export const ScanningOptionsForm = () => {
 
   /**
    * @param {Object} data
+   * @param {boolean} data.filterCandidates
+   * @param {string} data.filteringType
+   * @param {string} data.filteringAnyOrAll
+   * @returns {import("../../../common/constants.js").SavedStatus}
+   */
+  const computeSavedStatus = ({
+    filterCandidates,
+    filteringType,
+    filteringAnyOrAll,
+  }) => {
+    if (filterCandidates) {
+      return SAVED_STATUS.ALL;
+    }
+    if (filteringType === "include" && filteringAnyOrAll === "all") {
+      return SAVED_STATUS.SAVED_TO_ALL_SELECTED;
+    }
+    if (filteringType === "include" && filteringAnyOrAll === "any") {
+      return SAVED_STATUS.SAVED_TO_ANY_SELECTED;
+    }
+    if (filteringType === "exclude" && filteringAnyOrAll === "all") {
+      return SAVED_STATUS.NOT_SAVED_TO_ALL_SELECTED;
+    }
+    if (filteringType === "exclude" && filteringAnyOrAll === "any") {
+      return SAVED_STATUS.NOT_SAVED_TO_ANY_SELECTED;
+    }
+    throw new Error(
+      "Invalid filterCandidates, filteringType, or filteringAnyOrAll",
+    );
+  };
+
+  /**
+   * @param {any} data
    */
   const onSubmit = (data) => {
-    console.log(data);
-    // history.push("/app/scanning/main");
+    const groupIDs = data.selectedGroups.join(",");
+    const savedStatus = computeSavedStatus({ ...data });
+    const startDate = moment(data.startDate).format();
+    const endDate = moment(data.endDate).format();
+    history.push(
+      encodeURI(
+        `/app/scanning/main?groupIDs=${groupIDs}&savedStatus=${savedStatus}&startDate=${startDate}&endDate=${endDate}`,
+      ),
+    );
   };
 
   /** @type {React.MutableRefObject<any>} */
@@ -72,7 +114,6 @@ export const ScanningOptionsForm = () => {
         }}
         watch={watch}
       />
-
       <ScanningOptionsDiscarding
         modal={junkGroupSelectionModal}
         junkGroup={junkGroup}

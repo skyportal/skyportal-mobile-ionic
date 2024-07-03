@@ -51,20 +51,40 @@ export const useUserInfo = () => {
 };
 
 /**
+ * @param {Object} props
+ * @param {string} props.startDate
+ * @param {string|null} [props.endDate=null]
+ * @param {import("../common/constants").SavedStatus} props.savedStatus
+ * @param {string} props.groupIDs
  * @returns {{candidates: import("../scanning/scanning.js").Candidate[]|undefined, status: QueryStatus, error: any}}
  */
-export const useSearchCandidates = () => {
+export const useSearchCandidates = ({
+  startDate,
+  endDate = null,
+  savedStatus,
+  groupIDs,
+}) => {
   const { userInfo } = useUserInfo();
   const {
     data: candidates,
     status,
     error,
   } = useQuery({
-    queryKey: [QUERY_KEYS.CANDIDATES],
+    queryKey: [
+      QUERY_KEYS.CANDIDATES,
+      startDate,
+      endDate,
+      savedStatus,
+      groupIDs,
+    ],
     queryFn: () =>
       searchCandidates({
         instanceUrl: userInfo?.instance.url ?? "",
         token: userInfo?.token ?? "",
+        startDate,
+        endDate,
+        savedStatus,
+        groupIDs,
       }),
     enabled: !!userInfo,
   });
@@ -173,4 +193,21 @@ export const useUserAccessibleGroups = () => {
     status,
     error,
   };
+};
+
+/**
+ * @returns {{[key: string]: any}}
+ */
+export const useQueryParams = () => {
+  const [state, setState] = useState({});
+  const params = new URLSearchParams(location.search);
+  const paramsObject = {};
+  for (const [key, value] of params) {
+    // @ts-ignore
+    paramsObject[key] = value;
+  }
+  useEffect(() => {
+    setState(paramsObject);
+  }, []);
+  return state;
 };
