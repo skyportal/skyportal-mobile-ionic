@@ -1,6 +1,4 @@
 // From the Ionic website: https://ionicframework.com/docs/api/select#typeahead-component
-
-import "./MultiSearchSelect.scss";
 import { useState } from "react";
 import {
   IonButton,

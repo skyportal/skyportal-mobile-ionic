@@ -1,7 +1,7 @@
 import "./ScanningOptionsProgram.scss";
 import { IonChip, IonIcon, IonLabel, IonModal, IonToggle } from "@ionic/react";
 import { add } from "ionicons/icons";
-import { ControlledMultiSearchSelect } from "../../../common/TypeAhead/ControlledMultiSearchSelect.jsx";
+import { ControlledMultiSearchSelect } from "../../../common/MultiSearchSelect/ControlledMultiSearchSelect.jsx";
 import { Controller } from "react-hook-form";
 import { CandidateFiltering } from "../CandidateFiltering/CandidateFiltering.jsx";
 
@@ -49,10 +49,20 @@ export const ScanningOptionsProgram = ({
             control={control}
             name="selectedGroups"
             modal={modal}
+            title="Select groups"
             items={userAccessibleGroups.map((group) => ({
               value: `${group.id}`,
               text: group.name,
             }))}
+            rules={{
+              required: true,
+              validate: (value) => {
+                if (value.length === 0) {
+                  return "At least one group must be selected";
+                }
+                return true;
+              },
+            }}
           />
         </IonModal>
       </div>

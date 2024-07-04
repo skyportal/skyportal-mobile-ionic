@@ -15,21 +15,22 @@ import {
 /**
  * @param {Object} props
  * @param {string} props.title
+ * @param {React.MutableRefObject<any>} props.modal
  * @param {Array<{text: string, value: string}>} props.items
- * @param {string|null} [props.previouslySelectedItem=null]
+ * @param {string|null} [props.currentlySelectedItem=null]
  * @param {Function} props.onSelectionChange
- * @param {Function} props.onSelectionCancel
+ * @param {Function} [props.onSelectionCancel]
  * @returns {JSX.Element}
  */
 export const SingleSearchSelect = ({
   title,
+  modal,
   items,
-  previouslySelectedItem = null,
-  onSelectionCancel,
+  currentlySelectedItem = null,
+  onSelectionCancel = () => modal.current?.dismiss(),
   onSelectionChange,
 }) => {
   const [filteredItems, setFilteredItems] = useState([...items]);
-  console.log("previous", previouslySelectedItem);
 
   const cancelChanges = () => {
     if (onSelectionCancel !== undefined) {
@@ -41,9 +42,8 @@ export const SingleSearchSelect = ({
    * @param {{text: string, value: string}} item
    */
   const handleSelectItem = (item) => {
-    if (onSelectionChange !== undefined) {
-      onSelectionChange(item.value);
-    }
+    onSelectionChange(item.value);
+    modal.current?.dismiss();
   };
 
   /**
@@ -102,7 +102,7 @@ export const SingleSearchSelect = ({
             <IonItem
               onClick={() => handleSelectItem(item)}
               key={item.value}
-              color={previouslySelectedItem === item.value ? "primary" : ""}
+              color={currentlySelectedItem === item.value ? "primary" : ""}
               button
             >
               {item.text}

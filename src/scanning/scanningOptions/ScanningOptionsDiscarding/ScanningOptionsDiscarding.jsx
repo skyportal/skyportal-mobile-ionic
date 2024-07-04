@@ -1,13 +1,22 @@
 import "./ScanningOptionsDiscarding.scss";
-import { IonChip, IonIcon, IonLabel, IonModal, IonRadio } from "@ionic/react";
+import {
+  IonChip,
+  IonIcon,
+  IonLabel,
+  IonModal,
+  IonRadio,
+  IonSelect,
+  IonSelectOption,
+} from "@ionic/react";
 import { add } from "ionicons/icons";
-import { ControlledMultiSearchSelect } from "../../../common/TypeAhead/ControlledMultiSearchSelect.jsx";
+import { ControlledMultiSearchSelect } from "../../../common/MultiSearchSelect/ControlledMultiSearchSelect.jsx";
 import { ErrorMessage } from "../../../common/ErrorMessage/ErrorMessage.jsx";
 import { ControlledRadioGroup } from "../../../common/ControlledRadioGroup/ControlledRadioGroup.jsx";
 
 /**
  * Discarding section of the scanning options
  * @param {Object} props
+ * @param {import("react-hook-form").UseFormRegister<any>} props.register
  * @param {Partial<import("react-hook-form").FieldErrorsImpl<import("react-hook-form").DeepRequired<import("react-hook-form").FieldValues>>> & {root?: Record<string, import("react-hook-form").GlobalError> & import("react-hook-form").GlobalError}} props.errors
  * @param {import("react-hook-form").Control<any,any>} props.control
  * @param {import("react-hook-form").UseFormWatch<any>} props.watch
@@ -16,12 +25,18 @@ import { ControlledRadioGroup } from "../../../common/ControlledRadioGroup/Contr
  * @returns {JSX.Element}
  */
 export const ScanningOptionsDiscarding = ({
+  register,
   errors,
   control,
   watch,
   userAccessibleGroups,
   modal,
 }) => {
+  /** @type {import("../../scanning.js").Group[]} */
+  const junkGroups = watch("junkGroups").map(
+    (/** @type {string[]} */ groupId) =>
+      userAccessibleGroups.find((group) => group.id === +groupId),
+  );
   return (
     <fieldset className="discarding-section">
       <legend>Discarding</legend>
@@ -47,6 +62,7 @@ export const ScanningOptionsDiscarding = ({
             name="junkGroups"
             control={control}
             modal={modal}
+            title="Select junk groups"
             items={userAccessibleGroups.map((group) => ({
               text: group.name,
               value: `${group.id}`,
@@ -93,6 +109,28 @@ export const ScanningOptionsDiscarding = ({
               Ask every time
             </IonRadio>
           </ControlledRadioGroup>
+          {junkGroups.length >= 2 &&
+            watch("discardBehavior")(
+              <div className="discard-group-selection">
+                <IonLabel>Discard to:</IonLabel>
+                <IonSelect
+                  justify="end"
+                  aria-label="Discard to:"
+                  placeholder="Select junk group to discard to"
+                  {...register("discardGroup")}
+                >
+                  {junkGroups.map(
+                    (
+                      /** @type {import("../../scanning.js").Group} */ group,
+                    ) => (
+                      <IonSelectOption key={group.id} value={group.id}>
+                        {group.name}
+                      </IonSelectOption>
+                    ),
+                  )}
+                </IonSelect>
+              </div>,
+            )}
         </div>
       )}
       <div className="error-container">

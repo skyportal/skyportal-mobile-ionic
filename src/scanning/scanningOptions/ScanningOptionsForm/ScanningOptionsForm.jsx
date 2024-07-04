@@ -22,6 +22,7 @@ export const ScanningOptionsForm = () => {
     selectedGroups: [],
     junkGroups: [],
     discardBehavior: "specific",
+    discardGroup: null,
   };
 
   const {
@@ -74,7 +75,6 @@ export const ScanningOptionsForm = () => {
     const startDate = moment(data.startDate).format();
     const endDate = moment(data.endDate).format();
     const junkGroupIDs = data.junkGroups.join(",");
-    const discardBehavior = data.discardBehavior;
     navigateWithParams(history, "/app/scanning/main", {
       params: {
         groupIDs,
@@ -82,7 +82,8 @@ export const ScanningOptionsForm = () => {
         startDate,
         endDate,
         junkGroupIDs,
-        discardBehavior,
+        discardBehavior: data.discardBehavior,
+        discardGroup: data.discardGroup,
       },
     });
   };
@@ -113,6 +114,7 @@ export const ScanningOptionsForm = () => {
         watch={watch}
       />
       <ScanningOptionsDiscarding
+        register={register}
         errors={errors}
         control={control}
         watch={watch}
