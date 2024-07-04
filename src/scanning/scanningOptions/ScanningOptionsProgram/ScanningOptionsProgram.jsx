@@ -4,6 +4,7 @@ import { add } from "ionicons/icons";
 import { ControlledMultiSearchSelect } from "../../../common/MultiSearchSelect/ControlledMultiSearchSelect.jsx";
 import { Controller } from "react-hook-form";
 import { CandidateFiltering } from "../CandidateFiltering/CandidateFiltering.jsx";
+import { ErrorMessage } from "../../../common/ErrorMessage/ErrorMessage.jsx";
 
 /**
  * Program selection section of the scanning options
@@ -83,18 +84,9 @@ export const ScanningOptionsProgram = ({
         <CandidateFiltering register={register}></CandidateFiltering>
       )}
       <div className="error-container">
-        {errors["filteringType"] && (
-          // @ts-ignore
-          <p className="error">{errors["filteringType"].message}</p>
-        )}
-        {errors["filteringAnyOrAll"] && (
-          // @ts-ignore
-          <p className="error">{errors["filteringAnyOrAll"].message}</p>
-        )}
-        {errors["selectedGroups"] && (
-          // @ts-ignore
-          <p className="error">{errors["selectedGroups"].message}</p>
-        )}
+        <ErrorMessage errors={errors} name="filteringType" />
+        <ErrorMessage errors={errors} name="filteringAnyOrAll" />
+        <ErrorMessage errors={errors} name="selectedGroups" />
       </div>
     </fieldset>
   );
