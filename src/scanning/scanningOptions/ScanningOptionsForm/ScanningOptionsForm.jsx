@@ -9,6 +9,7 @@ import { useRef } from "react";
 import { useUserAccessibleGroups } from "../../../common/hooks.js";
 import { SAVED_STATUS } from "../../../common/constants.js";
 import { useHistory } from "react-router";
+import { navigateWithParams } from "../../../common/util.js";
 
 export const ScanningOptionsForm = () => {
   const history = useHistory();
@@ -72,11 +73,18 @@ export const ScanningOptionsForm = () => {
     const savedStatus = computeSavedStatus({ ...data });
     const startDate = moment(data.startDate).format();
     const endDate = moment(data.endDate).format();
-    history.push(
-      encodeURI(
-        `/app/scanning/main?groupIDs=${groupIDs}&savedStatus=${savedStatus}&startDate=${startDate}&endDate=${endDate}`,
-      ),
-    );
+    const junkGroupIDs = data.junkGroups.join(",");
+    const discardBehavior = data.discardBehavior;
+    navigateWithParams(history, "/app/scanning/main", {
+      params: {
+        groupIDs,
+        savedStatus,
+        startDate,
+        endDate,
+        junkGroupIDs,
+        discardBehavior,
+      },
+    });
   };
 
   /** @type {React.MutableRefObject<any>} */
