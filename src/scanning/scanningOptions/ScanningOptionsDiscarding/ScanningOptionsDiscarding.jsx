@@ -110,7 +110,7 @@ export const ScanningOptionsDiscarding = ({
             </IonRadio>
           </ControlledRadioGroup>
           {junkGroups.length >= 2 &&
-            watch("discardBehavior")(
+            watch("discardBehavior") === "specific" && (
               <div className="discard-group-selection">
                 <IonLabel>Discard to:</IonLabel>
                 <IonSelect
@@ -129,7 +129,7 @@ export const ScanningOptionsDiscarding = ({
                     ),
                   )}
                 </IonSelect>
-              </div>,
+              </div>
             )}
         </div>
       )}
