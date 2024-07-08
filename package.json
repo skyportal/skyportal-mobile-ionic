@@ -32,6 +32,7 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.6.8",
     "ionicons": "^7.0.0",
+    "moment-timezone": "^0.5.45",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.52.0",

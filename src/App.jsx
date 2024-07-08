@@ -34,7 +34,7 @@ import React from "react";
 import CheckQRCodeScreen from "./onboarding/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
 import { LoginOkScreen } from "./onboarding/LoginOk/LoginOkScreen.jsx";
 import { MainScreen } from "./onboarding/Home/MainScreen.jsx";
-import { useSkipOnboarding, useUser } from "./util/hooks.js";
+import { useSkipOnboarding, useUser } from "./common/hooks.js";
 
 setupIonicReact();
 

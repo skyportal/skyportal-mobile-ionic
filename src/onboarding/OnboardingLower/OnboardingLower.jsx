@@ -1,11 +1,12 @@
 import { IonButton, IonIcon, IonSelect, IonSelectOption } from "@ionic/react";
 import "./OnboardingLower.scss";
-import { INSTANCES, QUERY_PARAMS } from "../../util/constants.js";
+import { INSTANCES, QUERY_PARAMS } from "../../common/constants.js";
 import { useState } from "react";
 import { qrCode } from "ionicons/icons";
 import { CapacitorBarcodeScanner } from "@capacitor/barcode-scanner";
 import { Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useHistory } from "react-router";
+import { navigateWithParams } from "../../common/util.js";
 
 /**
  * The lower part of the onboarding screen
@@ -18,8 +19,7 @@ import { useHistory } from "react-router";
 const OnboardingLower = ({ page, setPage }) => {
   const history = useHistory();
   const [instance, setInstance] = useState(null);
-  // @ts-ignore
-  let token = import.meta.env.VITE_ICARE_TOKEN ?? "test";
+  let token = "test";
   async function handleScanQRCode() {
     try {
       const result = await CapacitorBarcodeScanner.scanBarcode({
@@ -29,11 +29,12 @@ const OnboardingLower = ({ page, setPage }) => {
     } catch (error) {
       console.error(error);
     }
-    history.push(
-      encodeURI(
-        `/check-creds?${QUERY_PARAMS.TOKEN}=${token}&${QUERY_PARAMS.INSTANCE}=${JSON.stringify(instance)}`,
-      ),
-    );
+    navigateWithParams(history, "/check-creds", {
+      params: {
+        [QUERY_PARAMS.TOKEN]: token,
+        [QUERY_PARAMS.INSTANCE]: JSON.stringify(instance),
+      },
+    });
   }
 
   if (page === "welcome")

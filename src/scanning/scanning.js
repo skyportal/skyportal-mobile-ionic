@@ -14,6 +14,23 @@ import { Capacitor, CapacitorHttp } from "@capacitor/core";
  * @property {number} dec - Declination
  */
 
+/**
+ * @typedef {Object} Group
+ * @property {number} id - Group ID
+ * @property {string} [nickname] - Group nickname
+ * @property {string} name - Group name
+ * @property {string} [description] - Group description
+ * @property {boolean} private - Is the group private
+ * @property {boolean} single_user_group - Is the group a single user group
+ */
+
+/**
+ * @typedef {Object} GroupsResponse - Response from the /groups endpoint
+ * @property {Group[]} user_groups - User groups
+ * @property {Group[]} user_accessible_groups - User accessible groups
+ * @property {Group[]} all_groups - All groups
+ */
+
 export const THUMBNAIL_TYPES = {
   new: "new",
   ref: "ref",
@@ -87,9 +104,21 @@ export const getThumbnailHeader = (type) => {
  * @param {Object} params
  * @param {string} params.instanceUrl - The URL of the instance
  * @param {string} params.token - The token to use to fetch the candidates
+ * @param {string} params.startDate - The start date of the candidates
+ * @param {string|null} [params.endDate=null] - The end date of the candidates
+ * @param {import("../common/constants").SavedStatus} params.savedStatus - The saved status of the candidates
+ * @param {string} params.groupIDs - The group IDs to search for
  * @returns {Promise<Candidate[]>}
  */
-export async function searchCandidates({ instanceUrl, token }) {
+export async function searchCandidates({
+  instanceUrl,
+  token,
+  startDate,
+  endDate,
+  savedStatus,
+  groupIDs,
+}) {
+  // example: https://preview.fritz.science/api/candidates?pageNumber=1&numPerPage=50&groupIDs=4&savedStatus=savedToAnySelected&listNameReject=rejected_candidates&startDate=2024-07-01T21%3A27%3A27.232Z
   if (Capacitor.getPlatform() === "web") {
     return mockCandidates.data.candidates;
   }
@@ -101,10 +130,11 @@ export async function searchCandidates({ instanceUrl, token }) {
     params: {
       pageNumber: "1",
       numPerPage: "50",
-      groupIDs: "4",
-      savedStatus: "all",
+      groupIDs,
+      savedStatus,
       listNameReject: "rejected_candidates",
-      startDate: "2022-07-27T00:27:30.000Z",
+      startDate,
+      endDate: endDate || "",
     },
   });
   return response.data.data.candidates;
@@ -126,4 +156,20 @@ export function getThumbnailImageUrl(candidate, type) {
     res = "https://preview.fritz.science" + res;
   }
   return res;
+}
+
+/**
+ * @param {Object} params
+ * @param {string} params.instanceUrl
+ * @param {string} params.token
+ * @returns {Promise<GroupsResponse>}
+ */
+export async function fetchGroups({ instanceUrl, token }) {
+  let response = await CapacitorHttp.get({
+    url: `${instanceUrl}/api/groups`,
+    headers: {
+      Authorization: `token ${token}`,
+    },
+  });
+  return response.data.data;
 }

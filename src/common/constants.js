@@ -31,4 +31,22 @@ export const QUERY_KEYS = {
   SOURCES: "sources",
   USER: "user",
   USER_INFO: "userInfo",
+  GROUPS: "groups",
+};
+
+/**
+ * @typedef {"all" | "savedToAllSelected" | "savedToAnySelected" | "savedToAnyAccessible" | "notSavedToAnyAccessible" | "notSavedToAnySelected" | "notSavedToAllSelected"} SavedStatus
+ */
+
+/**
+ * @type {Object.<SavedStatus, string>}
+ */
+export const SAVED_STATUS = {
+  ALL: "all",
+  SAVED_TO_ALL_SELECTED: "savedToAllSelected",
+  SAVED_TO_ANY_SELECTED: "savedToAnySelected",
+  SAVED_TO_ANY_ACCESSIBLE: "savedToAnyAccessible",
+  NOT_SAVED_TO_ANY_ACCESSIBLE: "notSavedToAnyAccessible",
+  NOT_SAVED_TO_ANY_SELECTED: "notSavedToAnySelected",
+  NOT_SAVED_TO_ALL_SELECTED: "notSavedToAllSelected",
 };

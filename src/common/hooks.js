@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PREFERENCES, QUERY_KEYS } from "./constants.js";
-import { searchCandidates } from "../scanning/scanning.js";
+import { fetchGroups, searchCandidates } from "../scanning/scanning.js";
 import { fetchSources } from "../sources/sources.js";
 import { getPreference, setPreference } from "./preferences.js";
 import config from "../config.js";
@@ -51,20 +51,40 @@ export const useUserInfo = () => {
 };
 
 /**
+ * @param {Object} props
+ * @param {string} props.startDate
+ * @param {string|null} [props.endDate=null]
+ * @param {import("../common/constants").SavedStatus} props.savedStatus
+ * @param {string} props.groupIDs
  * @returns {{candidates: import("../scanning/scanning.js").Candidate[]|undefined, status: QueryStatus, error: any}}
  */
-export const useSearchCandidates = () => {
+export const useSearchCandidates = ({
+  startDate,
+  endDate = null,
+  savedStatus,
+  groupIDs,
+}) => {
   const { userInfo } = useUserInfo();
   const {
-    data: candidates,
+    /** @type {import("../scanning/scanning.js").Candidate[]} */ data: candidates,
     status,
     error,
   } = useQuery({
-    queryKey: [QUERY_KEYS.CANDIDATES],
+    queryKey: [
+      QUERY_KEYS.CANDIDATES,
+      startDate,
+      endDate,
+      savedStatus,
+      groupIDs,
+    ],
     queryFn: () =>
       searchCandidates({
         instanceUrl: userInfo?.instance.url ?? "",
         token: userInfo?.token ?? "",
+        startDate,
+        endDate,
+        savedStatus,
+        groupIDs,
       }),
     enabled: !!userInfo,
   });
@@ -84,7 +104,7 @@ export const useSearchCandidates = () => {
 export const useFetchSources = ({ page, numPerPage }) => {
   const { userInfo } = useUserInfo();
   const {
-    data: sources,
+    /** @type {import("../sources/sources.js").Source[]} */ data: sources,
     status,
     error,
   } = useQuery({
@@ -146,6 +166,48 @@ export const useSkipOnboarding = () => {
   });
   useEffect(() => {
     mutation.mutate();
+  }, []);
+  return state;
+};
+
+/**
+ * @returns {{userAccessibleGroups: import("../scanning/scanning.js").Group[]|undefined, status: QueryStatus, error: any|undefined}}
+ */
+export const useUserAccessibleGroups = () => {
+  const { userInfo } = useUserInfo();
+  const {
+    /** @type {import("../scanning/scanning.js").GroupsResponse} */ data: groups,
+    status,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.GROUPS],
+    queryFn: () =>
+      fetchGroups({
+        instanceUrl: userInfo?.instance.url ?? "",
+        token: userInfo?.token ?? "",
+      }),
+    enabled: !!userInfo,
+  });
+  return {
+    userAccessibleGroups: groups?.user_accessible_groups,
+    status,
+    error,
+  };
+};
+
+/**
+ * @returns {{[key: string]: any}}
+ */
+export const useQueryParams = () => {
+  const [state, setState] = useState({});
+  const params = new URLSearchParams(location.search);
+  const paramsObject = {};
+  for (const [key, value] of params) {
+    // @ts-ignore
+    paramsObject[key] = value;
+  }
+  useEffect(() => {
+    setState(paramsObject);
   }, []);
   return state;
 };
