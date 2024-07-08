@@ -39,7 +39,7 @@ export const ScanningOptionsDiscarding = ({
   );
   return (
     <fieldset className="discarding-section">
-      <legend>Discarding</legend>
+      <legend>Junk</legend>
       <div className="junk-group">
         <IonChip id="add-junk" className="add">
           <IonLabel>Add</IonLabel>
