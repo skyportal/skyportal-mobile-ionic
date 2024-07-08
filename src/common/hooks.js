@@ -66,7 +66,7 @@ export const useSearchCandidates = ({
 }) => {
   const { userInfo } = useUserInfo();
   const {
-    data: candidates,
+    /** @type {import("../scanning/scanning.js").Candidate[]} */ data: candidates,
     status,
     error,
   } = useQuery({
@@ -104,7 +104,7 @@ export const useSearchCandidates = ({
 export const useFetchSources = ({ page, numPerPage }) => {
   const { userInfo } = useUserInfo();
   const {
-    data: sources,
+    /** @type {import("../sources/sources.js").Source[]} */ data: sources,
     status,
     error,
   } = useQuery({
@@ -176,7 +176,7 @@ export const useSkipOnboarding = () => {
 export const useUserAccessibleGroups = () => {
   const { userInfo } = useUserInfo();
   const {
-    data: groups,
+    /** @type {import("../scanning/scanning.js").GroupsResponse} */ data: groups,
     status,
     error,
   } = useQuery({

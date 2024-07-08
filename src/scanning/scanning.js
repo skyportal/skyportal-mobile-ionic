@@ -24,6 +24,13 @@ import { Capacitor, CapacitorHttp } from "@capacitor/core";
  * @property {boolean} single_user_group - Is the group a single user group
  */
 
+/**
+ * @typedef {Object} GroupsResponse - Response from the /groups endpoint
+ * @property {Group[]} user_groups - User groups
+ * @property {Group[]} user_accessible_groups - User accessible groups
+ * @property {Group[]} all_groups - All groups
+ */
+
 export const THUMBNAIL_TYPES = {
   new: "new",
   ref: "ref",
@@ -155,7 +162,7 @@ export function getThumbnailImageUrl(candidate, type) {
  * @param {Object} params
  * @param {string} params.instanceUrl
  * @param {string} params.token
- * @returns {Promise<{user_groups: Group[], user_accessible_groups: Group[], all_groups: Group[]}>}
+ * @returns {Promise<GroupsResponse>}
  */
 export async function fetchGroups({ instanceUrl, token }) {
   let response = await CapacitorHttp.get({
