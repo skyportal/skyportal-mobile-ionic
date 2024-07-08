@@ -31,48 +31,48 @@ import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router";
 import OnboardingScreen from "./onboarding/OnboardingScreen/OnboardingScreen.jsx";
 import React from "react";
-import { AppContext } from "./util/context.js";
 import CheckQRCodeScreen from "./onboarding/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
 import { LoginOkScreen } from "./onboarding/LoginOk/LoginOkScreen.jsx";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MainScreen } from "./onboarding/Home/MainScreen.jsx";
+import { useSkipOnboarding, useUser } from "./util/hooks.js";
 
 setupIonicReact();
-const queryClient = new QueryClient();
 
 const App = () => {
-  const [userInfo, setUserInfo] = React.useState({
-    name: undefined,
-    token: undefined,
-    instance: null,
-    axiosClient: null,
-  });
+  const { skipOnboarding, status: skipOnboardingStatus } = useSkipOnboarding();
+  const { user, status: userStatus } = useUser();
+  if (userStatus === "pending" || skipOnboardingStatus === "pending") {
+    return <p>Loading...</p>;
+  }
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppContext.Provider value={{ userInfo, setUserInfo }}>
-        <IonApp>
-          <IonReactRouter>
-            <IonRouterOutlet>
-              <Route exact path="/onboarding">
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route exact path="/onboarding">
+            {
+              /* If the user is logged in, redirect them to the app */
+              user !== null || skipOnboarding ? (
+                <Redirect to="/app" />
+              ) : (
                 <OnboardingScreen />
-              </Route>
-              <Route path="/check-creds">
-                <CheckQRCodeScreen />
-              </Route>
-              <Route path="/login-ok">
-                <LoginOkScreen />
-              </Route>
-              <Route path="/app">
-                <MainScreen />
-              </Route>
-              <Route exact path="/">
-                <Redirect to="/onboarding" />
-              </Route>
-            </IonRouterOutlet>
-          </IonReactRouter>
-        </IonApp>
-      </AppContext.Provider>
-    </QueryClientProvider>
+              )
+            }
+          </Route>
+          <Route path="/check-creds">
+            <CheckQRCodeScreen />
+          </Route>
+          <Route path="/login-ok">
+            <LoginOkScreen />
+          </Route>
+          <Route path="/app">
+            <MainScreen />
+          </Route>
+          <Route exact path="/">
+            <Redirect to="/onboarding" />
+          </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
   );
 };
 

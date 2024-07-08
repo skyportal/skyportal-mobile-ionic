@@ -14,31 +14,15 @@ import {
   IonToggle,
   IonToolbar,
 } from "@ionic/react";
-import { useQuery } from "@tanstack/react-query";
-import { useContext, useState } from "react";
-import { searchCandidates } from "../scanning.js";
-import { AppContext } from "../../util/context.js";
-import { Capacitor } from "@capacitor/core";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
+import { useSearchCandidates } from "../../util/hooks.js";
 
 export const ScanningOptionsScreen = () => {
   const history = useHistory();
-  const { userInfo } = useContext(AppContext);
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
-  const {
-    data: candidates,
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["candidates"],
-    queryFn: () =>
-      searchCandidates({
-        token: userInfo.token,
-        instanceUrl: userInfo.instance.url,
-        platform: Capacitor.getPlatform(),
-      }),
-  });
+  const { candidates, status, error } = useSearchCandidates();
   const {
     register,
     handleSubmit,
@@ -46,6 +30,9 @@ export const ScanningOptionsScreen = () => {
     reset,
     getValues,
   } = useForm();
+  /**
+   * @param {Object} data
+   */
   const onSubmit = (data) => {
     console.log(data);
     history.push("/app/scanning/main");

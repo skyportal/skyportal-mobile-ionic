@@ -12,5 +12,23 @@
 export const INSTANCES = [
   { name: "ICARE", url: "https://skyportal-icare.ijclab.in2p3.fr" },
   { name: "FRITZ", url: "https://fritz.science" },
-  { name: "FRITZ preview", url: "https://preview.fritz.science"}
+  { name: "FRITZ preview", url: "https://preview.fritz.science" },
 ];
+
+export const PREFERENCES = {
+  TOKEN: "token",
+  USER: "user",
+  USER_INFO: "userInfo",
+};
+
+export const QUERY_PARAMS = {
+  TOKEN: "token",
+  INSTANCE: "instance",
+};
+
+export const QUERY_KEYS = {
+  CANDIDATES: "candidates",
+  SOURCES: "sources",
+  USER: "user",
+  USER_INFO: "userInfo",
+};
