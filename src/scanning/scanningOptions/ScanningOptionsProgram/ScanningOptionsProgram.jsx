@@ -57,36 +57,35 @@ export const ScanningOptionsProgram = ({
             }))}
             rules={{
               required: true,
-              validate: (value) => {
-                if (value.length === 0) {
-                  return "At least one group must be selected";
-                }
-                return true;
-              },
             }}
           />
         </IonModal>
+        <div className="error-container">
+          <ErrorMessage errors={errors} name="selectedGroups" />
+        </div>
       </div>
-      <Controller
-        control={control}
-        name="filterCandidates"
-        render={({ field: { onChange, onBlur, disabled } }) => (
-          <IonToggle
-            onIonChange={(e) => onChange(e.detail.checked)}
-            onIonBlur={onBlur}
-            disabled={disabled}
-          >
-            Filtering
-          </IonToggle>
+      <div className="filtering">
+        <Controller
+          control={control}
+          name="filterCandidates"
+          render={({ field: { onChange, onBlur, disabled } }) => (
+            <IonToggle
+              justify="space-between"
+              onIonChange={(e) => onChange(e.detail.checked)}
+              onIonBlur={onBlur}
+              disabled={disabled}
+            >
+              Filtering
+            </IonToggle>
+          )}
+        />
+        {watch("filterCandidates") && (
+          <CandidateFiltering register={register}></CandidateFiltering>
         )}
-      />
-      {watch("filterCandidates") && (
-        <CandidateFiltering register={register}></CandidateFiltering>
-      )}
-      <div className="error-container">
-        <ErrorMessage errors={errors} name="filteringType" />
-        <ErrorMessage errors={errors} name="filteringAnyOrAll" />
-        <ErrorMessage errors={errors} name="selectedGroups" />
+        <div className="error-container">
+          <ErrorMessage errors={errors} name="filteringType" />
+          <ErrorMessage errors={errors} name="filteringAnyOrAll" />
+        </div>
       </div>
     </fieldset>
   );

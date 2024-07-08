@@ -28,6 +28,7 @@ export const ScanningOptionsForm = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
     getValues,
     watch,
@@ -70,6 +71,13 @@ export const ScanningOptionsForm = () => {
    * @param {any} data
    */
   const onSubmit = (data) => {
+    if (data.selectedGroups.length === 0) {
+      setError("selectedGroups", {
+        type: "custom",
+        message: "At least one group must be selected",
+      });
+      return;
+    }
     const groupIDs = data.selectedGroups.join(",");
     const savedStatus = computeSavedStatus({ ...data });
     const startDate = moment(data.startDate).format();

@@ -13,4 +13,10 @@
   ion-select::part(text) {
     color: var(--ion-color-primary);
   }
+  .filtering {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  }
 }
