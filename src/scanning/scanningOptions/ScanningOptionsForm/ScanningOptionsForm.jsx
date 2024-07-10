@@ -100,11 +100,7 @@ export const ScanningOptionsForm = () => {
   const groupSelectionModal = useRef(null);
   /** @type {React.MutableRefObject<any>} */
   const junkGroupSelectionModal = useRef(null);
-  const { userAccessibleGroups } = useUserAccessibleGroups();
-
-  if (!userAccessibleGroups) {
-    return <p>Loading...</p>;
-  }
+  const { userAccessibleGroups = [] } = useUserAccessibleGroups();
 
   return (
     <form className="scanning-options-form" onSubmit={handleSubmit(onSubmit)}>

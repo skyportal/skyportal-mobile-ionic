@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -11,7 +11,9 @@ const queryClient = new QueryClient();
 root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <Suspense fallback={<div>Bonjour...</div>}>
+        <App />
+      </Suspense>
     </QueryClientProvider>
   </React.StrictMode>,
 );

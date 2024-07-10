@@ -1,4 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { PREFERENCES, QUERY_KEYS } from "./constants.js";
 import { fetchGroups, searchCandidates } from "../scanning/scanning.js";
 import { fetchSources } from "../sources/sources.js";
@@ -18,7 +22,7 @@ import { useEffect, useState } from "react";
  * @returns {{data:T|undefined, status: QueryStatus, error: any|undefined}}
  */
 const usePreference = (key) => {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: [key],
     queryFn: () => getPreference({ key }),
   });
@@ -87,6 +91,8 @@ export const useSearchCandidates = ({
         groupIDs,
       }),
     enabled: !!userInfo,
+    // @ts-ignore
+    suspense: true,
   });
   return {
     candidates,
@@ -117,6 +123,8 @@ export const useFetchSources = ({ page, numPerPage }) => {
         numPerPage,
       }),
     enabled: !!userInfo,
+    // @ts-ignore
+    suspense: true,
   });
   return {
     sources,
@@ -126,48 +134,52 @@ export const useFetchSources = ({ page, numPerPage }) => {
 };
 
 export const useSkipOnboarding = () => {
-  /** @type {[{skipOnboarding: boolean, status: QueryStatus, error: any}, Function]} */
+  /** @type {[{user: import("../onboarding/auth.js").User|null, status: QueryStatus, error: any}, Function]} */
   const [state, setState] = useState({
-    skipOnboarding: false,
+    user: null,
     status: "pending",
     error: undefined,
   });
   const queryClient = useQueryClient();
-  let mutation = useMutation({
-    mutationFn: () => {
-      if (!config.SKIP_ONBOARDING) {
-        throw new Error("Onboarding is not skipped");
-      }
-      if (
-        config.SKIP_ONBOARDING &&
-        (!config.INSTANCE_URL || !config.INSTANCE_NAME || !config.TOKEN)
-      ) {
-        throw new Error("Missing configuration");
-      }
-      return checkTokenAndFetchUser({
-        token: config.TOKEN,
-        instanceUrl: config.INSTANCE_URL,
-      });
-    },
-    onSuccess: async (user) => {
-      queryClient.setQueryData([QUERY_KEYS.USER], user);
-      await setPreference({ key: PREFERENCES.USER, value: user });
-      const userInfo = {
-        token: config.TOKEN,
-        instance: { url: config.INSTANCE_URL, name: config.INSTANCE_NAME },
-      };
-      queryClient.setQueryData([QUERY_KEYS.USER_INFO], userInfo);
-      await setPreference({ key: PREFERENCES.USER_INFO, value: userInfo });
-      setState({ skipOnboarding: true, status: "success", error: state.error });
-    },
-    onError: (error) => {
-      setState({ skipOnboarding: false, status: "error", error });
-    },
+  const appStarted = async () => {
+    if (config.CLEAR_AUTH) {
+      await setPreference({ key: PREFERENCES.USER_INFO, value: null });
+      await setPreference({ key: PREFERENCES.USER, value: null });
+    }
+    let user = await getPreference({ key: PREFERENCES.USER });
+    if (user) {
+      return user;
+    }
+    if (!config.SKIP_ONBOARDING) {
+      return null;
+    }
+    if (
+      config.SKIP_ONBOARDING &&
+      (!config.INSTANCE_URL || !config.INSTANCE_NAME || !config.TOKEN)
+    ) {
+      return null;
+    }
+    user = await checkTokenAndFetchUser({
+      token: config.TOKEN,
+      instanceUrl: config.INSTANCE_URL,
+    });
+    queryClient.setQueryData([QUERY_KEYS.USER], user);
+    await setPreference({ key: PREFERENCES.USER, value: user });
+    const userInfo = {
+      token: config.TOKEN,
+      instance: { url: config.INSTANCE_URL, name: config.INSTANCE_NAME },
+    };
+    queryClient.setQueryData([QUERY_KEYS.USER_INFO], userInfo);
+    await setPreference({ key: PREFERENCES.USER_INFO, value: userInfo });
+    setState({ user, status: "success", error: state.error });
+  };
+  return useQuery({
+    // @ts-ignore
+    suspense: true,
+    queryKey: ["appStart"],
+    queryFn: appStarted,
+    enabled: true,
   });
-  useEffect(() => {
-    mutation.mutate();
-  }, []);
-  return state;
 };
 
 /**
@@ -187,6 +199,8 @@ export const useUserAccessibleGroups = () => {
         token: userInfo?.token ?? "",
       }),
     enabled: !!userInfo,
+    // @ts-ignore
+    suspense: true,
   });
   return {
     userAccessibleGroups: groups?.user_accessible_groups,

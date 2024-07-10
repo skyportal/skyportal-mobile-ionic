@@ -23,7 +23,7 @@ export const CheckQRCodeScreen = () => {
         value: { token, instance },
       });
       await setPreference({ key: PREFERENCES.USER, value: data });
-      history.push("/login-ok");
+      history.replace("/login-ok");
     },
     onError: (error) => {
       console.error(error);

@@ -9,7 +9,7 @@ import {
   IonTabs,
 } from "@ionic/react";
 import { Redirect, Route } from "react-router";
-import { SourceListScreen } from "../../sources/SourceList/SourceListScreen.jsx";
+import { SourceListScreen } from "../../sources/SourceListScreen/SourceListScreen.jsx";
 import { EventListScreen } from "../../events/EventList/EventListScreen.jsx";
 import { compassOutline, list, radioOutline } from "ionicons/icons";
 import { ScanningOptionsScreen } from "../../scanning/scanningOptions/ScanningOptionsScreen/ScanningOptionsScreen.jsx";

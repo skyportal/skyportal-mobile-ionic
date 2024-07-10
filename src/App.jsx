@@ -34,16 +34,12 @@ import React from "react";
 import CheckQRCodeScreen from "./onboarding/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
 import { LoginOkScreen } from "./onboarding/LoginOk/LoginOkScreen.jsx";
 import { MainScreen } from "./onboarding/Home/MainScreen.jsx";
-import { useSkipOnboarding, useUser } from "./common/hooks.js";
+import { useSkipOnboarding } from "./common/hooks.js";
 
 setupIonicReact();
 
 const App = () => {
-  const { skipOnboarding, status: skipOnboardingStatus } = useSkipOnboarding();
-  const { user, status: userStatus } = useUser();
-  if (userStatus === "pending" || skipOnboardingStatus === "pending") {
-    return <p>Loading...</p>;
-  }
+  const { data: user } = useSkipOnboarding();
   return (
     <IonApp>
       <IonReactRouter>
@@ -51,11 +47,7 @@ const App = () => {
           <Route exact path="/onboarding">
             {
               /* If the user is logged in, redirect them to the app */
-              user !== null || skipOnboarding ? (
-                <Redirect to="/app" />
-              ) : (
-                <OnboardingScreen />
-              )
+              user !== null ? <Redirect to="/app" /> : <OnboardingScreen />
             }
           </Route>
           <Route path="/check-creds">
