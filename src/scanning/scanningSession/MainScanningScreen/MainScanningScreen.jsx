@@ -1,4 +1,3 @@
-import "./MainScanningScreen.scss";
 import { IonContent, IonPage } from "@ionic/react";
 import { CandidateScanner } from "../CandidateScanner/CandidateScanner.jsx";
 import { Suspense } from "react";

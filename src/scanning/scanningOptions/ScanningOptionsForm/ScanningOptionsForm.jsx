@@ -14,7 +14,10 @@ import { navigateWithParams } from "../../../common/util.js";
 export const ScanningOptionsForm = () => {
   const history = useHistory();
   const defaultValues = {
-    startDate: moment().subtract(1, "day").format(),
+    startDate:
+      import.meta.env.MODE === "development"
+        ? moment("2022-07-26T16:43:00-07:00").format()
+        : moment().format(),
     endDate: moment().format(),
     filterCandidates: false,
     filteringType: "include",
@@ -83,7 +86,7 @@ export const ScanningOptionsForm = () => {
     const startDate = moment(data.startDate).format();
     const endDate = moment(data.endDate).format();
     const junkGroupIDs = data.junkGroups.join(",");
-    navigateWithParams(history, "/app/scanning/main", {
+    navigateWithParams(history, "/scanning/main", {
       params: {
         groupIDs,
         savedStatus,

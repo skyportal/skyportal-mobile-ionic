@@ -1,4 +1,13 @@
-import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
+import {
+  IonApp,
+  IonIcon,
+  IonLabel,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
+  setupIonicReact,
+} from "@ionic/react";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -33,8 +42,13 @@ import OnboardingScreen from "./onboarding/OnboardingScreen/OnboardingScreen.jsx
 import React from "react";
 import CheckQRCodeScreen from "./onboarding/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
 import { LoginOkScreen } from "./onboarding/LoginOk/LoginOkScreen.jsx";
-import { MainScreen } from "./onboarding/Home/MainScreen.jsx";
 import { useSkipOnboarding } from "./common/hooks.js";
+import { ScanningOptionsScreen } from "./scanning/scanningOptions/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
+import { MainScanningScreen } from "./scanning/scanningSession/MainScanningScreen/MainScanningScreen.jsx";
+import { SourceListScreen } from "./sources/SourceListScreen/SourceListScreen.jsx";
+import { EventListScreen } from "./events/EventList/EventListScreen.jsx";
+import { compassOutline, list, radioOutline } from "ionicons/icons";
+import { ScanningHome } from "./scanning/ScanningHome/ScanningHome.jsx";
 
 setupIonicReact();
 
@@ -56,11 +70,52 @@ const App = () => {
           <Route path="/login-ok">
             <LoginOkScreen />
           </Route>
-          <Route path="/app">
-            <MainScreen />
+
+          <Route path="/scanning/options">
+            <ScanningOptionsScreen />
+          </Route>
+          <Route path="/scanning/main">
+            <MainScanningScreen />
+          </Route>
+          <Route exact path="/scanning">
+            <ScanningOptionsScreen />
           </Route>
           <Route exact path="/">
             <Redirect to="/onboarding" />
+          </Route>
+
+          <Route path="/app">
+            <IonTabs>
+              <IonRouterOutlet>
+                <Redirect exact path="/app" to="/app/source-list" />
+                <Route path="/app/source-list">
+                  <SourceListScreen />
+                </Route>
+                <Route path="/app/event-list">
+                  <EventListScreen />
+                </Route>
+                <Route path="/app/scanning">
+                  <ScanningHome />
+                </Route>
+              </IonRouterOutlet>
+
+              <IonTabBar slot="bottom">
+                <IonTabButton tab="source-list" href="/app/source-list">
+                  <IonIcon icon={list} />
+                  <IonLabel>Source</IonLabel>
+                </IonTabButton>
+
+                <IonTabButton tab="scanning" href="/app/scanning">
+                  <IonIcon icon={compassOutline} />
+                  <IonLabel>Candidates</IonLabel>
+                </IonTabButton>
+
+                <IonTabButton tab="event-list" href="/app/event-list">
+                  <IonIcon icon={radioOutline} />
+                  <IonLabel>Events</IonLabel>
+                </IonTabButton>
+              </IonTabBar>
+            </IonTabs>
           </Route>
         </IonRouterOutlet>
       </IonReactRouter>

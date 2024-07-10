@@ -1,3 +1,4 @@
+import "./CandidateScanner.scss";
 import { getThumbnailImageUrl, THUMBNAIL_TYPES } from "../../scanning.js";
 import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
 import { CandidateAnnotations } from "../CandidateAnnotations/CandidateAnnotations.jsx";
