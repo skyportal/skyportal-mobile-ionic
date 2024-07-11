@@ -22,7 +22,7 @@ import { Capacitor, CapacitorHttp } from "@capacitor/core";
  * @property {number} id - Annotation ID
  * @property {string} origin - Annotation origin
  * @property {string} obj_id - Object ID
- * @property {Object} data - Annotation data
+ * @property {{[key: string]: string|number|undefined}} data - Annotation data
  * @property {number} author_id - Author ID
  * @property {Group[]} groups - Groups the annotation belongs to
  */

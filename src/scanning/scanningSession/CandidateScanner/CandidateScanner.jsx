@@ -1,13 +1,13 @@
 import "./CandidateScanner.scss";
 import { THUMBNAIL_TYPES } from "../../scanning.js";
 import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
-import { CandidateAnnotations } from "../CandidateAnnotations/CandidateAnnotations.jsx";
 import { IonButton, IonIcon } from "@ionic/react";
 import { useCallback, useEffect, useState } from "react";
 import { useQueryParams, useSearchCandidates } from "../../../common/hooks.js";
 import { arrowForward, checkmark, trashBin } from "ionicons/icons";
 import "swiper/css";
 import useEmblaCarousel from "embla-carousel-react";
+import { PinnedAnnotations } from "../PinnedAnnotations/PinnedAnnotations.jsx";
 
 export const CandidateScanner = () => {
   const params = useQueryParams();
@@ -52,7 +52,7 @@ export const CandidateScanner = () => {
                     <Thumbnail key={type} candidate={candidate} type={type} />
                   ))}
                 </div>
-                <CandidateAnnotations candidate={candidate} />
+                <PinnedAnnotations candidate={candidate} />
                 <div className="plot-container"></div>
               </div>
             </div>

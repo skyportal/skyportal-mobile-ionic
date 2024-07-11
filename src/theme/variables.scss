@@ -59,7 +59,7 @@ p {
 
   --ion-color-light: #f7faff;
   --ion-color-light-rgb: 247, 250, 255;
-  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast: var(--ion-color-secondary);
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d9dce0;
   --ion-color-light-tint: #f8fbff;
@@ -78,7 +78,7 @@ p {
   --ion-color-dark-shade: #31363e;
   --ion-color-dark-tint: #4c5059;
 
-  --ion-background-color: #dfe1e6;
+  --ion-background-color: #f4f4fa;
 
   --ion-font-family: "Roboto", sans-serif;
 }
