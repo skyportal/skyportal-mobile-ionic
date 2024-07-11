@@ -2,40 +2,52 @@ import "./Thumbnail.scss";
 import {
   getThumbnailAltAndSurveyLink,
   getThumbnailHeader,
+  getThumbnailImageUrl,
 } from "../../scanning.js";
+import { IonImg, IonSkeletonText, IonThumbnail } from "@ionic/react";
+import { useState } from "react";
 
 /**
  * Thumbnail component
  * @param {Object} props
- * @param {string} props.name
- * @param {number} props.ra
- * @param {number} props.dec
- * @param {string} props.url
+ * @param {import("../../scanning").Candidate} props.candidate
+ * @param {string} props.type
  */
-export const Thumbnail = ({ name, ra, dec, url }) => {
-  const { alt } = getThumbnailAltAndSurveyLink(name, ra, dec);
+export const Thumbnail = ({ candidate, type }) => {
+  const [src, setSrc] = useState(getThumbnailImageUrl(candidate, type));
+  const [imageIsLoading, setImageIsLoading] = useState(true);
+  const { alt } = getThumbnailAltAndSurveyLink(
+    type,
+    candidate.ra,
+    candidate.dec,
+  );
   return (
-    <div className={`thumbnail ${name}`}>
-      <div className="thumbnail-name">{getThumbnailHeader(name)}</div>
+    <div className={`thumbnail ${type}`}>
+      <div className="thumbnail-name">{getThumbnailHeader(type)}</div>
       <div className="thumbnail-image">
+        <IonThumbnail
+          className={`thumbnail-skeleton ${type} ${imageIsLoading ? "loading" : "loaded"}`}
+        >
+          <IonSkeletonText animated />
+        </IonThumbnail>
         <img
           className="crosshairs"
           src="https://preview.fritz.science/static/images/crosshairs.png"
           alt=""
-          loading="lazy"
         />
-        <img
-          src={url}
+        <IonImg
+          src={src}
           alt={alt}
-          loading="lazy"
-          onError={(/** @type {any} */ e) => {
-            e.target.onerror = null;
-            if (name === "ls") {
-              e.target.src =
-                "https://preview.fritz.science/static/images/outside_survey.png";
+          onIonImgDidLoad={() => setImageIsLoading(false)}
+          onIonError={() => {
+            if (type === "ls") {
+              setSrc(
+                "https://preview.fritz.science/static/images/outside_survey.png",
+              );
             } else {
-              e.target.src =
-                "https://preview.fritz.science/static/images/currently_unavailable.png";
+              setSrc(
+                "https://preview.fritz.science/static/images/currently_unavailable.png",
+              );
             }
           }}
         />

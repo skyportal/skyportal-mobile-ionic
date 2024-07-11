@@ -1,5 +1,6 @@
 .thumbnail {
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -15,9 +16,26 @@
     position: relative;
     border: 0.5px rgba(82, 100, 117, 0.3) solid;
 
-    img {
+    .thumbnail-skeleton {
+      background: var(--ion-background-color);
+      z-index: 100;
+      position: absolute;
       width: 30vw;
-      height: auto;
+      height: 30vw;
+      transition: opacity 0.3s;
+
+      &.loading {
+        opacity: 1;
+      }
+
+      &.loaded {
+        opacity: 0;
+      }
+    }
+
+    ion-img {
+      width: 30vw;
+      height: 30vw;
     }
 
     .crosshairs {

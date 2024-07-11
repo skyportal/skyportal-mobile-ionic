@@ -1,5 +1,5 @@
 import "./CandidateScanner.scss";
-import { getThumbnailImageUrl, THUMBNAIL_TYPES } from "../../scanning.js";
+import { THUMBNAIL_TYPES } from "../../scanning.js";
 import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
 import { CandidateAnnotations } from "../CandidateAnnotations/CandidateAnnotations.jsx";
 import { IonButton, IonIcon } from "@ionic/react";
@@ -42,8 +42,6 @@ export const CandidateScanner = () => {
   return (
     <div className="candidate-scanner">
       <Swiper
-        // @ts-ignore
-        lazy="true"
         navigation={true}
         onSwiper={handleSwiper}
         onSlideChange={handleNextSlide}
@@ -60,13 +58,7 @@ export const CandidateScanner = () => {
               </div>
               <div className="thumbnails-container">
                 {Object.keys(THUMBNAIL_TYPES).map((type) => (
-                  <Thumbnail
-                    key={type}
-                    name={type}
-                    ra={candidate.ra}
-                    dec={candidate.dec}
-                    url={getThumbnailImageUrl(candidate, type)}
-                  />
+                  <Thumbnail key={type} candidate={candidate} type={type} />
                 ))}
               </div>
               <CandidateAnnotations candidate={candidate} />
