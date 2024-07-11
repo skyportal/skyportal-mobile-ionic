@@ -22,10 +22,12 @@ export const Thumbnail = ({ name, ra, dec, url }) => {
           className="crosshairs"
           src="https://preview.fritz.science/static/images/crosshairs.png"
           alt=""
+          loading="lazy"
         />
         <img
           src={url}
           alt={alt}
+          loading="lazy"
           onError={(/** @type {any} */ e) => {
             e.target.onerror = null;
             if (name === "ls") {
