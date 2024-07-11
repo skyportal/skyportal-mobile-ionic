@@ -7,7 +7,8 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+p {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -37,7 +38,7 @@ h6 {
 
   --ion-color-success: #438e29;
   --ion-color-success-rgb: 67, 142, 41;
-  --ion-color-success-contrast: #000000;
+  --ion-color-success-contrast: #ffffff;
   --ion-color-success-contrast-rgb: 0, 0, 0;
   --ion-color-success-shade: #3b7d24;
   --ion-color-success-tint: #56993e;
@@ -56,12 +57,12 @@ h6 {
   --ion-color-danger-shade: #ca323e;
   --ion-color-danger-tint: #e94d59;
 
-  --ion-color-light: #f1faee;
-  --ion-color-light-rgb: 241, 250, 238;
+  --ion-color-light: #f7faff;
+  --ion-color-light-rgb: 247, 250, 255;
   --ion-color-light-contrast: #000000;
   --ion-color-light-contrast-rgb: 0, 0, 0;
-  --ion-color-light-shade: #d4dcd1;
-  --ion-color-light-tint: #f2fbf0;
+  --ion-color-light-shade: #d9dce0;
+  --ion-color-light-tint: #f8fbff;
 
   --ion-color-medium: #526475;
   --ion-color-medium-rgb: 82, 100, 117;
@@ -77,7 +78,7 @@ h6 {
   --ion-color-dark-shade: #31363e;
   --ion-color-dark-tint: #4c5059;
 
-  --ion-background-color: #e0e9ef;
+  --ion-background-color: #f0f3f7;
 
   --ion-font-family: "Roboto", sans-serif;
 }

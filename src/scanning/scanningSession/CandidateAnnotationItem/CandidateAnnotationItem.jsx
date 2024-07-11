@@ -1,10 +1,23 @@
 import "./CandidateAnnotationItem.scss";
+import { IonItem, IonList } from "@ionic/react";
 
-export const CandidateAnnotationItem = ({ name, value }) => {
+/**
+ * @param {Object} props
+ * @param {import("../../scanning").CandidateAnnotation} props.annotation
+ * @returns {JSX.Element}
+ */
+export const CandidateAnnotationItem = ({ annotation }) => {
   return (
     <div className="candidate-annotation-item">
-      <div className="name">{name}:</div>
-      <div className="value">{value}</div>
+      <IonList lines="none">
+        {Object.entries(annotation.data)
+          .slice(0, 3)
+          .map(([key, value]) => (
+            <IonItem key={key} button>
+              {key}: {value}
+            </IonItem>
+          ))}
+      </IonList>
     </div>
   );
 };

@@ -8,20 +8,32 @@ import { Capacitor, CapacitorHttp } from "@capacitor/core";
  */
 
 /**
- * @typedef {Object} Candidate
- * @property {CandidateThumbnail[]} thumbnails - Thumbnails of the candidate
- * @property {number} ra - Right ascension
- * @property {number} dec - Declination
+ * @typedef {Object} Group
+ * @property {number} id - Group ID
+ * @property {string|null} [nickname] - Group nickname
+ * @property {string} name - Group name
+ * @property {string|null} [description] - Group description
+ * @property {boolean} private - Is the group private
+ * @property {boolean} single_user_group - Is the group a single user group
  */
 
 /**
- * @typedef {Object} Group
- * @property {number} id - Group ID
- * @property {string} [nickname] - Group nickname
- * @property {string} name - Group name
- * @property {string} [description] - Group description
- * @property {boolean} private - Is the group private
- * @property {boolean} single_user_group - Is the group a single user group
+ * @typedef {Object} CandidateAnnotation
+ * @property {number} id - Annotation ID
+ * @property {string} origin - Annotation origin
+ * @property {string} obj_id - Object ID
+ * @property {Object} data - Annotation data
+ * @property {number} author_id - Author ID
+ * @property {Group[]} groups - Groups the annotation belongs to
+ */
+
+/**
+ * @typedef {Object} Candidate
+ * @property {number} ra - Right ascension
+ * @property {number} dec - Declination
+ * @property {string} id - Source id
+ * @property {CandidateThumbnail[]} thumbnails - Thumbnails of the candidate
+ * @property {CandidateAnnotation[]} annotations - Annotations of the candidate
  */
 
 /**
@@ -31,6 +43,13 @@ import { Capacitor, CapacitorHttp } from "@capacitor/core";
  * @property {Group[]} all_groups - All groups
  */
 
+/**
+ * @typedef {"new" | "ref" | "sub" | "sdss" | "ls" | "ps1"} ThumbnailType
+ */
+
+/**
+ * @type {Object<ThumbnailType, ThumbnailType>}
+ */
 export const THUMBNAIL_TYPES = {
   new: "new",
   ref: "ref",
@@ -41,17 +60,13 @@ export const THUMBNAIL_TYPES = {
 };
 
 /**
- * @typedef {"new" | "ref" | "sub" | "sdss" | "ls" | "ps1"} ThumbnailType
- */
-
-/**
  * Get the link for the survey and alt text for thumbnail
- * @param {ThumbnailType} name - Thumbnail type
+ * @param {string} name - Thumbnail type
  * @param {number} ra - Right ascension
  * @param {number} dec - Declination
  * @returns {{alt: string, link: string}}
  */
-export const getThumbnailAltAndLink = (name, ra, dec) => {
+export const getThumbnailAltAndSurveyLink = (name, ra, dec) => {
   let alt = "";
   let link = "";
   switch (name) {
@@ -85,7 +100,7 @@ export const getThumbnailAltAndLink = (name, ra, dec) => {
 
 /**
  * Get the header for the thumbnail
- * @param {ThumbnailType} type - Thumbnail type
+ * @param {string} type - Thumbnail type
  * @returns {string}
  */
 export const getThumbnailHeader = (type) => {

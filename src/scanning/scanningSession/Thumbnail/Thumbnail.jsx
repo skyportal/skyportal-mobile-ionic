@@ -1,8 +1,19 @@
 import "./Thumbnail.scss";
-import { getThumbnailAltAndLink, getThumbnailHeader } from "../../scanning.js";
+import {
+  getThumbnailAltAndSurveyLink,
+  getThumbnailHeader,
+} from "../../scanning.js";
 
+/**
+ * Thumbnail component
+ * @param {Object} props
+ * @param {string} props.name
+ * @param {number} props.ra
+ * @param {number} props.dec
+ * @param {string} props.url
+ */
 export const Thumbnail = ({ name, ra, dec, url }) => {
-  const { alt, link } = getThumbnailAltAndLink(name, ra, dec);
+  const { alt } = getThumbnailAltAndSurveyLink(name, ra, dec);
   return (
     <div className={`thumbnail ${name}`}>
       <div className="thumbnail-name">{getThumbnailHeader(name)}</div>
@@ -13,10 +24,9 @@ export const Thumbnail = ({ name, ra, dec, url }) => {
           alt=""
         />
         <img
-          className="h-auto w-full"
           src={url}
           alt={alt}
-          onError={(e) => {
+          onError={(/** @type {any} */ e) => {
             e.target.onerror = null;
             if (name === "ls") {
               e.target.src =

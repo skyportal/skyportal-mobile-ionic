@@ -1,15 +1,14 @@
+:root {
+  --item-padding: 0rem;
+}
+
 .candidate-annotation-item {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  gap: 0.5rem;
+  display: block;
+  width: 100%;
 
-  .name {
-    font-size: 0.7rem;
-  }
-
-  .value {
-    font-size: 0.8rem;
-    font-weight: bold;
+  ion-item {
+    --padding-top: var(--item-padding);
+    --padding-bottom: var(--item-padding);
+    --min-height: 0;
   }
 }

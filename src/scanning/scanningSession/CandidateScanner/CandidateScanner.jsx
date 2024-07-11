@@ -2,14 +2,15 @@ import "./CandidateScanner.scss";
 import { getThumbnailImageUrl, THUMBNAIL_TYPES } from "../../scanning.js";
 import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
 import { CandidateAnnotations } from "../CandidateAnnotations/CandidateAnnotations.jsx";
-import { IonButton } from "@ionic/react";
+import { IonButton, IonIcon } from "@ionic/react";
 import { useState } from "react";
 import { useQueryParams, useSearchCandidates } from "../../../common/hooks.js";
+import { arrowForward, checkmark, trashBin } from "ionicons/icons";
 
 export const CandidateScanner = () => {
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
   const params = useQueryParams();
-  const { candidates = [] } = useSearchCandidates({
+  const { /** @type {Candidate[]} */ candidates = [] } = useSearchCandidates({
     startDate: params.startDate,
     endDate: params.endDate,
     savedStatus: params.savedStatus,
@@ -22,6 +23,9 @@ export const CandidateScanner = () => {
   return (
     <div className="candidate-scanner">
       <div className="scanning-card">
+        <div className="candidate-name">
+          <h1>{currentCandidate.id}</h1>
+        </div>
         <div className="thumbnails-container">
           {Object.keys(THUMBNAIL_TYPES).map((type) => (
             <Thumbnail
@@ -33,11 +37,20 @@ export const CandidateScanner = () => {
             />
           ))}
         </div>
-        <CandidateAnnotations />
-        <div className="photometry-container"></div>
-        <IonButton>See more</IonButton>
+        <CandidateAnnotations candidate={currentCandidate} />
+        <div className="plot-container"></div>
       </div>
-      <div className="action-buttons-container"></div>
+      <div className="action-buttons-container">
+        <IonButton shape="round" size="large" color="danger" fill="outline">
+          <IonIcon icon={trashBin} slot="icon-only" />
+        </IonButton>
+        <IonButton shape="round" size="large" color="success" fill="outline">
+          <IonIcon icon={checkmark} slot="icon-only" />
+        </IonButton>
+        <IonButton shape="round" size="large" color="secondary" fill="outline">
+          <IonIcon icon={arrowForward} slot="icon-only" />
+        </IonButton>
+      </div>
     </div>
   );
 };
