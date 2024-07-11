@@ -3,68 +3,78 @@
   flex-direction: column;
   height: 100%;
 
-  .swiper {
+  .embla {
     display: flex;
-    width: 100%;
+    flex-direction: column;
+    overflow: hidden;
     flex: 1;
-    overflow: visible;
+  }
 
-    .swiper-slide {
+  .embla__container {
+    display: flex;
+    flex: 1;
+  }
+
+  .embla__slide {
+    display: flex;
+    flex: 0 0 100%;
+    min-width: 0;
+
+    .scanning-card {
       display: flex;
-      .scanning-card {
+      flex: 1;
+      flex-direction: column;
+      justify-content: start;
+      align-items: center;
+      padding: 0.5rem;
+      margin: 0.4rem 0.4rem 0;
+      border-radius: 15px;
+      background-color: #f5f5f5;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+      .candidate-name {
         display: flex;
-        flex: 1;
-        flex-direction: column;
-        justify-content: start;
+        justify-content: space-between;
         align-items: center;
-        padding: 0.5rem;
-        margin: 0.4rem 0.4rem 0;
-        border-radius: 15px;
-        background-color: #f5f5f5;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        margin-bottom: 0.5rem;
+        padding: 0 0.5rem;
 
-        .candidate-name {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 100%;
-          margin-bottom: 0.5rem;
-          padding: 0 0.5rem;
-
-          h1 {
-            font-size: 1rem;
-            font-weight: 700;
-          }
-          .pagination-indicator {
-            font-size: 0.8rem;
-            font-weight: 400;
-            color: var(--ion-color-secondary);
-          }
+        h1 {
+          font-size: 1rem;
+          font-weight: 700;
         }
 
-        .thumbnails-container {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
-          gap: 0.5rem 0.12rem;
+        .pagination-indicator {
+          font-size: 0.8rem;
+          font-weight: 400;
+          color: var(--ion-color-secondary);
         }
+      }
 
-        .plot-container {
-          flex: 1;
-          width: 100%;
-          background: var(--ion-color-secondary);
-        }
+      .thumbnails-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0.5rem 0.12rem;
+      }
+
+      .plot-container {
+        flex: 1;
+        width: 100%;
+        background: var(--ion-color-secondary);
       }
     }
   }
-  .action-buttons-container {
-    display: flex;
-    padding: 0.5rem 1rem;
-    justify-content: space-between;
-    align-items: center;
+}
 
-    ion-button {
-      --padding-end: 2.3rem;
-    }
+.action-buttons-container {
+  display: flex;
+  padding: 0.5rem 1rem;
+  justify-content: space-between;
+  align-items: center;
+
+  ion-button {
+    --padding-end: 2.3rem;
   }
 }
