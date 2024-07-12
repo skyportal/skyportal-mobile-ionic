@@ -11,13 +11,15 @@ import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/Candid
 
 export const CandidateScanner = () => {
   const params = useQueryParams();
-  const { candidates = [] } = useSearchCandidates({
-    startDate: params.startDate,
-    endDate: params.endDate,
-    savedStatus: params.savedStatus,
-    groupIDs: params.groupIDs,
-  });
-  if (candidates?.length === 0) {
+  const [candidates] = useState(
+    useSearchCandidates({
+      startDate: params.startDate,
+      endDate: params.endDate,
+      savedStatus: params.savedStatus,
+      groupIDs: params.groupIDs,
+    }).candidates,
+  );
+  if (!candidates || candidates?.length === 0) {
     return <p>No candidates found</p>;
   }
   const [currentIndex, setCurrentIndex] = useState(0);
