@@ -1,5 +1,5 @@
 :root {
-  --item-padding: 0rem;
+  --item-padding: 0.5rem;
 }
 
 .candidate-annotation-item {
@@ -7,8 +7,16 @@
   width: 100%;
 
   ion-item {
-    --padding-top: var(--item-padding);
-    --padding-bottom: var(--item-padding);
+    --inner-padding-top: var(--item-padding);
+    --inner-padding-bottom: var(--item-padding);
     --min-height: 0;
+  }
+
+  ion-list-header {
+    h6 {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--ion-color-secondary);
+    }
   }
 }

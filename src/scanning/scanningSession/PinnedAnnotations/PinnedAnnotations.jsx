@@ -4,11 +4,13 @@ import { IonButton, IonText } from "@ionic/react";
 /**
  * @param {Object} props
  * @param {import("../../scanning").Candidate} props.candidate
+ * @param {() => void} props.onButtonClick
  * @param {string[]} [props.pinnedAnnotationIds]
  * @returns {JSX.Element}
  */
 export const PinnedAnnotations = ({
   candidate,
+  onButtonClick,
   pinnedAnnotationIds = [
     "ZTF Science Validation:Public Transients.age",
     "ZTF Science Validation:Public Transients.acai_b",
@@ -37,11 +39,16 @@ export const PinnedAnnotations = ({
           </div>
         ))}
       </div>
-      <div className="button-container">
-        <IonButton color="secondary" expand="block" shape="round" size="small">
-          Show all
-        </IonButton>
-      </div>
+      <IonButton
+        onClick={onButtonClick}
+        color="secondary"
+        expand="block"
+        shape="round"
+        size="small"
+        fill="clear"
+      >
+        Show all
+      </IonButton>
     </div>
   );
 };

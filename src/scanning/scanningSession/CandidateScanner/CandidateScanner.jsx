@@ -1,17 +1,18 @@
 import "./CandidateScanner.scss";
 import { THUMBNAIL_TYPES } from "../../scanning.js";
 import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
-import { IonButton, IonIcon } from "@ionic/react";
-import { useCallback, useEffect, useState } from "react";
+import { IonButton, IonIcon, IonModal } from "@ionic/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useQueryParams, useSearchCandidates } from "../../../common/hooks.js";
 import { arrowForward, checkmark, trashBin } from "ionicons/icons";
 import "swiper/css";
 import useEmblaCarousel from "embla-carousel-react";
 import { PinnedAnnotations } from "../PinnedAnnotations/PinnedAnnotations.jsx";
+import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
 
 export const CandidateScanner = () => {
   const params = useQueryParams();
-  const { candidates } = useSearchCandidates({
+  const { candidates = [] } = useSearchCandidates({
     startDate: params.startDate,
     endDate: params.endDate,
     savedStatus: params.savedStatus,
@@ -21,6 +22,7 @@ export const CandidateScanner = () => {
     return <p>No candidates found</p>;
   }
   const [currentIndex, setCurrentIndex] = useState(0);
+  const currentCandidate = candidates[currentIndex];
 
   const [emblaRef, emblaApi] = useEmblaCarousel();
   const selectCallback = useCallback(
@@ -28,6 +30,8 @@ export const CandidateScanner = () => {
       setCurrentIndex(e.selectedScrollSnap()),
     [],
   );
+  /** @type {React.MutableRefObject<any>} */
+  const modal = useRef(null);
   useEffect(() => {
     if (emblaApi) emblaApi.on("select", selectCallback);
     return () => {
@@ -52,7 +56,10 @@ export const CandidateScanner = () => {
                     <Thumbnail key={type} candidate={candidate} type={type} />
                   ))}
                 </div>
-                <PinnedAnnotations candidate={candidate} />
+                <PinnedAnnotations
+                  candidate={candidate}
+                  onButtonClick={() => modal.current?.present()}
+                />
                 <div className="plot-container"></div>
               </div>
             </div>
@@ -76,6 +83,18 @@ export const CandidateScanner = () => {
           <IonIcon icon={arrowForward} slot="icon-only" />
         </IonButton>
       </div>
+      <IonModal
+        ref={modal}
+        isOpen={false}
+        trigger="annotationButton"
+        initialBreakpoint={0.25}
+        breakpoints={[0, 0.25, 0.5, 0.75]}
+      >
+        <CandidateAnnotationsViewer
+          candidate={currentCandidate}
+          modal={modal}
+        />
+      </IonModal>
     </div>
   );
 };

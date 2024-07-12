@@ -1,5 +1,5 @@
 import "./CandidateAnnotationItem.scss";
-import { IonItem, IonList } from "@ionic/react";
+import { IonItem, IonLabel, IonList, IonListHeader } from "@ionic/react";
 
 /**
  * @param {Object} props
@@ -9,7 +9,12 @@ import { IonItem, IonList } from "@ionic/react";
 export const CandidateAnnotationItem = ({ annotation }) => {
   return (
     <div className="candidate-annotation-item">
-      <IonList lines="none">
+      <IonList lines="full">
+        <IonListHeader>
+          <h6>
+            <IonLabel>{annotation.origin}</IonLabel>
+          </h6>
+        </IonListHeader>
         {Object.entries(annotation.data)
           .slice(0, 3)
           .map(([key, value]) => (
