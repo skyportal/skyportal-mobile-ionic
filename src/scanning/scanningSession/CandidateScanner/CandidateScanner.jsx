@@ -5,7 +5,6 @@ import { IonButton, IonIcon, IonModal } from "@ionic/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQueryParams, useSearchCandidates } from "../../../common/hooks.js";
 import { arrowForward, checkmark, trashBin } from "ionicons/icons";
-import "swiper/css";
 import useEmblaCarousel from "embla-carousel-react";
 import { PinnedAnnotations } from "../PinnedAnnotations/PinnedAnnotations.jsx";
 import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
@@ -86,7 +85,6 @@ export const CandidateScanner = () => {
       <IonModal
         ref={modal}
         isOpen={false}
-        trigger="annotationButton"
         initialBreakpoint={0.25}
         breakpoints={[0, 0.25, 0.5, 0.75]}
       >
