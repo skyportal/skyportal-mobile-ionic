@@ -32,6 +32,7 @@ export const QUERY_KEYS = {
   USER: "user",
   USER_INFO: "userInfo",
   GROUPS: "groups",
+  SOURCE_PHOTOMETRY: "sourcePhotometry",
 };
 
 /**

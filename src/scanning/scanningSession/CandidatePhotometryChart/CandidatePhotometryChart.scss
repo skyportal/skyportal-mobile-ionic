@@ -1,0 +1,24 @@
+.canvas-container {
+  height: 100%;
+  width: 100%;
+}
+
+.canvas-loading {
+  display: flex;
+  background: #ffffff;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  transition: opacity 0.3s;
+
+  &.loading {
+    opacity: 1;
+  }
+  &.loaded {
+    opacity: 0;
+  }
+}

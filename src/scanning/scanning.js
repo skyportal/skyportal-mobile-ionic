@@ -44,6 +44,25 @@ import { Capacitor, CapacitorHttp } from "@capacitor/core";
  */
 
 /**
+ * @typedef {Object} Photometry
+ * @property {number} id - Photometry ID
+ * @property {string} obj_id - Object ID
+ * @property {string} instrument_id - Instrument ID
+ * @property {string} filter - Filter
+ * @property {number} mjd - Modified Julian Date
+ * @property {number} mag - Magnitude
+ * @property {number} magerr - Magnitude error
+ * @property {string} limiting_mag - Limiting magnitude
+ * @property {string} magsys - Magnitude system
+ * @property {string} origin - Origin
+ * @property {string|null} ra - Right ascension
+ * @property {string|null} dec - Declination
+ * @property {string|null} altdata - Alternative data
+ * @property {string|null} ra_unc - Right ascension uncertainty
+ * @property {string|null} dec_unc - Declination uncertainty
+ */
+
+/**
  * @typedef {"new" | "ref" | "sub" | "sdss" | "ls" | "ps1"} ThumbnailType
  */
 
@@ -188,3 +207,244 @@ export async function fetchGroups({ instanceUrl, token }) {
   });
   return response.data.data;
 }
+
+/**
+ * @param {Object} params
+ * @param {Photometry[]} params.photometry
+ * @param {number} params.titleFontSize
+ * @param {number} params.labelFontSize
+ * @returns {import("vega-embed").VisualizationSpec}
+ */
+export const vegaPlotSpec = ({ photometry, titleFontSize, labelFontSize }) => {
+  const mjdNow = Date.now() / 86400000.0 + 40587.0;
+  return /** @type {any} */ ({
+    $schema: "https://vega.github.io/schema/vega-lite/v5.2.0.json",
+    background: "transparent",
+    width: "container",
+    height: "container",
+    data: {
+      values: photometry,
+    },
+    layer: [
+      {
+        selection: {
+          filterMags: {
+            type: "multi",
+            fields: ["filter"],
+            bind: "legend",
+          },
+          grid: {
+            type: "interval",
+            bind: "scales",
+          },
+        },
+        mark: {
+          type: "point",
+          shape: "circle",
+          filled: "true",
+          size: 24,
+        },
+        transform: [
+          {
+            calculate:
+              "join([format(datum.mag, '.2f'), ' ± ', format(datum.magerr, '.2f'), ' (', datum.magsys, ')'], '')",
+            as: "magAndErr",
+          },
+          { calculate: `${mjdNow} - datum.mjd`, as: "daysAgo" },
+        ],
+        encoding: {
+          x: {
+            field: "daysAgo",
+            type: "quantitative",
+            scale: {
+              zero: false,
+              reverse: true,
+            },
+            axis: {
+              title: "days ago",
+              titleFontSize,
+              labelFontSize,
+            },
+          },
+          y: {
+            field: "mag",
+            type: "quantitative",
+            scale: {
+              zero: false,
+              reverse: true,
+            },
+            axis: {
+              title: "mag",
+              titleFontSize,
+              labelFontSize,
+            },
+          },
+          color: {
+            field: "filter",
+            type: "nominal",
+            legend: {
+              titleAnchor: "start",
+              offset: 5,
+            },
+          },
+          tooltip: [
+            { field: "magAndErr", title: "mag", type: "nominal" },
+            { field: "filter", type: "ordinal" },
+            { field: "mjd", type: "quantitative" },
+            { field: "daysAgo", type: "quantitative" },
+            { field: "limiting_mag", type: "quantitative", format: ".2f" },
+          ],
+          opacity: {
+            condition: { selection: "filterMags", value: 1 },
+            value: 0,
+          },
+        },
+      },
+
+      // Render error bars
+      {
+        selection: {
+          filterErrBars: {
+            type: "multi",
+            fields: ["filter"],
+            bind: "legend",
+          },
+        },
+        transform: [
+          { filter: "datum.mag != null && datum.magerr != null" },
+          { calculate: "datum.mag - datum.magerr", as: "magMin" },
+          { calculate: "datum.mag + datum.magerr", as: "magMax" },
+          { calculate: `${mjdNow} - datum.mjd`, as: "daysAgo" },
+        ],
+        mark: {
+          type: "rule",
+          size: 0.5,
+        },
+        encoding: {
+          x: {
+            field: "daysAgo",
+            type: "quantitative",
+            scale: {
+              zero: false,
+              reverse: true,
+              padding: 0,
+            },
+            axis: {
+              title: "days ago",
+              titleFontSize,
+              labelFontSize,
+            },
+          },
+          y: {
+            field: "magMin",
+            type: "quantitative",
+            scale: {
+              zero: false,
+              reverse: true,
+            },
+          },
+          y2: {
+            field: "magMax",
+            type: "quantitative",
+            scale: {
+              zero: false,
+              reverse: true,
+            },
+          },
+          color: {
+            field: "filter",
+            type: "nominal",
+            legend: {
+              orient: "bottom",
+              titleFontSize,
+              labelFontSize,
+            },
+          },
+          opacity: {
+            condition: { selection: "filterErrBars", value: 1 },
+            value: 0,
+          },
+        },
+      },
+
+      // Render limiting mags
+      {
+        transform: [
+          { filter: "datum.mag == null" },
+          { calculate: `${mjdNow} - datum.mjd`, as: "daysAgo" },
+        ],
+        selection: {
+          filterLimitingMags: {
+            type: "multi",
+            fields: ["filter"],
+            bind: "legend",
+          },
+        },
+        mark: {
+          type: "point",
+          shape: "triangle-down",
+        },
+        encoding: {
+          x: {
+            field: "daysAgo",
+            type: "quantitative",
+            scale: {
+              zero: false,
+              reverse: true,
+            },
+            axis: {
+              title: "days ago",
+              titleFontSize,
+              labelFontSize,
+            },
+          },
+          y: {
+            field: "limiting_mag",
+            type: "quantitative",
+          },
+          color: {
+            field: "filter",
+            type: "nominal",
+          },
+          opacity: {
+            condition: { selection: "filterLimitingMags", value: 0.3 },
+            value: 0,
+          },
+        },
+      },
+    ],
+  });
+};
+
+/**
+ * Fetch the photometry of a source
+ * @param {Object} params
+ * @param {string} params.sourceId - The source ID
+ * @param {string} params.instanceUrl - The URL of the instance
+ * @param {string} params.token - The token to use to fetch the photometry
+ * @param {string} [params.includeOwnerInfo="true"] - Include owner info
+ * @param {string} [params.includeStreamInfo="true"] - Include stream info
+ * @param {string} [params.includeValidationInfo="true"] - Include validation info
+ * @returns {Promise<Photometry[]>}
+ */
+export const fetchSourcePhotometry = async ({
+  sourceId,
+  instanceUrl,
+  token,
+  includeOwnerInfo = "true",
+  includeStreamInfo = "true",
+  includeValidationInfo = "true",
+}) => {
+  let response = await CapacitorHttp.get({
+    url: `${instanceUrl}/api/sources/${sourceId}/photometry`,
+    headers: {
+      Authorization: `token ${token}`,
+    },
+    params: {
+      includeOwnerInfo,
+      includeStreamInfo,
+      includeValidationInfo,
+    },
+  });
+  return response.data.data;
+};

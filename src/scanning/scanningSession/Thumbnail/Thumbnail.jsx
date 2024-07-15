@@ -4,7 +4,6 @@ import {
   getThumbnailHeader,
   getThumbnailImageUrl,
 } from "../../scanning.js";
-import { IonImg, IonSkeletonText, IonThumbnail } from "@ionic/react";
 import { useState } from "react";
 
 /**
@@ -15,7 +14,6 @@ import { useState } from "react";
  */
 export const Thumbnail = ({ candidate, type }) => {
   const [src, setSrc] = useState(getThumbnailImageUrl(candidate, type));
-  const [imageIsLoading, setImageIsLoading] = useState(true);
   const { alt } = getThumbnailAltAndSurveyLink(
     type,
     candidate.ra,
@@ -25,21 +23,15 @@ export const Thumbnail = ({ candidate, type }) => {
     <div className={`thumbnail ${type}`}>
       <div className="thumbnail-name">{getThumbnailHeader(type)}</div>
       <div className="thumbnail-image">
-        <IonThumbnail
-          className={`thumbnail-skeleton ${type} ${imageIsLoading ? "loading" : "loaded"}`}
-        >
-          <IonSkeletonText animated />
-        </IonThumbnail>
         <img
           className="crosshairs"
           src="https://preview.fritz.science/static/images/crosshairs.png"
           alt=""
         />
-        <IonImg
+        <img
           src={src}
           alt={alt}
-          onIonImgDidLoad={() => setImageIsLoading(false)}
-          onIonError={() => {
+          onError={() => {
             if (type === "ls") {
               setSrc(
                 "https://preview.fritz.science/static/images/outside_survey.png",

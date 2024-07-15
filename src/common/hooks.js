@@ -4,12 +4,16 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { PREFERENCES, QUERY_KEYS } from "./constants.js";
-import { fetchGroups, searchCandidates } from "../scanning/scanning.js";
+import {
+  fetchGroups,
+  fetchSourcePhotometry,
+  searchCandidates,
+} from "../scanning/scanning.js";
 import { fetchSources } from "../sources/sources.js";
 import { getPreference, setPreference } from "./preferences.js";
 import config from "../config.js";
 import { checkTokenAndFetchUser } from "../onboarding/auth.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 /**
  * @typedef {"success" | "error" | "pending"} QueryStatus
@@ -81,18 +85,20 @@ export const useSearchCandidates = ({
       savedStatus,
       groupIDs,
     ],
-    queryFn: () =>
-      searchCandidates({
+    queryFn: async () => {
+      if (!startDate || !endDate || !savedStatus || !groupIDs) {
+        throw new Error("Missing parameters");
+      }
+      return await searchCandidates({
         instanceUrl: userInfo?.instance.url ?? "",
         token: userInfo?.token ?? "",
         startDate,
         endDate,
         savedStatus,
         groupIDs,
-      }),
-    enabled: !!userInfo,
-    // @ts-ignore
-    suspense: true,
+      });
+    },
+    enabled: !!userInfo && !!startDate,
   });
   return {
     candidates,
@@ -213,15 +219,39 @@ export const useUserAccessibleGroups = () => {
  * @returns {{[key: string]: any}}
  */
 export const useQueryParams = () => {
-  const [state, setState] = useState({});
   const params = new URLSearchParams(location.search);
   const paramsObject = {};
   for (const [key, value] of params) {
     // @ts-ignore
     paramsObject[key] = value;
   }
-  useEffect(() => {
-    setState(paramsObject);
-  }, []);
-  return state;
+  return paramsObject;
+};
+
+/**
+ * @param {Object} props
+ * @param {string} props.sourceId
+ * @returns {{photometry: import("../scanning/scanning.js").Photometry[]|undefined, status: QueryStatus, error: any|undefined}}
+ */
+export const useSourcePhotometry = ({ sourceId }) => {
+  const { userInfo } = useUserInfo();
+  const {
+    /** @type {string[]} */ data: photometry,
+    status,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.SOURCE_PHOTOMETRY, sourceId],
+    queryFn: () =>
+      fetchSourcePhotometry({
+        sourceId,
+        instanceUrl: userInfo?.instance.url ?? "",
+        token: userInfo?.token ?? "",
+      }),
+    enabled: !!userInfo,
+  });
+  return {
+    photometry,
+    status,
+    error,
+  };
 };

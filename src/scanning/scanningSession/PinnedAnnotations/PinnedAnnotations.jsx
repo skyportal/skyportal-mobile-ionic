@@ -34,8 +34,8 @@ export const PinnedAnnotations = ({
           <div key={annotationLine.id} className="annotation-line">
             <IonText className="name" color="secondary">
               {annotationLine.id}:
-            </IonText>{" "}
-            {annotationLine.value}
+            </IonText>
+            <div>{annotationLine.value}</div>
           </div>
         ))}
       </div>
