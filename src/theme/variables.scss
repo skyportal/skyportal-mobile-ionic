@@ -14,6 +14,13 @@ ion-skeleton-text {
   padding: 0;
   box-sizing: border-box;
 }
+.app-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--ion-background-color);
+}
 
 :root {
   --ion-color-primary: #457b9d;
