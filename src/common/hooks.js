@@ -139,13 +139,15 @@ export const useFetchSources = ({ page, numPerPage }) => {
   };
 };
 
+/** @typedef {{user: null|import("../onboarding/auth.js").User, status: QueryStatus, error: any}} SkipOnboardingState */
+
 export const useSkipOnboarding = () => {
-  /** @type {[{user: import("../onboarding/auth.js").User|null, status: QueryStatus, error: any}, Function]} */
-  const [state, setState] = useState({
-    user: null,
-    status: "pending",
-    error: undefined,
-  });
+  const [state, setState] =
+    /** @type {ReturnType<typeof useState<SkipOnboardingState>>} */ useState({
+      user: null,
+      status: "pending",
+      error: undefined,
+    });
   const queryClient = useQueryClient();
   const appStarted = async () => {
     if (config.CLEAR_AUTH) {
@@ -236,7 +238,7 @@ export const useQueryParams = () => {
 export const useSourcePhotometry = ({ sourceId }) => {
   const { userInfo } = useUserInfo();
   const {
-    /** @type {string[]} */ data: photometry,
+    /** @type {import("../scanning/scanning.js").Photometry[]} */ data: photometry,
     status,
     error,
   } = useQuery({
