@@ -1,8 +1,11 @@
 import "./CandidatePhotometryChart.scss";
 import { useEffect, useRef, useState } from "react";
 import embed from "vega-embed";
-import { vegaPlotSpec } from "../../scanning.js";
-import { useSourcePhotometry } from "../../../common/hooks.js";
+import { getVegaPlotSpec } from "../../scanning.js";
+import {
+  useBandpassesColors,
+  useSourcePhotometry,
+} from "../../../common/hooks.js";
 import { IonSpinner } from "@ionic/react";
 
 /**
@@ -18,7 +21,7 @@ export const CandidatePhotometryChart = ({ candidate }) => {
   const { photometry, status } = useSourcePhotometry({
     sourceId: candidate.id,
   });
-
+  const { bandpassesColors } = useBandpassesColors();
   useEffect(() => {
     /**@type {any} */
     let hideTimeout;
@@ -36,13 +39,14 @@ export const CandidatePhotometryChart = ({ candidate }) => {
     /**@type {any} */
     let revealTimeout;
     const run = async () => {
-      if (!container.current || !photometry) return;
+      if (!container.current || !photometry || !bandpassesColors) return;
       const response = await embed(
         container.current,
-        vegaPlotSpec({
+        getVegaPlotSpec({
           photometry,
           titleFontSize: 13,
           labelFontSize: 11,
+          bandpassesColors,
         }),
         {
           actions: false,

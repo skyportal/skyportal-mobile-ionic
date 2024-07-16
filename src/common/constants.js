@@ -15,12 +15,6 @@ export const INSTANCES = [
   { name: "FRITZ preview", url: "https://preview.fritz.science" },
 ];
 
-export const PREFERENCES = {
-  TOKEN: "token",
-  USER: "user",
-  USER_INFO: "userInfo",
-};
-
 export const QUERY_PARAMS = {
   TOKEN: "token",
   INSTANCE: "instance",
@@ -33,6 +27,9 @@ export const QUERY_KEYS = {
   USER_INFO: "userInfo",
   GROUPS: "groups",
   SOURCE_PHOTOMETRY: "sourcePhotometry",
+  CONFIG: "config",
+  APP_START: "appStart",
+  BANDPASS_COLORS: "bandpassColors",
 };
 
 /**

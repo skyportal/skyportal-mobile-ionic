@@ -3,7 +3,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { PREFERENCES, QUERY_KEYS } from "./constants.js";
+import { QUERY_KEYS } from "./constants.js";
 import {
   fetchGroups,
   fetchSourcePhotometry,
@@ -14,6 +14,7 @@ import { getPreference, setPreference } from "./preferences.js";
 import config from "../config.js";
 import { checkTokenAndFetchUser } from "../onboarding/auth.js";
 import { useState } from "react";
+import { fetchConfig } from "./requests.js";
 
 /**
  * @typedef {"success" | "error" | "pending"} QueryStatus
@@ -37,7 +38,7 @@ const usePreference = (key) => {
  * @returns {{user: import("../onboarding/auth.js").User|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useUser = () => {
-  const res = usePreference(PREFERENCES.USER);
+  const res = usePreference(QUERY_KEYS.USER);
   return {
     user: res.data,
     status: res.status,
@@ -50,7 +51,7 @@ export const useUser = () => {
  * @returns {{userInfo: import("../onboarding/auth.js").UserInfo|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useUserInfo = () => {
-  const res = usePreference(PREFERENCES.USER_INFO);
+  const res = usePreference(QUERY_KEYS.USER_INFO);
   return {
     userInfo: res.data,
     status: res.status,
@@ -141,7 +142,27 @@ export const useFetchSources = ({ page, numPerPage }) => {
 
 /** @typedef {{user: null|import("../onboarding/auth.js").User, status: QueryStatus, error: any}} SkipOnboardingState */
 
-export const useSkipOnboarding = () => {
+/**
+ * @param {import("@tanstack/react-query").QueryClient} queryClient
+ * @returns {Promise<void>}
+ */
+const fetchConfigAndSetPreference = async (queryClient) => {
+  const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
+  const skyportalConfig = await fetchConfig({
+    instanceUrl: userInfo.instance.url,
+    token: userInfo.token,
+  });
+  queryClient.setQueryData(
+    [QUERY_KEYS.BANDPASS_COLORS],
+    skyportalConfig.bandpassesColors,
+  );
+  await setPreference({
+    key: QUERY_KEYS.BANDPASS_COLORS,
+    value: skyportalConfig.bandpassesColors,
+  });
+};
+
+export const useAppStart = () => {
   const [state, setState] =
     /** @type {ReturnType<typeof useState<SkipOnboardingState>>} */ useState({
       user: null,
@@ -151,11 +172,12 @@ export const useSkipOnboarding = () => {
   const queryClient = useQueryClient();
   const appStarted = async () => {
     if (config.CLEAR_AUTH) {
-      await setPreference({ key: PREFERENCES.USER_INFO, value: null });
-      await setPreference({ key: PREFERENCES.USER, value: null });
+      await setPreference({ key: QUERY_KEYS.USER_INFO, value: null });
+      await setPreference({ key: QUERY_KEYS.USER, value: null });
     }
-    let user = await getPreference({ key: PREFERENCES.USER });
+    let user = await getPreference({ key: QUERY_KEYS.USER });
     if (user) {
+      await fetchConfigAndSetPreference(queryClient);
       return user;
     }
     if (!config.SKIP_ONBOARDING) {
@@ -172,19 +194,20 @@ export const useSkipOnboarding = () => {
       instanceUrl: config.INSTANCE_URL,
     });
     queryClient.setQueryData([QUERY_KEYS.USER], user);
-    await setPreference({ key: PREFERENCES.USER, value: user });
+    await setPreference({ key: QUERY_KEYS.USER, value: user });
     const userInfo = {
       token: config.TOKEN,
       instance: { url: config.INSTANCE_URL, name: config.INSTANCE_NAME },
     };
     queryClient.setQueryData([QUERY_KEYS.USER_INFO], userInfo);
-    await setPreference({ key: PREFERENCES.USER_INFO, value: userInfo });
+    await setPreference({ key: QUERY_KEYS.USER_INFO, value: userInfo });
+    await fetchConfigAndSetPreference(queryClient);
     setState({ user, status: "success", error: state.error });
   };
   return useQuery({
     // @ts-ignore
     suspense: true,
-    queryKey: ["appStart"],
+    queryKey: [QUERY_KEYS.APP_START],
     queryFn: appStarted,
     enabled: true,
   });
@@ -253,6 +276,19 @@ export const useSourcePhotometry = ({ sourceId }) => {
   });
   return {
     photometry,
+    status,
+    error,
+  };
+};
+
+export const useBandpassesColors = () => {
+  const {
+    data: bandpassesColors,
+    status,
+    error,
+  } = usePreference(QUERY_KEYS.BANDPASS_COLORS);
+  return {
+    bandpassesColors,
     status,
     error,
   };

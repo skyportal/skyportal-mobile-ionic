@@ -213,9 +213,21 @@ export async function fetchGroups({ instanceUrl, token }) {
  * @param {Photometry[]} params.photometry
  * @param {number} params.titleFontSize
  * @param {number} params.labelFontSize
+ * @param {import("../common/requests").BandpassesColors} params.bandpassesColors
  * @returns {import("vega-embed").VisualizationSpec}
  */
-export const vegaPlotSpec = ({ photometry, titleFontSize, labelFontSize }) => {
+export const getVegaPlotSpec = ({
+  photometry,
+  titleFontSize,
+  labelFontSize,
+  bandpassesColors,
+}) => {
+  /** @type {{domain: string[], range: string[]}} */
+  const colorScale = { domain: [], range: [] };
+  new Set(photometry.map((p) => p.filter)).forEach((f) => {
+    colorScale.domain.push(f);
+    colorScale.range.push(`rgb(${bandpassesColors[f].join(",")})`);
+  });
   const mjdNow = Date.now() / 86400000.0 + 40587.0;
   return /** @type {any} */ ({
     $schema: "https://vega.github.io/schema/vega-lite/v5.2.0.json",
@@ -282,6 +294,7 @@ export const vegaPlotSpec = ({ photometry, titleFontSize, labelFontSize }) => {
           color: {
             field: "filter",
             type: "nominal",
+            scale: colorScale,
             legend: {
               titleAnchor: "start",
               offset: 5,

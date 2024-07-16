@@ -42,7 +42,7 @@ import OnboardingScreen from "./onboarding/OnboardingScreen/OnboardingScreen.jsx
 import React from "react";
 import CheckQRCodeScreen from "./onboarding/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
 import { LoginOkScreen } from "./onboarding/LoginOk/LoginOkScreen.jsx";
-import { useSkipOnboarding } from "./common/hooks.js";
+import { useAppStart } from "./common/hooks.js";
 import { ScanningOptionsScreen } from "./scanning/scanningOptions/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
 import { MainScanningScreen } from "./scanning/scanningSession/MainScanningScreen/MainScanningScreen.jsx";
 import { SourceListScreen } from "./sources/SourceListScreen/SourceListScreen.jsx";
@@ -53,7 +53,7 @@ import { ScanningHome } from "./scanning/ScanningHome/ScanningHome.jsx";
 setupIonicReact();
 
 const App = () => {
-  const { data: user } = useSkipOnboarding();
+  const { data: user } = useAppStart();
   return (
     <IonApp>
       <IonReactRouter>
