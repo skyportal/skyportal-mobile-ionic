@@ -86,13 +86,12 @@ export const CandidateScanner = () => {
       <IonModal
         ref={modal}
         isOpen={false}
-        initialBreakpoint={0.25}
+        initialBreakpoint={0.75}
         breakpoints={[0, 0.25, 0.5, 0.75]}
       >
         <CandidateAnnotationsViewer
           // @ts-ignore
           candidate={currentCandidate}
-          modal={modal}
         />
       </IonModal>
     </div>
