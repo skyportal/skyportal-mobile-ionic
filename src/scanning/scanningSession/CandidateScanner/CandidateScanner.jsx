@@ -33,17 +33,15 @@ export const CandidateScanner = () => {
   /** @type {React.MutableRefObject<any>} */
   const modal = useRef(null);
   const queryParams = useQueryParams();
-  const { candidates } = useSearchCandidates({
+  const { candidateSearchResponse } = useSearchCandidates({
     startDate: queryParams.startDate,
     endDate: queryParams.endDate,
     savedStatus: queryParams.savedStatus,
     groupIDs: queryParams.groupIDs,
   });
+  const candidates = candidateSearchResponse?.candidates;
+  const totalMatches = candidateSearchResponse?.totalMatches;
 
-  if (candidates?.length === 0) {
-    return <p>No candidates found</p>;
-  }
-  // @ts-ignore
   const currentCandidate = candidates?.at(currentIndex);
   return (
     <div className="candidate-scanner">
@@ -55,7 +53,8 @@ export const CandidateScanner = () => {
                 candidate={candidate}
                 modal={modal}
                 currentIndex={index}
-                nbCandidates={candidates.length}
+                // @ts-ignore
+                nbCandidates={totalMatches}
                 emblaApi={emblaApi}
               />
             </div>

@@ -9,7 +9,7 @@ import { useUserInfo } from "../common/hooks.js";
  * @param {string|null} [props.endDate=null]
  * @param {import("../common/constants").SavedStatus} props.savedStatus
  * @param {string} props.groupIDs
- * @returns {{candidates: import("../scanning/scanningLib.js").Candidate[]|undefined, status: import("@tanstack/react-query").QueryStatus, error: any}}
+ * @returns {{candidateSearchResponse: import("./scanningRequests.js").CandidateSearchResponse|undefined, status: import("@tanstack/react-query").QueryStatus, error: any}}
  */
 export const useSearchCandidates = ({
   startDate,
@@ -19,7 +19,7 @@ export const useSearchCandidates = ({
 }) => {
   const { userInfo } = useUserInfo();
   const {
-    /** @type {import("../scanning/scanningLib.js").Candidate[]} */ data: candidates,
+    /** @type {import("../scanning/scanningLib.js").Candidate[]} */ data: candidateSearchResponse,
     status,
     error,
   } = useQuery({
@@ -46,7 +46,7 @@ export const useSearchCandidates = ({
     enabled: !!userInfo && !!startDate,
   });
   return {
-    candidates,
+    candidateSearchResponse,
     status,
     error,
   };

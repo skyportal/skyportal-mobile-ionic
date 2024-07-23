@@ -1,5 +1,10 @@
-import { Capacitor, CapacitorHttp } from "@capacitor/core";
-import mockCandidates from "../../mock/candidates.json";
+import { CapacitorHttp } from "@capacitor/core";
+
+/**
+ * @typedef {Object} CandidateSearchResponse
+ * @property {import("./scanningLib.js").Candidate[]} candidates - The candidates
+ * @property {number} totalMatches - The total matches
+ */
 
 /**
  * Returns the candidates from the API
@@ -10,7 +15,7 @@ import mockCandidates from "../../mock/candidates.json";
  * @param {string|null} [params.endDate=null] - The end date of the candidates
  * @param {import("../common/constants").SavedStatus} params.savedStatus - The saved status of the candidates
  * @param {string} params.groupIDs - The group IDs to search for
- * @returns {Promise<import("./scanningLib.js").Candidate[]>}
+ * @returns {Promise<CandidateSearchResponse>}
  */
 export async function searchCandidates({
   instanceUrl,
@@ -21,9 +26,6 @@ export async function searchCandidates({
   groupIDs,
 }) {
   // example: https://preview.fritz.science/api/candidates?pageNumber=1&numPerPage=50&groupIDs=4&savedStatus=savedToAnySelected&listNameReject=rejected_candidates&startDate=2024-07-01T21%3A27%3A27.232Z
-  if (Capacitor.getPlatform() === "web") {
-    return mockCandidates.data.candidates;
-  }
   let response = await CapacitorHttp.get({
     url: `${instanceUrl}/api/candidates`,
     headers: {
@@ -39,7 +41,10 @@ export async function searchCandidates({
       endDate: endDate || "",
     },
   });
-  return response.data.data.candidates;
+  return {
+    candidates: response.data.data.candidates,
+    totalMatches: response.data.data.totalMatches,
+  };
 }
 
 /**
