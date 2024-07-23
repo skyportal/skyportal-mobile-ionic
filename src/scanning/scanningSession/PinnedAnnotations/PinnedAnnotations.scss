@@ -1,0 +1,26 @@
+.pinned-annotations {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 0 0.5rem;
+  border: 0.5px rgba(82, 100, 117, 0.3) solid;
+  align-self: center;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  height: 9.2vh;
+
+  .annotations {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    flex: 1;
+    gap: 0.1rem;
+
+    .annotation-line {
+      display: flex;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+  }
+}

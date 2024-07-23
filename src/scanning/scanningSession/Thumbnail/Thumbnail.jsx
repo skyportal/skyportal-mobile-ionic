@@ -1,11 +1,27 @@
 import "./Thumbnail.scss";
-import { getThumbnailAltAndLink, getThumbnailHeader } from "../../scanning.js";
+import {
+  getThumbnailAltAndSurveyLink,
+  getThumbnailHeader,
+  getThumbnailImageUrl,
+} from "../../scanning.js";
+import { useState } from "react";
 
-export const Thumbnail = ({ name, ra, dec, url }) => {
-  const { alt, link } = getThumbnailAltAndLink(name, ra, dec);
+/**
+ * Thumbnail component
+ * @param {Object} props
+ * @param {import("../../scanning").Candidate} props.candidate
+ * @param {string} props.type
+ */
+export const Thumbnail = ({ candidate, type }) => {
+  const [src, setSrc] = useState(getThumbnailImageUrl(candidate, type));
+  const { alt } = getThumbnailAltAndSurveyLink(
+    type,
+    candidate.ra,
+    candidate.dec,
+  );
   return (
-    <div className={`thumbnail ${name}`}>
-      <div className="thumbnail-name">{getThumbnailHeader(name)}</div>
+    <div className={`thumbnail ${type}`}>
+      <div className="thumbnail-name">{getThumbnailHeader(type)}</div>
       <div className="thumbnail-image">
         <img
           className="crosshairs"
@@ -13,17 +29,17 @@ export const Thumbnail = ({ name, ra, dec, url }) => {
           alt=""
         />
         <img
-          className="h-auto w-full"
-          src={url}
+          src={src}
           alt={alt}
-          onError={(e) => {
-            e.target.onerror = null;
-            if (name === "ls") {
-              e.target.src =
-                "https://preview.fritz.science/static/images/outside_survey.png";
+          onError={() => {
+            if (type === "ls") {
+              setSrc(
+                "https://preview.fritz.science/static/images/outside_survey.png",
+              );
             } else {
-              e.target.src =
-                "https://preview.fritz.science/static/images/currently_unavailable.png";
+              setSrc(
+                "https://preview.fritz.science/static/images/currently_unavailable.png",
+              );
             }
           }}
         />

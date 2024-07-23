@@ -3,7 +3,7 @@ import "./CheckQRCodeScreen.scss";
 import { useHistory, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import { checkTokenAndFetchUser } from "../auth.js";
-import { PREFERENCES, QUERY_PARAMS } from "../../common/constants.js";
+import { QUERY_KEYS, QUERY_PARAMS } from "../../common/constants.js";
 import { setPreference } from "../../common/preferences.js";
 import { useMutation } from "@tanstack/react-query";
 
@@ -19,11 +19,11 @@ export const CheckQRCodeScreen = () => {
     mutationFn: async (variables) => await checkTokenAndFetchUser(variables),
     onSuccess: async (data) => {
       await setPreference({
-        key: PREFERENCES.USER_INFO,
+        key: QUERY_KEYS.USER_INFO,
         value: { token, instance },
       });
-      await setPreference({ key: PREFERENCES.USER, value: data });
-      history.push("/login-ok");
+      await setPreference({ key: QUERY_KEYS.USER, value: data });
+      history.replace("/login-ok");
     },
     onError: (error) => {
       console.error(error);

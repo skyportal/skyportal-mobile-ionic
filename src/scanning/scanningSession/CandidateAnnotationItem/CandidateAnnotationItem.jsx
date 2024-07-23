@@ -1,10 +1,57 @@
 import "./CandidateAnnotationItem.scss";
+import {
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  useIonToast,
+} from "@ionic/react";
+import { Clipboard } from "@capacitor/clipboard";
+import { useCallback } from "react";
 
-export const CandidateAnnotationItem = ({ name, value }) => {
+/**
+ * @param {Object} props
+ * @param {import("../../scanning").CandidateAnnotation} props.annotation
+ * @returns {JSX.Element}
+ */
+export const CandidateAnnotationItem = ({ annotation }) => {
+  const [present] = useIonToast();
+  const handleTextCopied = useCallback(
+    async (
+      /** @type {string} */ key,
+      /** @type {string|number|undefined} */ value,
+    ) => {
+      await Clipboard.write({
+        string: `${key}: ${value}`,
+      });
+      await present({
+        message: "Text copied to clipboard!",
+        duration: 2000,
+      });
+    },
+    [present],
+  );
+
   return (
     <div className="candidate-annotation-item">
-      <div className="name">{name}:</div>
-      <div className="value">{value}</div>
+      <IonList lines="full">
+        <IonListHeader>
+          <h6>
+            <IonLabel>{annotation.origin}</IonLabel>
+          </h6>
+        </IonListHeader>
+        {Object.entries(annotation.data)
+          .slice(0, 3)
+          .map(([key, value]) => (
+            <IonItem
+              key={key}
+              onClick={() => handleTextCopied(key, value)}
+              button
+            >
+              {key}: {value}
+            </IonItem>
+          ))}
+      </IonList>
     </div>
   );
 };

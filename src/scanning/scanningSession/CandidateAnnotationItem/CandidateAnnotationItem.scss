@@ -1,15 +1,22 @@
-.candidate-annotation-item {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  gap: 0.5rem;
+:root {
+  --item-padding: 0.5rem;
+}
 
-  .name {
-    font-size: 0.7rem;
+.candidate-annotation-item {
+  display: block;
+  width: 100%;
+
+  ion-item {
+    --inner-padding-top: var(--item-padding);
+    --inner-padding-bottom: var(--item-padding);
+    --min-height: 0;
   }
 
-  .value {
-    font-size: 0.8rem;
-    font-weight: bold;
+  ion-list-header {
+    h6 {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--ion-color-secondary);
+    }
   }
 }

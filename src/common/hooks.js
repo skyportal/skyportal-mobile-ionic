@@ -1,11 +1,20 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { PREFERENCES, QUERY_KEYS } from "./constants.js";
-import { fetchGroups, searchCandidates } from "../scanning/scanning.js";
+import {
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { QUERY_KEYS } from "./constants.js";
+import {
+  fetchGroups,
+  fetchSourcePhotometry,
+  searchCandidates,
+} from "../scanning/scanning.js";
 import { fetchSources } from "../sources/sources.js";
 import { getPreference, setPreference } from "./preferences.js";
 import config from "../config.js";
 import { checkTokenAndFetchUser } from "../onboarding/auth.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { fetchConfig } from "./requests.js";
 
 /**
  * @typedef {"success" | "error" | "pending"} QueryStatus
@@ -18,7 +27,7 @@ import { useEffect, useState } from "react";
  * @returns {{data:T|undefined, status: QueryStatus, error: any|undefined}}
  */
 const usePreference = (key) => {
-  return useQuery({
+  return useSuspenseQuery({
     queryKey: [key],
     queryFn: () => getPreference({ key }),
   });
@@ -29,7 +38,7 @@ const usePreference = (key) => {
  * @returns {{user: import("../onboarding/auth.js").User|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useUser = () => {
-  const res = usePreference(PREFERENCES.USER);
+  const res = usePreference(QUERY_KEYS.USER);
   return {
     user: res.data,
     status: res.status,
@@ -42,7 +51,7 @@ export const useUser = () => {
  * @returns {{userInfo: import("../onboarding/auth.js").UserInfo|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useUserInfo = () => {
-  const res = usePreference(PREFERENCES.USER_INFO);
+  const res = usePreference(QUERY_KEYS.USER_INFO);
   return {
     userInfo: res.data,
     status: res.status,
@@ -77,16 +86,20 @@ export const useSearchCandidates = ({
       savedStatus,
       groupIDs,
     ],
-    queryFn: () =>
-      searchCandidates({
+    queryFn: async () => {
+      if (!startDate || !endDate || !savedStatus || !groupIDs) {
+        throw new Error("Missing parameters");
+      }
+      return await searchCandidates({
         instanceUrl: userInfo?.instance.url ?? "",
         token: userInfo?.token ?? "",
         startDate,
         endDate,
         savedStatus,
         groupIDs,
-      }),
-    enabled: !!userInfo,
+      });
+    },
+    enabled: !!userInfo && !!startDate,
   });
   return {
     candidates,
@@ -117,6 +130,8 @@ export const useFetchSources = ({ page, numPerPage }) => {
         numPerPage,
       }),
     enabled: !!userInfo,
+    // @ts-ignore
+    suspense: true,
   });
   return {
     sources,
@@ -125,49 +140,77 @@ export const useFetchSources = ({ page, numPerPage }) => {
   };
 };
 
-export const useSkipOnboarding = () => {
-  /** @type {[{skipOnboarding: boolean, status: QueryStatus, error: any}, Function]} */
-  const [state, setState] = useState({
-    skipOnboarding: false,
-    status: "pending",
-    error: undefined,
+/** @typedef {{user: null|import("../onboarding/auth.js").User, status: QueryStatus, error: any}} SkipOnboardingState */
+
+/**
+ * @param {import("@tanstack/react-query").QueryClient} queryClient
+ * @returns {Promise<void>}
+ */
+const fetchConfigAndSetPreference = async (queryClient) => {
+  const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
+  const skyportalConfig = await fetchConfig({
+    instanceUrl: userInfo.instance.url,
+    token: userInfo.token,
   });
+  queryClient.setQueryData(
+    [QUERY_KEYS.BANDPASS_COLORS],
+    skyportalConfig.bandpassesColors,
+  );
+  await setPreference({
+    key: QUERY_KEYS.BANDPASS_COLORS,
+    value: skyportalConfig.bandpassesColors,
+  });
+};
+
+export const useAppStart = () => {
+  const [state, setState] =
+    /** @type {ReturnType<typeof useState<SkipOnboardingState>>} */ useState({
+      user: null,
+      status: "pending",
+      error: undefined,
+    });
   const queryClient = useQueryClient();
-  let mutation = useMutation({
-    mutationFn: () => {
-      if (!config.SKIP_ONBOARDING) {
-        throw new Error("Onboarding is not skipped");
-      }
-      if (
-        config.SKIP_ONBOARDING &&
-        (!config.INSTANCE_URL || !config.INSTANCE_NAME || !config.TOKEN)
-      ) {
-        throw new Error("Missing configuration");
-      }
-      return checkTokenAndFetchUser({
-        token: config.TOKEN,
-        instanceUrl: config.INSTANCE_URL,
-      });
-    },
-    onSuccess: async (user) => {
-      queryClient.setQueryData([QUERY_KEYS.USER], user);
-      await setPreference({ key: PREFERENCES.USER, value: user });
-      const userInfo = {
-        token: config.TOKEN,
-        instance: { url: config.INSTANCE_URL, name: config.INSTANCE_NAME },
-      };
-      queryClient.setQueryData([QUERY_KEYS.USER_INFO], userInfo);
-      await setPreference({ key: PREFERENCES.USER_INFO, value: userInfo });
-      setState({ skipOnboarding: true, status: "success", error: state.error });
-    },
-    onError: (error) => {
-      setState({ skipOnboarding: false, status: "error", error });
-    },
+  const appStarted = async () => {
+    if (config.CLEAR_AUTH) {
+      await setPreference({ key: QUERY_KEYS.USER_INFO, value: null });
+      await setPreference({ key: QUERY_KEYS.USER, value: null });
+    }
+    let user = await getPreference({ key: QUERY_KEYS.USER });
+    if (user) {
+      await fetchConfigAndSetPreference(queryClient);
+      return user;
+    }
+    if (!config.SKIP_ONBOARDING) {
+      return null;
+    }
+    if (
+      config.SKIP_ONBOARDING &&
+      (!config.INSTANCE_URL || !config.INSTANCE_NAME || !config.TOKEN)
+    ) {
+      return null;
+    }
+    user = await checkTokenAndFetchUser({
+      token: config.TOKEN,
+      instanceUrl: config.INSTANCE_URL,
+    });
+    queryClient.setQueryData([QUERY_KEYS.USER], user);
+    await setPreference({ key: QUERY_KEYS.USER, value: user });
+    const userInfo = {
+      token: config.TOKEN,
+      instance: { url: config.INSTANCE_URL, name: config.INSTANCE_NAME },
+    };
+    queryClient.setQueryData([QUERY_KEYS.USER_INFO], userInfo);
+    await setPreference({ key: QUERY_KEYS.USER_INFO, value: userInfo });
+    await fetchConfigAndSetPreference(queryClient);
+    setState({ user, status: "success", error: state.error });
+  };
+  return useQuery({
+    // @ts-ignore
+    suspense: true,
+    queryKey: [QUERY_KEYS.APP_START],
+    queryFn: appStarted,
+    enabled: true,
   });
-  useEffect(() => {
-    mutation.mutate();
-  }, []);
-  return state;
 };
 
 /**
@@ -187,6 +230,8 @@ export const useUserAccessibleGroups = () => {
         token: userInfo?.token ?? "",
       }),
     enabled: !!userInfo,
+    // @ts-ignore
+    suspense: true,
   });
   return {
     userAccessibleGroups: groups?.user_accessible_groups,
@@ -199,15 +244,52 @@ export const useUserAccessibleGroups = () => {
  * @returns {{[key: string]: any}}
  */
 export const useQueryParams = () => {
-  const [state, setState] = useState({});
   const params = new URLSearchParams(location.search);
   const paramsObject = {};
   for (const [key, value] of params) {
     // @ts-ignore
     paramsObject[key] = value;
   }
-  useEffect(() => {
-    setState(paramsObject);
-  }, []);
-  return state;
+  return paramsObject;
+};
+
+/**
+ * @param {Object} props
+ * @param {string} props.sourceId
+ * @returns {{photometry: import("../scanning/scanning.js").Photometry[]|undefined, status: QueryStatus, error: any|undefined}}
+ */
+export const useSourcePhotometry = ({ sourceId }) => {
+  const { userInfo } = useUserInfo();
+  const {
+    /** @type {import("../scanning/scanning.js").Photometry[]} */ data: photometry,
+    status,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.SOURCE_PHOTOMETRY, sourceId],
+    queryFn: () =>
+      fetchSourcePhotometry({
+        sourceId,
+        instanceUrl: userInfo?.instance.url ?? "",
+        token: userInfo?.token ?? "",
+      }),
+    enabled: !!userInfo,
+  });
+  return {
+    photometry,
+    status,
+    error,
+  };
+};
+
+export const useBandpassesColors = () => {
+  const {
+    data: bandpassesColors,
+    status,
+    error,
+  } = usePreference(QUERY_KEYS.BANDPASS_COLORS);
+  return {
+    bandpassesColors,
+    status,
+    error,
+  };
 };

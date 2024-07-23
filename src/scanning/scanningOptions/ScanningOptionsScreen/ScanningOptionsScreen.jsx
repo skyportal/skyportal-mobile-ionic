@@ -3,10 +3,12 @@ import {
   IonContent,
   IonHeader,
   IonPage,
+  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { ScanningOptionsForm } from "../ScanningOptionsForm/ScanningOptionsForm.jsx";
+import React, { Suspense } from "react";
 
 export const ScanningOptionsScreen = () => {
   return (
@@ -17,9 +19,17 @@ export const ScanningOptionsScreen = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <div className="scanning-options-container">
-          <ScanningOptionsForm />
-        </div>
+        <Suspense
+          fallback={
+            <div className="scanning-option-loading">
+              <IonSpinner />
+            </div>
+          }
+        >
+          <div className="scanning-options-container">
+            <ScanningOptionsForm />
+          </div>
+        </Suspense>
       </IonContent>
     </IonPage>
   );

@@ -14,7 +14,6 @@ import { navigateWithParams } from "../../common/util.js";
  * @param {string} props.page - The current page of the onboarding screen
  * @param {Function} props.setPage - The function to set the current page of the onboarding screen
  * @returns {JSX.Element}
- * @constructor
  */
 const OnboardingLower = ({ page, setPage }) => {
   const history = useHistory();
@@ -34,6 +33,7 @@ const OnboardingLower = ({ page, setPage }) => {
         [QUERY_PARAMS.TOKEN]: token,
         [QUERY_PARAMS.INSTANCE]: JSON.stringify(instance),
       },
+      replace: true,
     });
   }
 

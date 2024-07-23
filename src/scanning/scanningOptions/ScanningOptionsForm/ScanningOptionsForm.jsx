@@ -14,7 +14,10 @@ import { navigateWithParams } from "../../../common/util.js";
 export const ScanningOptionsForm = () => {
   const history = useHistory();
   const defaultValues = {
-    startDate: moment().subtract(1, "day").format(),
+    startDate:
+      import.meta.env.MODE === "development"
+        ? moment("2022-07-26T16:43:00-07:00").format()
+        : moment().format(),
     endDate: moment().format(),
     filterCandidates: false,
     filteringType: "include",
@@ -83,7 +86,7 @@ export const ScanningOptionsForm = () => {
     const startDate = moment(data.startDate).format();
     const endDate = moment(data.endDate).format();
     const junkGroupIDs = data.junkGroups.join(",");
-    navigateWithParams(history, "/app/scanning/main", {
+    navigateWithParams(history, "/scanning/main", {
       params: {
         groupIDs,
         savedStatus,
@@ -100,11 +103,7 @@ export const ScanningOptionsForm = () => {
   const groupSelectionModal = useRef(null);
   /** @type {React.MutableRefObject<any>} */
   const junkGroupSelectionModal = useRef(null);
-  const { userAccessibleGroups } = useUserAccessibleGroups();
-
-  if (!userAccessibleGroups) {
-    return <p>Loading...</p>;
-  }
+  const { userAccessibleGroups = [] } = useUserAccessibleGroups();
 
   return (
     <form className="scanning-options-form" onSubmit={handleSubmit(onSubmit)}>
