@@ -3,13 +3,13 @@ import {
   getThumbnailAltAndSurveyLink,
   getThumbnailHeader,
   getThumbnailImageUrl,
-} from "../../scanning.js";
+} from "../../scanningLib.js";
 import { useState } from "react";
 
 /**
  * Thumbnail component
  * @param {Object} props
- * @param {import("../../scanning").Candidate} props.candidate
+ * @param {import("../../scanningLib.js").Candidate} props.candidate
  * @param {string} props.type
  */
 export const Thumbnail = ({ candidate, type }) => {

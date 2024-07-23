@@ -1,12 +1,13 @@
 import "./CandidateScanner.scss";
 import { IonButton, IonIcon, IonModal } from "@ionic/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useQueryParams, useSearchCandidates } from "../../../common/hooks.js";
+import { useQueryParams } from "../../../common/hooks.js";
 import { arrowForward, checkmark, trashBin } from "ionicons/icons";
 import useEmblaCarousel from "embla-carousel-react";
 import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
 import { ScanningCardSkeleton } from "../ScanningCard/ScanningCardSkeleton.jsx";
+import { useSearchCandidates } from "../../scanningHooks.js";
 
 export const CandidateScanner = () => {
   const [currentIndex, setCurrentIndex] = useState(0);

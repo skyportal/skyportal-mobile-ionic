@@ -11,7 +11,7 @@ import { useCallback } from "react";
 
 /**
  * @param {Object} props
- * @param {import("../../scanning").CandidateAnnotation} props.annotation
+ * @param {import("../../scanningLib.js").CandidateAnnotation} props.annotation
  * @returns {JSX.Element}
  */
 export const CandidateAnnotationItem = ({ annotation }) => {

@@ -3,7 +3,7 @@ import { IonButton, IonText } from "@ionic/react";
 
 /**
  * @param {Object} props
- * @param {import("../../scanning").Candidate} props.candidate
+ * @param {import("../../scanningLib.js").Candidate} props.candidate
  * @param {() => void} props.onButtonClick
  * @param {string[]} [props.pinnedAnnotationIds]
  * @returns {JSX.Element}

@@ -4,17 +4,16 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { QUERY_KEYS } from "./constants.js";
-import {
-  fetchGroups,
-  fetchSourcePhotometry,
-  searchCandidates,
-} from "../scanning/scanning.js";
 import { fetchSources } from "../sources/sources.js";
 import { getPreference, setPreference } from "./preferences.js";
 import config from "../config.js";
 import { checkTokenAndFetchUser } from "../onboarding/auth.js";
 import { useState } from "react";
 import { fetchConfig } from "./requests.js";
+import {
+  fetchGroups,
+  fetchSourcePhotometry,
+} from "../scanning/scanningRequests.js";
 
 /**
  * @typedef {"success" | "error" | "pending"} QueryStatus
@@ -56,55 +55,6 @@ export const useUserInfo = () => {
     userInfo: res.data,
     status: res.status,
     error: res.error,
-  };
-};
-
-/**
- * @param {Object} props
- * @param {string} props.startDate
- * @param {string|null} [props.endDate=null]
- * @param {import("../common/constants").SavedStatus} props.savedStatus
- * @param {string} props.groupIDs
- * @returns {{candidates: import("../scanning/scanning.js").Candidate[]|undefined, status: QueryStatus, error: any}}
- */
-export const useSearchCandidates = ({
-  startDate,
-  endDate = null,
-  savedStatus,
-  groupIDs,
-}) => {
-  const { userInfo } = useUserInfo();
-  const {
-    /** @type {import("../scanning/scanning.js").Candidate[]} */ data: candidates,
-    status,
-    error,
-  } = useQuery({
-    queryKey: [
-      QUERY_KEYS.CANDIDATES,
-      startDate,
-      endDate,
-      savedStatus,
-      groupIDs,
-    ],
-    queryFn: async () => {
-      if (!startDate || !endDate || !savedStatus || !groupIDs) {
-        throw new Error("Missing parameters");
-      }
-      return await searchCandidates({
-        instanceUrl: userInfo?.instance.url ?? "",
-        token: userInfo?.token ?? "",
-        startDate,
-        endDate,
-        savedStatus,
-        groupIDs,
-      });
-    },
-    enabled: !!userInfo && !!startDate,
-  });
-  return {
-    candidates,
-    status,
-    error,
   };
 };
 
@@ -214,12 +164,12 @@ export const useAppStart = () => {
 };
 
 /**
- * @returns {{userAccessibleGroups: import("../scanning/scanning.js").Group[]|undefined, status: QueryStatus, error: any|undefined}}
+ * @returns {{userAccessibleGroups: import("../scanning/scanningLib.js").Group[]|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useUserAccessibleGroups = () => {
   const { userInfo } = useUserInfo();
   const {
-    /** @type {import("../scanning/scanning.js").GroupsResponse} */ data: groups,
+    /** @type {import("../scanning/scanningLib.js").GroupsResponse} */ data: groups,
     status,
     error,
   } = useQuery({
@@ -256,12 +206,12 @@ export const useQueryParams = () => {
 /**
  * @param {Object} props
  * @param {string} props.sourceId
- * @returns {{photometry: import("../scanning/scanning.js").Photometry[]|undefined, status: QueryStatus, error: any|undefined}}
+ * @returns {{photometry: import("../scanning/scanningLib.js").Photometry[]|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useSourcePhotometry = ({ sourceId }) => {
   const { userInfo } = useUserInfo();
   const {
-    /** @type {import("../scanning/scanning.js").Photometry[]} */ data: photometry,
+    /** @type {import("../scanning/scanningLib.js").Photometry[]} */ data: photometry,
     status,
     error,
   } = useQuery({

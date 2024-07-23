@@ -1,7 +1,7 @@
 import "./CandidatePhotometryChart.scss";
 import { useEffect, useRef, useState } from "react";
 import embed from "vega-embed";
-import { getVegaPlotSpec } from "../../scanning.js";
+import { getVegaPlotSpec } from "../../scanningLib.js";
 import {
   useBandpassesColors,
   useSourcePhotometry,
@@ -10,7 +10,7 @@ import { IonSpinner } from "@ionic/react";
 
 /**
  * @param {Object} props
- * @param {import("../../scanning.js").Candidate} props.candidate
+ * @param {import("../../scanningLib.js").Candidate} props.candidate
  * @returns {JSX.Element}
  */
 export const CandidatePhotometryChart = ({ candidate }) => {
