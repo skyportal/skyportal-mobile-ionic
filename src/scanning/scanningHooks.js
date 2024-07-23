@@ -9,6 +9,7 @@ import { useUserInfo } from "../common/hooks.js";
  * @param {string|null} [props.endDate=null]
  * @param {import("../common/constants").SavedStatus} props.savedStatus
  * @param {string} props.groupIDs
+ * @param {number} [props.numPerPage=7]
  * @returns {{candidateSearchResponse: import("./scanningRequests.js").CandidateSearchResponse|undefined, status: import("@tanstack/react-query").QueryStatus, error: any}}
  */
 export const useSearchCandidates = ({
@@ -16,6 +17,7 @@ export const useSearchCandidates = ({
   endDate = null,
   savedStatus,
   groupIDs,
+  numPerPage = 7,
 }) => {
   const { userInfo } = useUserInfo();
   const {
@@ -41,6 +43,7 @@ export const useSearchCandidates = ({
         endDate,
         savedStatus,
         groupIDs,
+        numPerPage: numPerPage.toString(),
       });
     },
     enabled: !!userInfo && !!startDate,

@@ -8,14 +8,77 @@ import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/Candid
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
 import { ScanningCardSkeleton } from "../ScanningCard/ScanningCardSkeleton.jsx";
 import { useSearchCandidates } from "../../scanningHooks.js";
+import { searchCandidates } from "../../scanningRequests.js";
+import { getPreference } from "../../../common/preferences.js";
+import { QUERY_KEYS } from "../../../common/constants.js";
+import { useMutation } from "@tanstack/react-query";
 
 export const CandidateScanner = () => {
+  const numPerPage = 7;
+  const [pageNumber, setPageNumber] = useState(1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel({ watchResize: false });
+  /** @type {React.MutableRefObject<any>} */
+  const modal = useRef(null);
+  const queryParams = useQueryParams();
+  const { candidateSearchResponse, status } = useSearchCandidates({
+    startDate: queryParams.startDate,
+    endDate: queryParams.endDate,
+    savedStatus: queryParams.savedStatus,
+    groupIDs: queryParams.groupIDs,
+    numPerPage,
+  });
+  /** @type {[import("../../scanningLib").Candidate[], React.Dispatch<import("../../scanningLib").Candidate[]>]} */
+  // @ts-ignore
+  const [candidates, setCandidates] = useState([]);
+  const [totalMatches, setTotalMatches] = useState(
+    candidateSearchResponse?.totalMatches,
+  );
+  const [queryID, setQueryID] = useState(candidateSearchResponse?.queryID);
+
+  useEffect(() => {
+    if (status === "success" && candidateSearchResponse) {
+      setCandidates(candidateSearchResponse?.candidates);
+      setTotalMatches(candidateSearchResponse?.totalMatches);
+      setQueryID(candidateSearchResponse?.queryID);
+    }
+  }, [candidateSearchResponse, status]);
+
+  const slidesInViewMutation = useMutation({
+    // @ts-ignore
+    mutationFn: async (
+      /** @type {import("embla-carousel").EmblaCarouselType} */ e,
+    ) => {
+      if (e.slidesInView()[0] !== numPerPage * pageNumber - 4) {
+        return null;
+      }
+      /** @type {import("../../../onboarding/auth").UserInfo} */
+      const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
+      return await searchCandidates({
+        instanceUrl: userInfo.instance.url,
+        token: userInfo.token,
+        startDate: queryParams.startDate,
+        endDate: queryParams.endDate,
+        savedStatus: queryParams.savedStatus,
+        groupIDs: queryParams.groupIDs,
+        queryID,
+        numPerPage: numPerPage.toString(),
+        pageNumber: (pageNumber + 1).toString(),
+      });
+    },
+    mutationKey: [totalMatches, pageNumber, queryID],
+    onSuccess: (data) => {
+      // @ts-ignore
+      setCandidates([...candidates, ...data.candidates]);
+      setPageNumber((prev) => prev + 1);
+    },
+  });
 
   const selectCallback = useCallback(
-    (/** @type {import("embla-carousel").EmblaCarouselType} */ e) =>
-      setCurrentIndex(e.selectedScrollSnap()),
+    (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
+      setCurrentIndex(e.selectedScrollSnap());
+      slidesInViewMutation.mutate(e);
+    },
     [],
   );
 
@@ -29,18 +92,6 @@ export const CandidateScanner = () => {
       }
     };
   }, [emblaApi]);
-
-  /** @type {React.MutableRefObject<any>} */
-  const modal = useRef(null);
-  const queryParams = useQueryParams();
-  const { candidateSearchResponse } = useSearchCandidates({
-    startDate: queryParams.startDate,
-    endDate: queryParams.endDate,
-    savedStatus: queryParams.savedStatus,
-    groupIDs: queryParams.groupIDs,
-  });
-  const candidates = candidateSearchResponse?.candidates;
-  const totalMatches = candidateSearchResponse?.totalMatches;
 
   const currentCandidate = candidates?.at(currentIndex);
   return (

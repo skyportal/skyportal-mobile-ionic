@@ -4,6 +4,7 @@ import { CapacitorHttp } from "@capacitor/core";
  * @typedef {Object} CandidateSearchResponse
  * @property {import("./scanningLib.js").Candidate[]} candidates - The candidates
  * @property {number} totalMatches - The total matches
+ * @property {string} queryID - The query ID
  */
 
 /**
@@ -15,6 +16,9 @@ import { CapacitorHttp } from "@capacitor/core";
  * @param {string|null} [params.endDate=null] - The end date of the candidates
  * @param {import("../common/constants").SavedStatus} params.savedStatus - The saved status of the candidates
  * @param {string} params.groupIDs - The group IDs to search for
+ * @param {string|null} [params.queryID=null] - The query ID
+ * @param {string} [params.pageNumber="1"] - The page number
+ * @param {string} [params.numPerPage="7"] - The number of candidates per page
  * @returns {Promise<CandidateSearchResponse>}
  */
 export async function searchCandidates({
@@ -24,6 +28,9 @@ export async function searchCandidates({
   endDate,
   savedStatus,
   groupIDs,
+  queryID = null,
+  pageNumber = "1",
+  numPerPage = "7",
 }) {
   // example: https://preview.fritz.science/api/candidates?pageNumber=1&numPerPage=50&groupIDs=4&savedStatus=savedToAnySelected&listNameReject=rejected_candidates&startDate=2024-07-01T21%3A27%3A27.232Z
   let response = await CapacitorHttp.get({
@@ -32,18 +39,20 @@ export async function searchCandidates({
       Authorization: `token ${token}`,
     },
     params: {
-      pageNumber: "1",
-      numPerPage: "50",
+      pageNumber,
+      numPerPage,
       groupIDs,
       savedStatus,
       listNameReject: "rejected_candidates",
       startDate,
       endDate: endDate || "",
+      queryID: queryID || "",
     },
   });
   return {
     candidates: response.data.data.candidates,
     totalMatches: response.data.data.totalMatches,
+    queryID: response.data.data.queryID,
   };
 }
 
