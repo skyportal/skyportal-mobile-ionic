@@ -1,5 +1,5 @@
 import "./CandidateScanner.scss";
-import { IonButton, IonIcon, IonModal } from "@ionic/react";
+import { IonButton, IonIcon, IonModal, IonSpinner } from "@ionic/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQueryParams } from "../../../common/hooks.js";
 import { arrowForward, checkmark, trashBin } from "ionicons/icons";
@@ -15,69 +15,40 @@ import { useMutation } from "@tanstack/react-query";
 
 export const CandidateScanner = () => {
   const numPerPage = 7;
-  const [pageNumber, setPageNumber] = useState(1);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [emblaRef, emblaApi] = useEmblaCarousel({ watchResize: false });
+  const [totalMatches, setTotalMatches] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel();
+  /** @type {[import("../../scanningLib").Candidate[], React.Dispatch<import("../../scanningLib").Candidate[]>]} */
+  // @ts-ignore
+  const [candidates, setCandidates] = useState([]);
+
+  /** @type {React.MutableRefObject<string|null>} */
+  const queryID = useRef(null);
+  const isFetchingNewBatch = useRef(false);
   /** @type {React.MutableRefObject<any>} */
   const modal = useRef(null);
+
   const queryParams = useQueryParams();
-  const { candidateSearchResponse, status } = useSearchCandidates({
+  const { candidateSearchResponse } = useSearchCandidates({
     startDate: queryParams.startDate,
     endDate: queryParams.endDate,
     savedStatus: queryParams.savedStatus,
     groupIDs: queryParams.groupIDs,
     numPerPage,
   });
-  /** @type {[import("../../scanningLib").Candidate[], React.Dispatch<import("../../scanningLib").Candidate[]>]} */
-  // @ts-ignore
-  const [candidates, setCandidates] = useState([]);
-  const [totalMatches, setTotalMatches] = useState(
-    candidateSearchResponse?.totalMatches,
-  );
-  const [queryID, setQueryID] = useState(candidateSearchResponse?.queryID);
 
   useEffect(() => {
-    if (status === "success" && candidateSearchResponse) {
-      setCandidates(candidateSearchResponse?.candidates);
-      setTotalMatches(candidateSearchResponse?.totalMatches);
-      setQueryID(candidateSearchResponse?.queryID);
-    }
-  }, [candidateSearchResponse, status]);
-
-  const slidesInViewMutation = useMutation({
-    // @ts-ignore
-    mutationFn: async (
-      /** @type {import("embla-carousel").EmblaCarouselType} */ e,
-    ) => {
-      if (e.slidesInView()[0] !== numPerPage * pageNumber - 4) {
-        return null;
-      }
-      /** @type {import("../../../onboarding/auth").UserInfo} */
-      const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
-      return await searchCandidates({
-        instanceUrl: userInfo.instance.url,
-        token: userInfo.token,
-        startDate: queryParams.startDate,
-        endDate: queryParams.endDate,
-        savedStatus: queryParams.savedStatus,
-        groupIDs: queryParams.groupIDs,
-        queryID,
-        numPerPage: numPerPage.toString(),
-        pageNumber: (pageNumber + 1).toString(),
-      });
-    },
-    mutationKey: [totalMatches, pageNumber, queryID],
-    onSuccess: (data) => {
+    if (candidateSearchResponse?.candidates) {
       // @ts-ignore
-      setCandidates([...candidates, ...data.candidates]);
-      setPageNumber((prev) => prev + 1);
-    },
-  });
+      setCandidates(candidateSearchResponse.candidates);
+      setTotalMatches(candidateSearchResponse.totalMatches);
+      queryID.current = candidateSearchResponse.queryID;
+    }
+  }, [candidateSearchResponse]);
 
   const selectCallback = useCallback(
     (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
       setCurrentIndex(e.selectedScrollSnap());
-      slidesInViewMutation.mutate(e);
     },
     [],
   );
@@ -92,6 +63,81 @@ export const CandidateScanner = () => {
       }
     };
   }, [emblaApi]);
+
+  const slidesInViewCallback = useCallback(
+    (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
+      if (
+        !isFetchingNewBatch.current &&
+        e.selectedScrollSnap() >= e.slideNodes().length - 4 &&
+        e.slideNodes().length - e.selectedScrollSnap() < numPerPage &&
+        totalMatches &&
+        e.slideNodes().length < totalMatches
+      ) {
+        isFetchingNewBatch.current = true;
+        slidesInViewMutation.mutate(e);
+      }
+    },
+    [candidates, isFetchingNewBatch],
+  );
+
+  useEffect(() => {
+    if (emblaApi) {
+      emblaApi.on("slidesInView", slidesInViewCallback);
+    }
+    return () => {
+      if (emblaApi) {
+        emblaApi.off("slidesInView", slidesInViewCallback);
+      }
+    };
+  }, [emblaApi]);
+
+  const slidesInViewMutation = useMutation({
+    // @ts-ignore
+    mutationFn: async (
+      /** @type {import("embla-carousel").EmblaCarouselType} */ e,
+    ) => {
+      /** @type {import("../../../onboarding/auth").UserInfo} */
+      const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
+      return await searchCandidates({
+        instanceUrl: userInfo.instance.url,
+        token: userInfo.token,
+        startDate: queryParams.startDate,
+        endDate: queryParams.endDate,
+        savedStatus: queryParams.savedStatus,
+        groupIDs: queryParams.groupIDs,
+        queryID: queryID.current ?? "",
+        numPerPage: numPerPage.toString(),
+        pageNumber: (
+          Math.floor(e.slideNodes().length / numPerPage) + 1
+        ).toString(),
+      });
+    },
+    mutationKey: [totalMatches, queryID],
+    onSuccess: (data) => {
+      // @ts-ignore
+      setCandidates([...candidates, ...data.candidates]);
+      isFetchingNewBatch.current = false;
+    },
+    onError: () => {
+      isFetchingNewBatch.current = false;
+    },
+  });
+
+  if (!candidateSearchResponse) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <IonSpinner />
+      </div>
+    );
+  }
 
   const currentCandidate = candidates?.at(currentIndex);
   return (
