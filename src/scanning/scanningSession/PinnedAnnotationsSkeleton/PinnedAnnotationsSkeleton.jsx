@@ -9,12 +9,12 @@ import { IonSkeletonText } from "@ionic/react";
 export const PinnedAnnotationsSkeleton = ({ animated }) => {
   return (
     <div className="pinned-annotations">
-      <div className="annotations">
+      <div className="annotations skeleton">
         {[1, 2, 3].map((index) => (
           <div key={index} className="annotation-line">
             <IonSkeletonText
               className="name"
-              style={{ width: "2rem" }}
+              style={{ width: "2rem", height: ".8rem" }}
               animated={animated}
             />
             <IonSkeletonText style={{ width: "11rem" }} animated={animated} />

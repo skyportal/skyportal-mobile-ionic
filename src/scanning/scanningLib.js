@@ -63,6 +63,10 @@
  * @typedef {"new" | "ref" | "sub" | "sdss" | "ls" | "ps1"} ThumbnailType
  */
 
+import { Clipboard } from "@capacitor/clipboard";
+import { useIonToast } from "@ionic/react";
+import { useCallback } from "react";
+
 /**
  * @type {Object<ThumbnailType, ThumbnailType>}
  */
@@ -367,4 +371,24 @@ export const getVegaPlotSpec = ({
       },
     ],
   });
+};
+
+export const useCopyAnnotationLineOnClick = () => {
+  const [present] = useIonToast();
+  return useCallback(
+    /**
+     * @param {string} key
+     * @param {string|number|undefined} value
+     */
+    async (key, value) => {
+      await Clipboard.write({
+        string: `${key}: ${value}`,
+      });
+      await present({
+        message: "Annotation copied to clipboard!",
+        duration: 2000,
+      });
+    },
+    [present],
+  );
 };

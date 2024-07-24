@@ -1,5 +1,6 @@
 import "./PinnedAnnotations.scss";
-import { IonButton, IonText } from "@ionic/react";
+import { IonButton, IonItem, IonText } from "@ionic/react";
+import { useCopyAnnotationLineOnClick } from "../../scanningLib.js";
 
 /**
  * @param {Object} props
@@ -17,6 +18,7 @@ export const PinnedAnnotations = ({
     "ZTF Science Validation:Public Transients.acai_h",
   ],
 }) => {
+  const handleTextCopied = useCopyAnnotationLineOnClick();
   const pinnedAnnotations = pinnedAnnotationIds.map((id) => {
     const [annotationOrigin, dataItem] = id.split(".");
     return {
@@ -31,24 +33,34 @@ export const PinnedAnnotations = ({
     <div className="pinned-annotations">
       <div className="annotations">
         {pinnedAnnotations.map((annotationLine) => (
-          <div key={annotationLine.id} className="annotation-line">
+          <IonItem
+            key={annotationLine.id}
+            className="annotation-line"
+            lines="none"
+            onClick={() =>
+              handleTextCopied(annotationLine.id, annotationLine.value)
+            }
+            button
+          >
             <IonText className="name" color="secondary">
               {annotationLine.id}:
             </IonText>
+            {"\u00A0"}
             <div>{annotationLine.value}</div>
-          </div>
+          </IonItem>
         ))}
       </div>
-      <IonButton
-        onClick={onButtonClick}
-        color="secondary"
-        expand="block"
-        shape="round"
-        size="small"
-        fill="clear"
-      >
-        Show all
-      </IonButton>
+      <div className="button-container">
+        <IonButton
+          onClick={onButtonClick}
+          color="secondary"
+          expand="block"
+          size="small"
+          fill="clear"
+        >
+          Show all
+        </IonButton>
+      </div>
     </div>
   );
 };
