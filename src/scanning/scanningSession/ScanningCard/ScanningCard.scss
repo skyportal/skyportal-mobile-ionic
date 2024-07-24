@@ -39,7 +39,8 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      gap: 0.12rem;
+      height: fit-content;
+      row-gap: 0.3rem;
     }
 
     .plot-container {
