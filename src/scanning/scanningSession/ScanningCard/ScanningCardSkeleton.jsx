@@ -27,10 +27,7 @@ export const ScanningCardSkeleton = ({ animated = false }) => {
       </div>
       <PinnedAnnotationsSkeleton animated={animated} />
       <div className="plot-container">
-        <IonSkeletonText
-          style={{ width: "100%", height: "100%" }}
-          animated={animated}
-        />
+        <IonSkeletonText animated={animated} />
       </div>
     </div>
   );
