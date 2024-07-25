@@ -14,7 +14,7 @@ import { QUERY_KEYS } from "../../../common/constants.js";
 import { useMutation } from "@tanstack/react-query";
 
 export const CandidateScanner = () => {
-  const numPerPage = 7;
+  const numPerPage = 25;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [totalMatches, setTotalMatches] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel();
