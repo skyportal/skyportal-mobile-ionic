@@ -1,16 +1,16 @@
 import "./CandidatePhotometryChart.scss";
 import { useEffect, useRef, useState } from "react";
 import embed from "vega-embed";
-import { getVegaPlotSpec } from "../../scanning.js";
+import { getVegaPlotSpec } from "../../scanningLib.js";
 import {
   useBandpassesColors,
   useSourcePhotometry,
 } from "../../../common/hooks.js";
-import { IonSpinner } from "@ionic/react";
+import { IonSkeletonText } from "@ionic/react";
 
 /**
  * @param {Object} props
- * @param {import("../../scanning.js").Candidate} props.candidate
+ * @param {import("../../scanningLib.js").Candidate} props.candidate
  * @returns {JSX.Element}
  */
 export const CandidatePhotometryChart = ({ candidate }) => {
@@ -64,7 +64,7 @@ export const CandidatePhotometryChart = ({ candidate }) => {
     };
   }, [container, status]);
   return (
-    <>
+    <div className="candidate-photometry-chart">
       <div
         className="canvas-container"
         ref={container}
@@ -72,10 +72,12 @@ export const CandidatePhotometryChart = ({ candidate }) => {
       />
       <div
         className={`canvas-loading ${hasLoaded ? "loaded" : "loading"}`}
-        style={{ visibility: loaderIsHidden ? "hidden" : "visible" }}
+        style={{
+          visibility: loaderIsHidden ? "hidden" : "visible",
+        }}
       >
-        <IonSpinner color="primary" />
+        <IonSkeletonText animated />
       </div>
-    </>
+    </div>
   );
 };

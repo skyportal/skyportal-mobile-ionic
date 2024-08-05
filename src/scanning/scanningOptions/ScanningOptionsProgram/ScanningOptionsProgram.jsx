@@ -9,7 +9,7 @@ import { ErrorMessage } from "../../../common/ErrorMessage/ErrorMessage.jsx";
 /**
  * Program selection section of the scanning options
  * @param {Object} props
- * @param {import("../../scanning.js").Group[]} props.userAccessibleGroups
+ * @param {import("../../scanningLib.js").Group[]} props.userAccessibleGroups
  * @param {React.MutableRefObject<any>} props.modal
  * @param {import("react-hook-form").Control<any,any>} props.control
  * @param {import("react-hook-form").UseFormWatch<any>} props.watch
@@ -37,7 +37,7 @@ export const ScanningOptionsProgram = ({
           .map((/** @type {string} */ groupId) =>
             userAccessibleGroups.find((group) => group.id === +groupId),
           )
-          .map((/** @type {import("../../scanning.js").Group} */ group) => (
+          .map((/** @type {import("../../scanningLib.js").Group} */ group) => (
             <IonChip key={group.id}>{group.name}</IonChip>
           ))}
         <IonModal

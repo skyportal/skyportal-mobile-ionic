@@ -1,5 +1,5 @@
 import "./ScanningCard.scss";
-import { THUMBNAIL_TYPES } from "../../scanning.js";
+import { THUMBNAIL_TYPES } from "../../scanningLib.js";
 import { Thumbnail } from "../Thumbnail/Thumbnail.jsx";
 import { PinnedAnnotations } from "../PinnedAnnotations/PinnedAnnotations.jsx";
 import { CandidatePhotometryChart } from "../CandidatePhotometryChart/CandidatePhotometryChart.jsx";
@@ -9,7 +9,7 @@ import { ScanningCardSkeleton } from "./ScanningCardSkeleton.jsx";
 /**
  * Scanning card component
  * @param {Object} props
- * @param {import("../../scanning").Candidate} props.candidate
+ * @param {import("../../scanningLib.js").Candidate} props.candidate
  * @param {React.MutableRefObject<any>} props.modal
  * @param {number} props.currentIndex
  * @param {number} props.nbCandidates

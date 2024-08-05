@@ -1,20 +1,55 @@
 import "./CandidateScanner.scss";
-import { IonButton, IonIcon, IonModal } from "@ionic/react";
+import { IonButton, IonIcon, IonModal, IonSpinner } from "@ionic/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useQueryParams, useSearchCandidates } from "../../../common/hooks.js";
+import { useQueryParams } from "../../../common/hooks.js";
 import { arrowForward, checkmark, trashBin } from "ionicons/icons";
 import useEmblaCarousel from "embla-carousel-react";
 import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
 import { ScanningCardSkeleton } from "../ScanningCard/ScanningCardSkeleton.jsx";
+import { useSearchCandidates } from "../../scanningHooks.js";
+import { searchCandidates } from "../../scanningRequests.js";
+import { getPreference } from "../../../common/preferences.js";
+import { QUERY_KEYS } from "../../../common/constants.js";
+import { useMutation } from "@tanstack/react-query";
 
 export const CandidateScanner = () => {
+  const numPerPage = 25;
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [emblaRef, emblaApi] = useEmblaCarousel({ watchResize: false });
+  const [totalMatches, setTotalMatches] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel();
+  /** @type {[import("../../scanningLib").Candidate[], React.Dispatch<import("../../scanningLib").Candidate[]>]} */
+  // @ts-ignore
+  const [candidates, setCandidates] = useState([]);
+
+  /** @type {React.MutableRefObject<string|null>} */
+  const queryID = useRef(null);
+  const isFetchingNewBatch = useRef(false);
+  /** @type {React.MutableRefObject<any>} */
+  const modal = useRef(null);
+
+  const queryParams = useQueryParams();
+  const { candidateSearchResponse } = useSearchCandidates({
+    startDate: queryParams.startDate,
+    endDate: queryParams.endDate,
+    savedStatus: queryParams.savedStatus,
+    groupIDs: queryParams.groupIDs,
+    numPerPage,
+  });
+
+  useEffect(() => {
+    if (candidateSearchResponse?.candidates) {
+      // @ts-ignore
+      setCandidates(candidateSearchResponse.candidates);
+      setTotalMatches(candidateSearchResponse.totalMatches);
+      queryID.current = candidateSearchResponse.queryID;
+    }
+  }, [candidateSearchResponse]);
 
   const selectCallback = useCallback(
-    (/** @type {import("embla-carousel").EmblaCarouselType} */ e) =>
-      setCurrentIndex(e.selectedScrollSnap()),
+    (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
+      setCurrentIndex(e.selectedScrollSnap());
+    },
     [],
   );
 
@@ -29,20 +64,81 @@ export const CandidateScanner = () => {
     };
   }, [emblaApi]);
 
-  /** @type {React.MutableRefObject<any>} */
-  const modal = useRef(null);
-  const queryParams = useQueryParams();
-  const { candidates } = useSearchCandidates({
-    startDate: queryParams.startDate,
-    endDate: queryParams.endDate,
-    savedStatus: queryParams.savedStatus,
-    groupIDs: queryParams.groupIDs,
+  const slidesInViewCallback = useCallback(
+    (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
+      if (
+        !isFetchingNewBatch.current &&
+        e.selectedScrollSnap() >= e.slideNodes().length - 4 &&
+        e.slideNodes().length - e.selectedScrollSnap() < numPerPage &&
+        totalMatches &&
+        e.slideNodes().length < totalMatches
+      ) {
+        isFetchingNewBatch.current = true;
+        slidesInViewMutation.mutate(e);
+      }
+    },
+    [candidates, isFetchingNewBatch],
+  );
+
+  useEffect(() => {
+    if (emblaApi) {
+      emblaApi.on("slidesInView", slidesInViewCallback);
+    }
+    return () => {
+      if (emblaApi) {
+        emblaApi.off("slidesInView", slidesInViewCallback);
+      }
+    };
+  }, [emblaApi]);
+
+  const slidesInViewMutation = useMutation({
+    // @ts-ignore
+    mutationFn: async (
+      /** @type {import("embla-carousel").EmblaCarouselType} */ e,
+    ) => {
+      /** @type {import("../../../onboarding/auth").UserInfo} */
+      const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
+      return await searchCandidates({
+        instanceUrl: userInfo.instance.url,
+        token: userInfo.token,
+        startDate: queryParams.startDate,
+        endDate: queryParams.endDate,
+        savedStatus: queryParams.savedStatus,
+        groupIDs: queryParams.groupIDs,
+        queryID: queryID.current ?? "",
+        numPerPage: numPerPage.toString(),
+        pageNumber: (
+          Math.floor(e.slideNodes().length / numPerPage) + 1
+        ).toString(),
+      });
+    },
+    mutationKey: [totalMatches, queryID],
+    onSuccess: (data) => {
+      // @ts-ignore
+      setCandidates([...candidates, ...data.candidates]);
+      isFetchingNewBatch.current = false;
+    },
+    onError: () => {
+      isFetchingNewBatch.current = false;
+    },
   });
 
-  if (candidates?.length === 0) {
-    return <p>No candidates found</p>;
+  if (!candidateSearchResponse) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <IonSpinner />
+      </div>
+    );
   }
-  // @ts-ignore
+
   const currentCandidate = candidates?.at(currentIndex);
   return (
     <div className="candidate-scanner">
@@ -54,7 +150,8 @@ export const CandidateScanner = () => {
                 candidate={candidate}
                 modal={modal}
                 currentIndex={index}
-                nbCandidates={candidates.length}
+                // @ts-ignore
+                nbCandidates={totalMatches}
                 emblaApi={emblaApi}
               />
             </div>

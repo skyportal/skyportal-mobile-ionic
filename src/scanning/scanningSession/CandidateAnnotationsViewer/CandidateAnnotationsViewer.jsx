@@ -3,7 +3,7 @@ import { CandidateAnnotations } from "../CandidateAnnotations/CandidateAnnotatio
 
 /**
  * @param {Object} props
- * @param {import("../../scanning").Candidate} props.candidate
+ * @param {import("../../scanningLib.js").Candidate} props.candidate
  * @returns {JSX.Element}
  */
 export const CandidateAnnotationsViewer = ({ candidate }) => {

@@ -1,6 +1,3 @@
-import mockCandidates from "../../mock/candidates.json";
-import { Capacitor, CapacitorHttp } from "@capacitor/core";
-
 /**
  * @typedef {Object} CandidateThumbnail
  * @property {string} type - Thumbnail type
@@ -65,6 +62,10 @@ import { Capacitor, CapacitorHttp } from "@capacitor/core";
 /**
  * @typedef {"new" | "ref" | "sub" | "sdss" | "ls" | "ps1"} ThumbnailType
  */
+
+import { Clipboard } from "@capacitor/clipboard";
+import { useIonToast } from "@ionic/react";
+import { useCallback } from "react";
 
 /**
  * @type {Object<ThumbnailType, ThumbnailType>}
@@ -134,47 +135,6 @@ export const getThumbnailHeader = (type) => {
 };
 
 /**
- * Returns the candidates from the API
- * @param {Object} params
- * @param {string} params.instanceUrl - The URL of the instance
- * @param {string} params.token - The token to use to fetch the candidates
- * @param {string} params.startDate - The start date of the candidates
- * @param {string|null} [params.endDate=null] - The end date of the candidates
- * @param {import("../common/constants").SavedStatus} params.savedStatus - The saved status of the candidates
- * @param {string} params.groupIDs - The group IDs to search for
- * @returns {Promise<Candidate[]>}
- */
-export async function searchCandidates({
-  instanceUrl,
-  token,
-  startDate,
-  endDate,
-  savedStatus,
-  groupIDs,
-}) {
-  // example: https://preview.fritz.science/api/candidates?pageNumber=1&numPerPage=50&groupIDs=4&savedStatus=savedToAnySelected&listNameReject=rejected_candidates&startDate=2024-07-01T21%3A27%3A27.232Z
-  if (Capacitor.getPlatform() === "web") {
-    return mockCandidates.data.candidates;
-  }
-  let response = await CapacitorHttp.get({
-    url: `${instanceUrl}/api/candidates`,
-    headers: {
-      Authorization: `token ${token}`,
-    },
-    params: {
-      pageNumber: "1",
-      numPerPage: "50",
-      groupIDs,
-      savedStatus,
-      listNameReject: "rejected_candidates",
-      startDate,
-      endDate: endDate || "",
-    },
-  });
-  return response.data.data.candidates;
-}
-
-/**
  * Get the URL of the thumbnail image
  * @param {Candidate} candidate
  * @param {string} type
@@ -190,22 +150,6 @@ export function getThumbnailImageUrl(candidate, type) {
     res = "https://preview.fritz.science" + res;
   }
   return res;
-}
-
-/**
- * @param {Object} params
- * @param {string} params.instanceUrl
- * @param {string} params.token
- * @returns {Promise<GroupsResponse>}
- */
-export async function fetchGroups({ instanceUrl, token }) {
-  let response = await CapacitorHttp.get({
-    url: `${instanceUrl}/api/groups`,
-    headers: {
-      Authorization: `token ${token}`,
-    },
-  });
-  return response.data.data;
 }
 
 /**
@@ -429,35 +373,22 @@ export const getVegaPlotSpec = ({
   });
 };
 
-/**
- * Fetch the photometry of a source
- * @param {Object} params
- * @param {string} params.sourceId - The source ID
- * @param {string} params.instanceUrl - The URL of the instance
- * @param {string} params.token - The token to use to fetch the photometry
- * @param {string} [params.includeOwnerInfo="true"] - Include owner info
- * @param {string} [params.includeStreamInfo="true"] - Include stream info
- * @param {string} [params.includeValidationInfo="true"] - Include validation info
- * @returns {Promise<Photometry[]>}
- */
-export const fetchSourcePhotometry = async ({
-  sourceId,
-  instanceUrl,
-  token,
-  includeOwnerInfo = "true",
-  includeStreamInfo = "true",
-  includeValidationInfo = "true",
-}) => {
-  let response = await CapacitorHttp.get({
-    url: `${instanceUrl}/api/sources/${sourceId}/photometry`,
-    headers: {
-      Authorization: `token ${token}`,
+export const useCopyAnnotationLineOnClick = () => {
+  const [present] = useIonToast();
+  return useCallback(
+    /**
+     * @param {string} key
+     * @param {string|number|undefined} value
+     */
+    async (key, value) => {
+      await Clipboard.write({
+        string: `${key}: ${value}`,
+      });
+      await present({
+        message: "Annotation copied to clipboard!",
+        duration: 2000,
+      });
     },
-    params: {
-      includeOwnerInfo,
-      includeStreamInfo,
-      includeValidationInfo,
-    },
-  });
-  return response.data.data;
+    [present],
+  );
 };

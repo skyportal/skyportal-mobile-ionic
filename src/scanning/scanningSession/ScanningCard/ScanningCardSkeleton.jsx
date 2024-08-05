@@ -1,6 +1,6 @@
 import "./ScanningCard.scss";
 import { IonSkeletonText } from "@ionic/react";
-import { THUMBNAIL_TYPES } from "../../scanning.js";
+import { THUMBNAIL_TYPES } from "../../scanningLib.js";
 import { ThumbnailSkeleton } from "../ThumnailSkeleton/ThumbnailSkeleton.jsx";
 import { PinnedAnnotationsSkeleton } from "../PinnedAnnotationsSkeleton/PinnedAnnotationsSkeleton.jsx";
 
@@ -27,10 +27,7 @@ export const ScanningCardSkeleton = ({ animated = false }) => {
       </div>
       <PinnedAnnotationsSkeleton animated={animated} />
       <div className="plot-container">
-        <IonSkeletonText
-          style={{ width: "100%", height: "100%" }}
-          animated={animated}
-        />
+        <IonSkeletonText animated={animated} />
       </div>
     </div>
   );
