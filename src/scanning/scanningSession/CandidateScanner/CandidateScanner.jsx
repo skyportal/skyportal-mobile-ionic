@@ -8,7 +8,7 @@ import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/Candid
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
 import { ScanningCardSkeleton } from "../ScanningCard/ScanningCardSkeleton.jsx";
 import { useSearchCandidates } from "../../scanningHooks.js";
-import { searchCandidates } from "../../scanningRequests.js";
+import { addSourceToGroup, searchCandidates } from "../../scanningRequests.js";
 import { getPreference } from "../../../common/preferences.js";
 import { QUERY_KEYS } from "../../../common/constants.js";
 import { useMutation } from "@tanstack/react-query";
@@ -21,6 +21,7 @@ export const CandidateScanner = () => {
   /** @type {[import("../../scanningLib").Candidate[], React.Dispatch<import("../../scanningLib").Candidate[]>]} */
   // @ts-ignore
   const [candidates, setCandidates] = useState([]);
+  const currentCandidate = candidates?.at(currentIndex);
 
   /** @type {React.MutableRefObject<string|null>} */
   const queryID = useRef(null);
@@ -123,6 +124,85 @@ export const CandidateScanner = () => {
     },
   });
 
+  const addSourceToGroups = useCallback(
+    /**
+     * @param {Object} params
+     * @param {string} params.sourceId
+     * @param {boolean} [params.discard=false]
+     * @returns {Promise<*>}
+     */
+    async ({ sourceId, discard = false }) => {
+      const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
+      let groupIds;
+      if (discard) {
+        groupIds = queryParams.junkGroupIDs
+          .split(",")
+          .filter((/** @type {string} **/ id) => id !== "")
+          .map((/** @type {string} **/ id) => parseInt(id));
+        if (groupIds.length === 0) {
+          throw new Error("No junk groups selected");
+        }
+      } else {
+        groupIds = queryParams.groupIDs
+          .split(",")
+          .filter((/** @type {string} **/ id) => id !== "")
+          .map((/** @type {string} **/ id) => parseInt(id));
+      }
+      return await addSourceToGroup({
+        sourceId,
+        instanceUrl: userInfo.instance.url,
+        token: userInfo.token,
+        groupIds,
+      });
+    },
+    [],
+  );
+
+  const saveSourceMutation = useMutation({
+    /**
+     * @param {Object} params
+     * @param {string} params.sourceId
+     * @returns {Promise<*>}
+     */
+    mutationFn: ({ sourceId }) => addSourceToGroups({ sourceId }),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  const discardSourceMutation = useMutation({
+    /**
+     * @param {Object} params
+     * @param {string} params.sourceId
+     * @returns {Promise<*>}
+     */
+    mutationFn: ({ sourceId }) =>
+      addSourceToGroups({ sourceId, discard: true }),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  const handleDiscard = () => {
+    if (currentCandidate) {
+      console.log("Discard candidate:", currentCandidate.id);
+      discardSourceMutation.mutate({ sourceId: currentCandidate.id });
+    }
+  };
+
+  const handleSave = () => {
+    if (currentCandidate) {
+      console.log("Save candidate:", currentCandidate.id);
+      saveSourceMutation.mutate({ sourceId: currentCandidate.id });
+    }
+  };
+
   if (!candidateSearchResponse) {
     return (
       <div
@@ -139,7 +219,6 @@ export const CandidateScanner = () => {
     );
   }
 
-  const currentCandidate = candidates?.at(currentIndex);
   return (
     <div className="candidate-scanner">
       <div className="embla" ref={emblaRef}>
@@ -163,10 +242,22 @@ export const CandidateScanner = () => {
         </div>
       </div>
       <div className="action-buttons-container">
-        <IonButton shape="round" size="large" color="danger" fill="outline">
+        <IonButton
+          onClick={() => handleDiscard()}
+          shape="round"
+          size="large"
+          color="danger"
+          fill="outline"
+        >
           <IonIcon icon={trashBin} slot="icon-only" />
         </IonButton>
-        <IonButton shape="round" size="large" color="success" fill="outline">
+        <IonButton
+          onClick={() => handleSave()}
+          shape="round"
+          size="large"
+          color="success"
+          fill="outline"
+        >
           <IonIcon icon={checkmark} slot="icon-only" />
         </IonButton>
         <IonButton
