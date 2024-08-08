@@ -5,13 +5,20 @@ import {
   IonModal,
   IonSpinner,
   useIonAlert,
+  useIonToast,
 } from "@ionic/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   useQueryParams,
   useUserAccessibleGroups,
 } from "../../../common/hooks.js";
-import { arrowForward, checkmark, trashBin } from "ionicons/icons";
+import {
+  arrowForward,
+  checkmark,
+  checkmarkCircleOutline,
+  trashBin,
+  warningOutline,
+} from "ionicons/icons";
 import useEmblaCarousel from "embla-carousel-react";
 import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
@@ -45,6 +52,7 @@ export const CandidateScanner = () => {
   const [scanningConfig, setScanningConfig] = useState(null);
 
   const { userAccessibleGroups } = useUserAccessibleGroups();
+  const [presentToast] = useIonToast();
 
   useEffect(() => {
     setScanningConfig({
@@ -194,11 +202,31 @@ export const CandidateScanner = () => {
      */
     mutationFn: ({ sourceId, groupIds }) =>
       addSourceToGroups({ sourceId, groupIds }),
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: (data, variables) => {
+      presentToast({
+        message:
+          `Source saved to group${variables.groupIds.length > 1 ? "s" : ""} ` +
+          variables.groupIds
+            .map(
+              (g) =>
+                userAccessibleGroups?.find((group) => group.id === g)?.name,
+            )
+            .filter((g) => g !== undefined)
+            .join(","),
+        duration: 2000,
+        position: "top",
+        color: "success",
+        icon: checkmarkCircleOutline,
+      });
     },
-    onError: (error) => {
-      console.error(error);
+    onError: () => {
+      presentToast({
+        message: "Failed to save source",
+        duration: 2000,
+        position: "top",
+        color: "danger",
+        icon: warningOutline,
+      });
     },
   });
 
@@ -212,11 +240,31 @@ export const CandidateScanner = () => {
     mutationFn: async ({ sourceId, groupIds }) => {
       return await addSourceToGroups({ sourceId, groupIds });
     },
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: (data, variables) => {
+      presentToast({
+        message:
+          `Source discarded to group${variables.groupIds.length > 1 ? "s" : ""} ` +
+          variables.groupIds
+            .map(
+              (g) =>
+                userAccessibleGroups?.find((group) => group.id === g)?.name,
+            )
+            .filter((g) => g !== undefined)
+            .join(","),
+        duration: 2000,
+        position: "top",
+        color: "secondary",
+        icon: checkmarkCircleOutline,
+      });
     },
-    onError: (error) => {
-      console.error(error);
+    onError: () => {
+      presentToast({
+        message: "Failed to discard source",
+        duration: 2000,
+        position: "top",
+        color: "danger",
+        icon: warningOutline,
+      });
     },
   });
 
