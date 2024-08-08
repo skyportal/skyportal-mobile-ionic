@@ -74,6 +74,7 @@
  * @property {import("../common/constants").SavedStatus} savedStatus
  * @property {DiscardBehavior} discardBehavior
  * @property {number[]} saveGroupIds
+ * @property {Group[]} saveGroups
  * @property {number[]} junkGroupIds
  * @property {Group[]} junkGroups
  * @property {number} numPerPage

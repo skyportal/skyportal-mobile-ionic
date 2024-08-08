@@ -54,6 +54,13 @@ export const CandidateScanner = () => {
       /** @type {import("../../scanningLib").DiscardBehavior} **/
       discardBehavior: queryParams.discardBehavior,
       saveGroupIds: parseIntList(queryParams.groupIDs),
+      /** @type {import("../../scanningLib").Group[]} **/
+      // @ts-ignore
+      saveGroups: userAccessibleGroups
+        ? parseIntList(queryParams.groupIDs)
+            .map((id) => userAccessibleGroups.find((g) => g.id === id))
+            .filter((g) => g !== undefined)
+        : [],
       junkGroupIds: parseIntList(queryParams.junkGroupIDs),
       /** @type {import("../../scanningLib").Group[]} **/
       // @ts-ignore
@@ -213,29 +220,47 @@ export const CandidateScanner = () => {
     },
   });
 
+  const promptUserForGroupSelection = useCallback(
+    /**
+     * @param {"save"|"discard"} action
+     */
+    async (action) => {
+      if (scanningConfig && currentCandidate) {
+        // @ts-ignore
+        await presentDiscardAlert({
+          header:
+            action === "save" ? "Select a program" : "Select a junk group",
+          buttons: [action === "save" ? "Save" : "Discard"],
+          inputs: (action === "save"
+            ? scanningConfig.saveGroups
+            : scanningConfig.junkGroups
+          ).map((group) => ({
+            type: "checkbox",
+            label: group.name,
+            value: group.id,
+          })),
+          onDidDismiss: (/** @type {any} **/ e) => {
+            const groupIds = e.detail.data.values;
+            (action === "save"
+              ? saveSourceMutation
+              : discardSourceMutation
+            ).mutate({
+              sourceId: currentCandidate.id,
+              groupIds,
+            });
+          },
+        });
+      }
+    },
+    [scanningConfig, currentCandidate],
+  );
+
   const handleDiscard = useCallback(
-    (groupIds = scanningConfig?.junkGroupIds ?? []) => {
+    async (groupIds = scanningConfig?.junkGroupIds ?? []) => {
       if (currentCandidate && scanningConfig) {
         if (scanningConfig.discardBehavior === "ask") {
           // @ts-ignore
-          presentDiscardAlert({
-            header: "Select a junk group",
-            buttons: ["Discard"],
-            inputs: scanningConfig.junkGroups.map((group) => ({
-              type: "checkbox",
-              label: group.name,
-              value: group.id,
-            })),
-            onDidDismiss: (/** @type {any} **/ e) => {
-              const groupIds = e.detail.data.values;
-              if (currentCandidate) {
-                discardSourceMutation.mutate({
-                  sourceId: currentCandidate.id,
-                  groupIds,
-                });
-              }
-            },
-          });
+          await promptUserForGroupSelection("discard");
         } else {
           discardSourceMutation.mutate({
             sourceId: currentCandidate.id,
@@ -247,14 +272,19 @@ export const CandidateScanner = () => {
     [currentCandidate, scanningConfig],
   );
 
-  const handleSave = () => {
+  const handleSave = useCallback(async () => {
     if (currentCandidate && scanningConfig) {
-      saveSourceMutation.mutate({
-        sourceId: currentCandidate.id,
-        groupIds: scanningConfig.saveGroupIds,
-      });
+      if (scanningConfig.saveGroupIds.length > 1) {
+        // @ts-ignore
+        await promptUserForGroupSelection("save");
+      } else {
+        saveSourceMutation.mutate({
+          sourceId: currentCandidate.id,
+          groupIds: scanningConfig.saveGroupIds,
+        });
+      }
     }
-  };
+  }, [currentCandidate, scanningConfig]);
 
   const [presentDiscardAlert] = useIonAlert();
 
