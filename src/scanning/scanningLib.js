@@ -60,7 +60,23 @@
  */
 
 /**
+ * @typedef {"specific"|"all"|"ask"} DiscardBehavior
+ */
+
+/**
  * @typedef {"new" | "ref" | "sub" | "sdss" | "ls" | "ps1"} ThumbnailType
+ */
+
+/**
+ * @typedef {Object} ScanningConfig
+ * @property {string} startDate
+ * @property {string} endDate
+ * @property {import("../common/constants").SavedStatus} savedStatus
+ * @property {DiscardBehavior} discardBehavior
+ * @property {number[]} saveGroupIds
+ * @property {number[]} junkGroupIds
+ * @property {Group[]} junkGroups
+ * @property {number} numPerPage
  */
 
 import { Clipboard } from "@capacitor/clipboard";
@@ -392,3 +408,14 @@ export const useCopyAnnotationLineOnClick = () => {
     [present],
   );
 };
+
+/**
+ * Parse a string of integers separated by commas
+ * @param {string} intListString
+ * @returns {number[]}
+ */
+export const parseIntList = (intListString) =>
+  intListString
+    .split(",")
+    .filter((/** @type {string} **/ id) => id !== "")
+    .map((/** @type {string} **/ id) => parseInt(id));
