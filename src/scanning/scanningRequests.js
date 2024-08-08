@@ -104,3 +104,31 @@ export const fetchSourcePhotometry = async ({
   });
   return response.data.data;
 };
+
+/**
+ * @param {Object} params
+ * @param {string} params.sourceId
+ * @param {number[]} params.groupIds
+ * @param {string} params.instanceUrl
+ * @param {string} params.token
+ * @returns {Promise<any>}
+ */
+export const addSourceToGroup = async ({
+  sourceId,
+  groupIds,
+  instanceUrl,
+  token,
+}) => {
+  let response = await CapacitorHttp.post({
+    url: `${instanceUrl}/api/source_groups`,
+    headers: {
+      Authorization: `token ${token}`,
+      "Content-Type": "application/json",
+    },
+    data: {
+      objId: sourceId,
+      inviteGroupIds: groupIds,
+    },
+  });
+  return response.data.data;
+};

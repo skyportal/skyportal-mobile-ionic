@@ -50,7 +50,7 @@ export const ScanningOptionsForm = () => {
     filteringType,
     filteringAnyOrAll,
   }) => {
-    if (filterCandidates) {
+    if (!filterCandidates) {
       return SAVED_STATUS.ALL;
     }
     if (filteringType === "include" && filteringAnyOrAll === "all") {
