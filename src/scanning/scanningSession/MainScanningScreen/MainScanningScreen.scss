@@ -1,0 +1,6 @@
+.main-scanning-screen {
+  ion-content {
+    --padding-top: var(--ion-safe-area-top) !important;
+    --padding-bottom: var(--ion-safe-area-bottom);
+  }
+}
