@@ -80,6 +80,9 @@ export const CandidateScanner = () => {
       numPerPage,
     });
   }, []);
+
+  const isDiscardingEnabled = scanningConfig?.junkGroups?.length ?? 0 > 0;
+
   const { candidateSearchResponse } = useSearchCandidates({
     startDate: queryParams.startDate,
     endDate: queryParams.endDate,
@@ -381,6 +384,7 @@ export const CandidateScanner = () => {
           size="large"
           color="danger"
           fill="outline"
+          disabled={!isDiscardingEnabled}
         >
           <IonIcon icon={trashBin} slot="icon-only" />
         </IonButton>
