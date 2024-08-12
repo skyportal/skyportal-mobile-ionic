@@ -46,8 +46,7 @@ import { useAppStart } from "./common/hooks.js";
 import { ScanningOptionsScreen } from "./scanning/scanningOptions/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
 import { MainScanningScreen } from "./scanning/scanningSession/MainScanningScreen/MainScanningScreen.jsx";
 import { SourceListScreen } from "./sources/SourceListScreen/SourceListScreen.jsx";
-import { EventListScreen } from "./events/EventList/EventListScreen.jsx";
-import { compassOutline, list, radioOutline } from "ionicons/icons";
+import { compassOutline, list } from "ionicons/icons";
 import { ScanningHome } from "./scanning/ScanningHome/ScanningHome.jsx";
 
 setupIonicReact();
@@ -91,9 +90,6 @@ const App = () => {
                 <Route path="/app/source-list">
                   <SourceListScreen />
                 </Route>
-                <Route path="/app/event-list">
-                  <EventListScreen />
-                </Route>
                 <Route path="/app/scanning">
                   <ScanningHome />
                 </Route>
@@ -108,11 +104,6 @@ const App = () => {
                 <IonTabButton tab="scanning" href="/app/scanning">
                   <IonIcon icon={compassOutline} />
                   <IonLabel>Candidates</IonLabel>
-                </IonTabButton>
-
-                <IonTabButton tab="event-list" href="/app/event-list">
-                  <IonIcon icon={radioOutline} />
-                  <IonLabel>Events</IonLabel>
                 </IonTabButton>
               </IonTabBar>
             </IonTabs>
