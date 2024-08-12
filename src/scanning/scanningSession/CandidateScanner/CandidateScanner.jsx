@@ -24,7 +24,7 @@ import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/Candid
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
 import { ScanningCardSkeleton } from "../ScanningCard/ScanningCardSkeleton.jsx";
 import { useSearchCandidates } from "../../scanningHooks.js";
-import { addSourceToGroup, searchCandidates } from "../../scanningRequests.js";
+import { addSourceToGroup } from "../../scanningRequests.js";
 import { getPreference } from "../../../common/preferences.js";
 import { QUERY_KEYS } from "../../../common/constants.js";
 import { useMutation } from "@tanstack/react-query";
@@ -33,16 +33,10 @@ import { parseIntList } from "../../scanningLib.js";
 export const CandidateScanner = () => {
   const numPerPage = 25;
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [totalMatches, setTotalMatches] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel();
-  /** @type {[import("../../scanningLib").Candidate[], React.Dispatch<import("../../scanningLib").Candidate[]>]} */
+  /** @type {[number[], React.Dispatch<number[]>]} */
   // @ts-ignore
-  const [candidates, setCandidates] = useState([]);
-  const currentCandidate = candidates?.at(currentIndex);
-
-  /** @type {React.MutableRefObject<string|null>} */
-  const queryID = useRef(null);
-  const isFetchingNewBatch = useRef(false);
+  const [slidesInView, setSlidesInView] = useState([]);
   /** @type {React.MutableRefObject<any>} */
   const modal = useRef(null);
 
@@ -83,22 +77,14 @@ export const CandidateScanner = () => {
 
   const isDiscardingEnabled = scanningConfig?.junkGroups?.length ?? 0 > 0;
 
-  const { candidateSearchResponse } = useSearchCandidates({
+  const { data, fetchNextPage, isFetching } = useSearchCandidates({
     startDate: queryParams.startDate,
     endDate: queryParams.endDate,
     savedStatus: queryParams.savedStatus,
     groupIDs: queryParams.groupIDs,
     numPerPage,
   });
-
-  useEffect(() => {
-    if (candidateSearchResponse?.candidates) {
-      // @ts-ignore
-      setCandidates(candidateSearchResponse.candidates);
-      setTotalMatches(candidateSearchResponse.totalMatches);
-      queryID.current = candidateSearchResponse.queryID;
-    }
-  }, [candidateSearchResponse]);
+  const totalMatches = data?.pages[0].totalMatches;
 
   const selectCallback = useCallback(
     (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
@@ -119,23 +105,24 @@ export const CandidateScanner = () => {
   }, [emblaApi]);
 
   const slidesInViewCallback = useCallback(
-    (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
+    async (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
       if (
-        !isFetchingNewBatch.current &&
+        !isFetching &&
         e.selectedScrollSnap() >= e.slideNodes().length - 4 &&
         e.slideNodes().length - e.selectedScrollSnap() < numPerPage &&
         totalMatches &&
         e.slideNodes().length < totalMatches
       ) {
-        isFetchingNewBatch.current = true;
-        slidesInViewMutation.mutate(e);
+        await fetchNextPage();
       }
+      setSlidesInView(e.slidesInView());
     },
-    [candidates, isFetchingNewBatch],
+    [isFetching],
   );
 
   useEffect(() => {
     if (emblaApi) {
+      setSlidesInView(emblaApi.slidesInView());
       emblaApi.on("slidesInView", slidesInViewCallback);
     }
     return () => {
@@ -145,37 +132,8 @@ export const CandidateScanner = () => {
     };
   }, [emblaApi]);
 
-  const slidesInViewMutation = useMutation({
-    // @ts-ignore
-    mutationFn: async (
-      /** @type {import("embla-carousel").EmblaCarouselType} */ e,
-    ) => {
-      /** @type {import("../../../onboarding/auth").UserInfo} */
-      const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
-      return await searchCandidates({
-        instanceUrl: userInfo.instance.url,
-        token: userInfo.token,
-        startDate: queryParams.startDate,
-        endDate: queryParams.endDate,
-        savedStatus: queryParams.savedStatus,
-        groupIDs: queryParams.groupIDs,
-        queryID: queryID.current ?? "",
-        numPerPage: numPerPage.toString(),
-        pageNumber: (
-          Math.floor(e.slideNodes().length / numPerPage) + 1
-        ).toString(),
-      });
-    },
-    mutationKey: [totalMatches, queryID],
-    onSuccess: (data) => {
-      // @ts-ignore
-      setCandidates([...candidates, ...data.candidates]);
-      isFetchingNewBatch.current = false;
-    },
-    onError: () => {
-      isFetchingNewBatch.current = false;
-    },
-  });
+  const currentCandidate = data?.pages.at(Math.floor(currentIndex / numPerPage))
+    ?.candidates?.[currentIndex % numPerPage];
 
   const addSourceToGroups = useCallback(
     /**
@@ -339,38 +297,27 @@ export const CandidateScanner = () => {
 
   const [presentDiscardAlert] = useIonAlert();
 
-  if (!candidateSearchResponse) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-          width: "100%",
-        }}
-      >
-        <IonSpinner />
-      </div>
-    );
-  }
+
 
   return (
     <div className="candidate-scanner">
       <div className="embla" ref={emblaRef}>
         <div className="embla__container">
-          {candidates?.map((candidate, index) => (
-            <div key={candidate.id} className="embla__slide">
-              <ScanningCard
-                candidate={candidate}
-                modal={modal}
-                currentIndex={index}
-                // @ts-ignore
-                nbCandidates={totalMatches}
-                emblaApi={emblaApi}
-              />
-            </div>
-          )) ?? (
+          {data?.pages
+            .map((page) => page.candidates)
+            .flat(1)
+            .map((candidate, index) => (
+              <div key={candidate.id} className="embla__slide">
+                <ScanningCard
+                  candidate={candidate}
+                  modal={modal}
+                  currentIndex={index}
+                  isInView={slidesInView.includes(index)}
+                  // @ts-ignore
+                  nbCandidates={data.pages[0].totalMatches}
+                />
+              </div>
+            )) ?? (
             <div className="embla__slide">
               <ScanningCardSkeleton animated={true} />
             </div>

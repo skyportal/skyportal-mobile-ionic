@@ -16,17 +16,24 @@
       backface-visibility: hidden;
       flex: 1;
       height: 100%;
+
+      .embla__slide {
+        display: flex;
+        flex: 0 0 100%;
+        min-width: 0;
+        height: 100%;
+      }
     }
   }
-}
 
-.action-buttons-container {
-  display: flex;
-  padding: 0.5rem 1rem;
-  justify-content: space-between;
-  align-items: center;
+  .action-buttons-container {
+    display: flex;
+    padding: 0.5rem 1rem;
+    justify-content: space-between;
+    align-items: center;
 
-  ion-button {
-    --padding-end: 2.3rem;
+    ion-button {
+      --padding-end: 2.3rem;
+    }
   }
 }
