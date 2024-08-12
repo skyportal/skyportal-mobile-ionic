@@ -29,6 +29,7 @@ export const Thumbnail = ({ candidate, type }) => {
           alt=""
         />
         <img
+          className="cutout"
           src={src}
           alt={alt}
           onError={() => {
