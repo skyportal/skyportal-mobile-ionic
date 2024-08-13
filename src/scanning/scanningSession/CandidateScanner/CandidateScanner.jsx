@@ -1,17 +1,34 @@
 import "./CandidateScanner.scss";
-import { IonButton, IonIcon, IonModal, IonSpinner } from "@ionic/react";
+import {
+  IonButton,
+  IonIcon,
+  IonModal,
+  IonSpinner,
+  useIonAlert,
+  useIonToast,
+} from "@ionic/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useQueryParams } from "../../../common/hooks.js";
-import { arrowForward, checkmark, trashBin } from "ionicons/icons";
+import {
+  useQueryParams,
+  useUserAccessibleGroups,
+} from "../../../common/hooks.js";
+import {
+  arrowForward,
+  checkmark,
+  checkmarkCircleOutline,
+  trashBin,
+  warningOutline,
+} from "ionicons/icons";
 import useEmblaCarousel from "embla-carousel-react";
 import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
 import { ScanningCardSkeleton } from "../ScanningCard/ScanningCardSkeleton.jsx";
 import { useSearchCandidates } from "../../scanningHooks.js";
-import { searchCandidates } from "../../scanningRequests.js";
+import { addSourceToGroup, searchCandidates } from "../../scanningRequests.js";
 import { getPreference } from "../../../common/preferences.js";
 import { QUERY_KEYS } from "../../../common/constants.js";
 import { useMutation } from "@tanstack/react-query";
+import { parseIntList } from "../../scanningLib.js";
 
 export const CandidateScanner = () => {
   const numPerPage = 25;
@@ -21,6 +38,7 @@ export const CandidateScanner = () => {
   /** @type {[import("../../scanningLib").Candidate[], React.Dispatch<import("../../scanningLib").Candidate[]>]} */
   // @ts-ignore
   const [candidates, setCandidates] = useState([]);
+  const currentCandidate = candidates?.at(currentIndex);
 
   /** @type {React.MutableRefObject<string|null>} */
   const queryID = useRef(null);
@@ -29,6 +47,42 @@ export const CandidateScanner = () => {
   const modal = useRef(null);
 
   const queryParams = useQueryParams();
+  /** @type {ReturnType<typeof useState<import("../../scanningLib.js").ScanningConfig>>} */
+  // @ts-ignore
+  const [scanningConfig, setScanningConfig] = useState(null);
+
+  const { userAccessibleGroups } = useUserAccessibleGroups();
+  const [presentToast] = useIonToast();
+
+  useEffect(() => {
+    setScanningConfig({
+      startDate: queryParams.startDate,
+      endDate: queryParams.endDate,
+      savedStatus: queryParams.savedStatus,
+      /** @type {import("../../scanningLib").DiscardBehavior} **/
+      discardBehavior: queryParams.discardBehavior,
+      saveGroupIds: parseIntList(queryParams.groupIDs),
+      /** @type {import("../../scanningLib").Group[]} **/
+      // @ts-ignore
+      saveGroups: userAccessibleGroups
+        ? parseIntList(queryParams.groupIDs)
+            .map((id) => userAccessibleGroups.find((g) => g.id === id))
+            .filter((g) => g !== undefined)
+        : [],
+      junkGroupIds: parseIntList(queryParams.junkGroupIDs),
+      /** @type {import("../../scanningLib").Group[]} **/
+      // @ts-ignore
+      junkGroups: userAccessibleGroups
+        ? parseIntList(queryParams.junkGroupIDs)
+            .map((id) => userAccessibleGroups.find((g) => g.id === id))
+            .filter((g) => g !== undefined)
+        : [],
+      numPerPage,
+    });
+  }, []);
+
+  const isDiscardingEnabled = scanningConfig?.junkGroups?.length ?? 0 > 0;
+
   const { candidateSearchResponse } = useSearchCandidates({
     startDate: queryParams.startDate,
     endDate: queryParams.endDate,
@@ -123,6 +177,168 @@ export const CandidateScanner = () => {
     },
   });
 
+  const addSourceToGroups = useCallback(
+    /**
+     * @param {Object} params
+     * @param {string} params.sourceId
+     * @param {number[]} params.groupIds
+     * @returns {Promise<*>}
+     */
+    async ({ sourceId, groupIds }) => {
+      const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
+      return await addSourceToGroup({
+        sourceId,
+        instanceUrl: userInfo.instance.url,
+        token: userInfo.token,
+        groupIds,
+      });
+    },
+    [],
+  );
+
+  const saveSourceMutation = useMutation({
+    /**
+     * @param {Object} params
+     * @param {string} params.sourceId
+     * @param {number[]} params.groupIds
+     * @returns {Promise<*>}
+     */
+    mutationFn: ({ sourceId, groupIds }) =>
+      addSourceToGroups({ sourceId, groupIds }),
+    onSuccess: (data, variables) => {
+      presentToast({
+        message:
+          `Source saved to group${variables.groupIds.length > 1 ? "s" : ""} ` +
+          variables.groupIds
+            .map(
+              (g) =>
+                userAccessibleGroups?.find((group) => group.id === g)?.name,
+            )
+            .filter((g) => g !== undefined)
+            .join(","),
+        duration: 2000,
+        position: "top",
+        color: "success",
+        icon: checkmarkCircleOutline,
+      });
+    },
+    onError: () => {
+      presentToast({
+        message: "Failed to save source",
+        duration: 2000,
+        position: "top",
+        color: "danger",
+        icon: warningOutline,
+      });
+    },
+  });
+
+  const discardSourceMutation = useMutation({
+    /**
+     * @param {Object} params
+     * @param {string} params.sourceId
+     * @param {number[]} params.groupIds
+     * @returns {Promise<*>}
+     */
+    mutationFn: async ({ sourceId, groupIds }) => {
+      return await addSourceToGroups({ sourceId, groupIds });
+    },
+    onSuccess: (data, variables) => {
+      presentToast({
+        message:
+          `Source discarded to group${variables.groupIds.length > 1 ? "s" : ""} ` +
+          variables.groupIds
+            .map(
+              (g) =>
+                userAccessibleGroups?.find((group) => group.id === g)?.name,
+            )
+            .filter((g) => g !== undefined)
+            .join(","),
+        duration: 2000,
+        position: "top",
+        color: "secondary",
+        icon: checkmarkCircleOutline,
+      });
+    },
+    onError: () => {
+      presentToast({
+        message: "Failed to discard source",
+        duration: 2000,
+        position: "top",
+        color: "danger",
+        icon: warningOutline,
+      });
+    },
+  });
+
+  const promptUserForGroupSelection = useCallback(
+    /**
+     * @param {"save"|"discard"} action
+     */
+    async (action) => {
+      if (scanningConfig && currentCandidate) {
+        // @ts-ignore
+        await presentDiscardAlert({
+          header:
+            action === "save" ? "Select a program" : "Select a junk group",
+          buttons: [action === "save" ? "Save" : "Discard"],
+          inputs: (action === "save"
+            ? scanningConfig.saveGroups
+            : scanningConfig.junkGroups
+          ).map((group) => ({
+            type: "checkbox",
+            label: group.name,
+            value: group.id,
+          })),
+          onDidDismiss: (/** @type {any} **/ e) => {
+            const groupIds = e.detail.data.values;
+            (action === "save"
+              ? saveSourceMutation
+              : discardSourceMutation
+            ).mutate({
+              sourceId: currentCandidate.id,
+              groupIds,
+            });
+          },
+        });
+      }
+    },
+    [scanningConfig, currentCandidate],
+  );
+
+  const handleDiscard = useCallback(
+    async (groupIds = scanningConfig?.junkGroupIds ?? []) => {
+      if (currentCandidate && scanningConfig) {
+        if (scanningConfig.discardBehavior === "ask") {
+          // @ts-ignore
+          await promptUserForGroupSelection("discard");
+        } else {
+          discardSourceMutation.mutate({
+            sourceId: currentCandidate.id,
+            groupIds,
+          });
+        }
+      }
+    },
+    [currentCandidate, scanningConfig],
+  );
+
+  const handleSave = useCallback(async () => {
+    if (currentCandidate && scanningConfig) {
+      if (scanningConfig.saveGroupIds.length > 1) {
+        // @ts-ignore
+        await promptUserForGroupSelection("save");
+      } else {
+        saveSourceMutation.mutate({
+          sourceId: currentCandidate.id,
+          groupIds: scanningConfig.saveGroupIds,
+        });
+      }
+    }
+  }, [currentCandidate, scanningConfig]);
+
+  const [presentDiscardAlert] = useIonAlert();
+
   if (!candidateSearchResponse) {
     return (
       <div
@@ -139,7 +355,6 @@ export const CandidateScanner = () => {
     );
   }
 
-  const currentCandidate = candidates?.at(currentIndex);
   return (
     <div className="candidate-scanner">
       <div className="embla" ref={emblaRef}>
@@ -163,10 +378,23 @@ export const CandidateScanner = () => {
         </div>
       </div>
       <div className="action-buttons-container">
-        <IonButton shape="round" size="large" color="danger" fill="outline">
+        <IonButton
+          onClick={() => handleDiscard()}
+          shape="round"
+          size="large"
+          color="danger"
+          fill="outline"
+          disabled={!isDiscardingEnabled}
+        >
           <IonIcon icon={trashBin} slot="icon-only" />
         </IonButton>
-        <IonButton shape="round" size="large" color="success" fill="outline">
+        <IonButton
+          onClick={() => handleSave()}
+          shape="round"
+          size="large"
+          color="success"
+          fill="outline"
+        >
           <IonIcon icon={checkmark} slot="icon-only" />
         </IonButton>
         <IonButton
