@@ -3,7 +3,6 @@ import {
   IonButton,
   IonIcon,
   IonModal,
-  IonSpinner,
   useIonAlert,
   useIonToast,
 } from "@ionic/react";
@@ -47,6 +46,7 @@ export const CandidateScanner = () => {
 
   const { userAccessibleGroups } = useUserAccessibleGroups();
   const [presentToast] = useIonToast();
+  const [presentDiscardAlert] = useIonAlert();
 
   useEffect(() => {
     setScanningConfig({
@@ -294,10 +294,6 @@ export const CandidateScanner = () => {
       }
     }
   }, [currentCandidate, scanningConfig]);
-
-  const [presentDiscardAlert] = useIonAlert();
-
-
 
   return (
     <div className="candidate-scanner">
