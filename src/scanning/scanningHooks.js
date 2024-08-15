@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../common/constants.js";
 import { searchCandidates } from "./scanningRequests.js";
 import { useUserInfo } from "../common/hooks.js";
@@ -10,7 +10,7 @@ import { useUserInfo } from "../common/hooks.js";
  * @param {import("../common/constants").SavedStatus} props.savedStatus
  * @param {string} props.groupIDs
  * @param {number} props.numPerPage
- * @returns {{candidateSearchResponse: import("./scanningRequests.js").CandidateSearchResponse|undefined, status: import("@tanstack/react-query").QueryStatus, error: any}}
+ * @returns {import("@tanstack/react-query").UseInfiniteQueryResult<import("@tanstack/react-query").InfiniteData<import("./scanningRequests.js").CandidateSearchResponse, unknown>, Error>}
  */
 export const useSearchCandidates = ({
   startDate,
@@ -20,11 +20,7 @@ export const useSearchCandidates = ({
   numPerPage,
 }) => {
   const { userInfo } = useUserInfo();
-  const {
-    /** @type {import("../scanning/scanningLib.js").Candidate[]} */ data: candidateSearchResponse,
-    status,
-    error,
-  } = useQuery({
+  return useInfiniteQuery({
     queryKey: [
       QUERY_KEYS.CANDIDATES,
       startDate,
@@ -32,7 +28,7 @@ export const useSearchCandidates = ({
       savedStatus,
       groupIDs,
     ],
-    queryFn: async () => {
+    queryFn: async (ctx) => {
       if (!startDate || !endDate || !savedStatus || !groupIDs) {
         throw new Error("Missing parameters");
       }
@@ -43,15 +39,17 @@ export const useSearchCandidates = ({
         endDate,
         savedStatus,
         groupIDs,
-        numPerPage: numPerPage.toString(),
-        pageNumber: "1",
+        numPerPage,
+        pageNumber: ctx.pageParam ?? "1",
       });
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.candidates.length < numPerPage) {
+        return undefined;
+      }
+      return +lastPage.pageNumber + 1;
     },
     enabled: !!userInfo && !!startDate,
   });
-  return {
-    candidateSearchResponse,
-    status,
-    error,
-  };
 };

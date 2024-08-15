@@ -5,6 +5,7 @@ import { CapacitorHttp } from "@capacitor/core";
  * @property {import("./scanningLib.js").Candidate[]} candidates - The candidates
  * @property {number} totalMatches - The total matches
  * @property {string} queryID - The query ID
+ * @property {string} pageNumber - The page number
  */
 
 /**
@@ -17,8 +18,8 @@ import { CapacitorHttp } from "@capacitor/core";
  * @param {import("../common/constants").SavedStatus} params.savedStatus - The saved status of the candidates
  * @param {string} params.groupIDs - The group IDs to search for
  * @param {string|null} [params.queryID=null] - The query ID
- * @param {string} params.pageNumber - The page number
- * @param {string} params.numPerPage - The number of candidates per page
+ * @param {number} params.pageNumber - The page number
+ * @param {number} params.numPerPage - The number of candidates per page
  * @returns {Promise<CandidateSearchResponse>}
  */
 export async function searchCandidates({
@@ -39,8 +40,8 @@ export async function searchCandidates({
       Authorization: `token ${token}`,
     },
     params: {
-      pageNumber,
-      numPerPage,
+      pageNumber: pageNumber.toString(),
+      numPerPage: numPerPage.toString(),
       groupIDs,
       savedStatus,
       listNameReject: "rejected_candidates",
@@ -53,6 +54,7 @@ export async function searchCandidates({
     candidates: response.data.data.candidates,
     totalMatches: response.data.data.totalMatches,
     queryID: response.data.data.queryID,
+    pageNumber: response.data.data.pageNumber,
   };
 }
 

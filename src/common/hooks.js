@@ -10,10 +10,7 @@ import config from "../config.js";
 import { checkTokenAndFetchUser } from "../onboarding/auth.js";
 import { useState } from "react";
 import { fetchConfig } from "./requests.js";
-import {
-  fetchGroups,
-  fetchSourcePhotometry,
-} from "../scanning/scanningRequests.js";
+import { fetchGroups } from "../scanning/scanningRequests.js";
 
 /**
  * @typedef {"success" | "error" | "pending"} QueryStatus
@@ -92,26 +89,6 @@ export const useFetchSources = ({ page, numPerPage }) => {
 
 /** @typedef {{user: null|import("../onboarding/auth.js").User, status: QueryStatus, error: any}} SkipOnboardingState */
 
-/**
- * @param {import("@tanstack/react-query").QueryClient} queryClient
- * @returns {Promise<void>}
- */
-const fetchConfigAndSetPreference = async (queryClient) => {
-  const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
-  const skyportalConfig = await fetchConfig({
-    instanceUrl: userInfo.instance.url,
-    token: userInfo.token,
-  });
-  queryClient.setQueryData(
-    [QUERY_KEYS.BANDPASS_COLORS],
-    skyportalConfig.bandpassesColors,
-  );
-  await setPreference({
-    key: QUERY_KEYS.BANDPASS_COLORS,
-    value: skyportalConfig.bandpassesColors,
-  });
-};
-
 export const useAppStart = () => {
   const [state, setState] =
     /** @type {ReturnType<typeof useState<SkipOnboardingState>>} */ useState({
@@ -127,7 +104,6 @@ export const useAppStart = () => {
     }
     let user = await getPreference({ key: QUERY_KEYS.USER });
     if (user) {
-      await fetchConfigAndSetPreference(queryClient);
       return user;
     }
     if (!config.SKIP_ONBOARDING) {
@@ -151,7 +127,6 @@ export const useAppStart = () => {
     };
     queryClient.setQueryData([QUERY_KEYS.USER_INFO], userInfo);
     await setPreference({ key: QUERY_KEYS.USER_INFO, value: userInfo });
-    await fetchConfigAndSetPreference(queryClient);
     setState({ user, status: "success", error: state.error });
   };
   return useQuery({
@@ -203,42 +178,19 @@ export const useQueryParams = () => {
   return paramsObject;
 };
 
-/**
- * @param {Object} props
- * @param {string} props.sourceId
- * @returns {{photometry: import("../scanning/scanningLib.js").Photometry[]|undefined, status: QueryStatus, error: any|undefined}}
- */
-export const useSourcePhotometry = ({ sourceId }) => {
+export const useBandpassesColors = () => {
   const { userInfo } = useUserInfo();
-  const {
-    /** @type {import("../scanning/scanningLib.js").Photometry[]} */ data: photometry,
-    status,
-    error,
-  } = useQuery({
-    queryKey: [QUERY_KEYS.SOURCE_PHOTOMETRY, sourceId],
+  const { data, status, error } = useQuery({
+    queryKey: [QUERY_KEYS.BANDPASS_COLORS],
     queryFn: () =>
-      fetchSourcePhotometry({
-        sourceId,
+      fetchConfig({
         instanceUrl: userInfo?.instance.url ?? "",
         token: userInfo?.token ?? "",
       }),
     enabled: !!userInfo,
   });
   return {
-    photometry,
-    status,
-    error,
-  };
-};
-
-export const useBandpassesColors = () => {
-  const {
-    data: bandpassesColors,
-    status,
-    error,
-  } = usePreference(QUERY_KEYS.BANDPASS_COLORS);
-  return {
-    bandpassesColors,
+    bandpassesColors: data?.bandpassesColors,
     status,
     error,
   };

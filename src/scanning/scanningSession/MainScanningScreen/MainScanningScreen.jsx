@@ -1,10 +1,11 @@
+import "./MainScanningScreen.scss";
 import { IonContent, IonPage, IonSpinner } from "@ionic/react";
 import { CandidateScanner } from "../CandidateScanner/CandidateScanner.jsx";
 import React, { Suspense } from "react";
 
 export const MainScanningScreen = () => {
   return (
-    <IonPage>
+    <IonPage className="main-scanning-screen">
       <IonContent>
         <Suspense
           fallback={

@@ -1,5 +1,10 @@
 import "./OnboardingUpper.scss";
 
+/**
+ * @param {Object} props
+ * @param {import("../auth").OnboardingPage} props.page
+ * @returns {JSX.Element}
+ */
 const OnboardingUpper = ({ page }) => {
   function getTagline() {
     switch (page) {

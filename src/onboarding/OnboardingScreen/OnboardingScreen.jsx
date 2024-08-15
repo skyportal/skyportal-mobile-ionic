@@ -5,6 +5,7 @@ import "./OnboardingScreen.scss";
 import { useState } from "react";
 
 const OnboardingScreen = () => {
+  /** @type {[import("../auth").OnboardingPage, Function]} */
   const [page, setPage] = useState("welcome");
   return (
     <IonPage>

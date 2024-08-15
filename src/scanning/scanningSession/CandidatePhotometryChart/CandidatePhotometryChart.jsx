@@ -1,27 +1,83 @@
 import "./CandidatePhotometryChart.scss";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import embed from "vega-embed";
 import { getVegaPlotSpec } from "../../scanningLib.js";
-import {
-  useBandpassesColors,
-  useSourcePhotometry,
-} from "../../../common/hooks.js";
+import { useBandpassesColors } from "../../../common/hooks.js";
 import { IonSkeletonText } from "@ionic/react";
+import { fetchSourcePhotometry } from "../../scanningRequests.js";
+import { getPreference } from "../../../common/preferences.js";
+import { QUERY_KEYS } from "../../../common/constants.js";
+import { useMutation } from "@tanstack/react-query";
 
 /**
  * @param {Object} props
- * @param {import("../../scanningLib.js").Candidate} props.candidate
+ * @param {string} props.candidateId
+ * @param {boolean} props.isInView
  * @returns {JSX.Element}
  */
-export const CandidatePhotometryChart = ({ candidate }) => {
+const CandidatePhotometryChartBase = ({ candidateId, isInView }) => {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [loaderIsHidden, setLoaderIsHidden] = useState(false);
   /** @type {React.MutableRefObject<HTMLDivElement|null>} */
   const container = useRef(null);
-  const { photometry, status } = useSourcePhotometry({
-    sourceId: candidate.id,
-  });
+  const unmountVega = useRef(() => {});
   const { bandpassesColors } = useBandpassesColors();
+  /** @type {React.MutableRefObject<NodeJS.Timeout|undefined>} */
+  const revealTimeout = useRef(undefined);
+
+  const mountMutation = useMutation({
+    mutationFn: async () => {
+      const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
+      const photometry = await fetchSourcePhotometry({
+        sourceId: candidateId,
+        instanceUrl: userInfo.instance.url,
+        token: userInfo.token,
+      });
+      if (!container.current || !bandpassesColors || !photometry) {
+        throw new Error("Missing parameters");
+      }
+      const response = await embed(
+        // @ts-ignore
+        container.current,
+        getVegaPlotSpec({
+          photometry,
+          titleFontSize: 13,
+          labelFontSize: 11,
+          // @ts-ignore
+          bandpassesColors,
+        }),
+        {
+          actions: false,
+        },
+      );
+      unmountVega.current = response.finalize;
+    },
+    onSuccess: () => {
+      revealTimeout.current = setTimeout(() => {
+        setHasLoaded(true);
+      }, 300);
+    },
+  });
+
+  useEffect(() => {
+    if (!isInView) {
+      if (container.current) {
+        const canvas = container.current.getElementsByTagName("canvas")[0];
+        if (canvas) {
+          canvas.height = 0;
+          canvas.width = 0;
+          unmountVega.current();
+          setHasLoaded(false);
+        }
+      }
+    } else {
+      mountMutation.mutate();
+    }
+    return () => {
+      clearTimeout(revealTimeout.current);
+    };
+  }, [isInView, bandpassesColors]);
+
   useEffect(() => {
     /**@type {any} */
     let hideTimeout;
@@ -33,36 +89,6 @@ export const CandidatePhotometryChart = ({ candidate }) => {
     };
   }, [hasLoaded, loaderIsHidden]);
 
-  useEffect(() => {
-    /**@type {() => void } */
-    let finalize = () => {};
-    /**@type {any} */
-    let revealTimeout;
-    const run = async () => {
-      if (!container.current || !photometry || !bandpassesColors) return;
-      const response = await embed(
-        container.current,
-        getVegaPlotSpec({
-          photometry,
-          titleFontSize: 13,
-          labelFontSize: 11,
-          bandpassesColors,
-        }),
-        {
-          actions: false,
-        },
-      );
-      finalize = response.finalize;
-      revealTimeout = setTimeout(() => {
-        setHasLoaded(true);
-      }, 300);
-    };
-    run();
-    return () => {
-      finalize();
-      clearTimeout(revealTimeout);
-    };
-  }, [container, status]);
   return (
     <div className="candidate-photometry-chart">
       <div
@@ -81,3 +107,5 @@ export const CandidatePhotometryChart = ({ candidate }) => {
     </div>
   );
 };
+
+export const CandidatePhotometryChart = memo(CandidatePhotometryChartBase);

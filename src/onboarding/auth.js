@@ -24,6 +24,10 @@ import mockUser from "../../mock/user.json";
  */
 
 /**
+ * @typedef {"welcome"|"login"|"type_token"} OnboardingPage
+ */
+
+/**
  * Check the token and fetch the user from the API
  * @param {Object} params
  * @param {string} params.token - The token to use to fetch the user

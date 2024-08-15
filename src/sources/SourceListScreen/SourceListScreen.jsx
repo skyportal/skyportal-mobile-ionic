@@ -11,7 +11,7 @@ import { SourceList } from "../SourceList/SourceList.jsx";
 
 export const SourceListScreen = () => {
   return (
-    <IonPage>
+    <IonPage className="source-list-screen">
       <IonContent>
         <IonHeader>
           <IonToolbar>

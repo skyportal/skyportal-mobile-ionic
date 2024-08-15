@@ -14,6 +14,9 @@ ion-skeleton-text {
   padding: 0;
   box-sizing: border-box;
 }
+ion-content {
+  overflow: hidden;
+}
 .app-loading {
   display: flex;
   justify-content: center;

@@ -7,11 +7,15 @@ import { PinnedAnnotationsSkeleton } from "../PinnedAnnotationsSkeleton/PinnedAn
 /**
  * @param {Object} props
  * @param {boolean} [props.animated=false]
+ * @param {boolean} [props.visible=true]
  * @returns {JSX.Element}
  */
-export const ScanningCardSkeleton = ({ animated = false }) => {
+export const ScanningCardSkeleton = ({ animated = false, visible = true }) => {
   return (
-    <div className="scanning-card">
+    <div
+      className="scanning-card skeleton"
+      style={{ visibility: visible ? "visible" : "hidden" }}
+    >
       <div className="candidate-name">
         <h1>
           <IonSkeletonText style={{ width: "8rem" }} animated={animated} />
