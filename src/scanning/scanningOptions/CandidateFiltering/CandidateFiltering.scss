@@ -1,7 +1,9 @@
-.filtering-lines {
-  .filtering-line {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
+.filtering-line {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+
+  ion-select {
+    color: var(--ion-color-primary-shade);
   }
 }

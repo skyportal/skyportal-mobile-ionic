@@ -1,10 +1,20 @@
 import "./ScanningOptionsProgram.scss";
-import { IonChip, IonIcon, IonLabel, IonModal, IonToggle } from "@ionic/react";
-import { add } from "ionicons/icons";
+import {
+  IonButton,
+  IonChip,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonModal,
+  IonToggle,
+} from "@ionic/react";
+import { pencil } from "ionicons/icons";
 import { ControlledMultiSearchSelect } from "../../../common/MultiSearchSelect/ControlledMultiSearchSelect.jsx";
 import { Controller } from "react-hook-form";
 import { CandidateFiltering } from "../CandidateFiltering/CandidateFiltering.jsx";
-import { ErrorMessage } from "../../../common/ErrorMessage/ErrorMessage.jsx";
+import { ErrorMessageContainer } from "../../../common/ErrorMessageContainer/ErrorMessageContainer.jsx";
 
 /**
  * Program selection section of the scanning options
@@ -26,67 +36,89 @@ export const ScanningOptionsProgram = ({
   errors,
 }) => {
   return (
-    <fieldset className="program-section">
-      <legend>Program selection</legend>
-      <div className="selected-groups">
-        <IonChip id="add-group" className="add">
-          <IonLabel>Add</IonLabel>
-          <IonIcon icon={add} color="light"></IonIcon>
-        </IonChip>
-        {watch("selectedGroups")
-          .map((/** @type {string} */ groupId) =>
-            userAccessibleGroups.find((group) => group.id === +groupId),
-          )
-          .map((/** @type {import("../../scanningLib.js").Group} */ group) => (
-            <IonChip key={group.id}>{group.name}</IonChip>
-          ))}
-        <IonModal
-          ref={modal}
-          trigger="add-group"
-          isOpen={false}
-          onDidDismiss={() => {}}
+    <>
+      <IonList className="program-section" lines="full" inset>
+        <IonListHeader>
+          <IonLabel>Program selection</IonLabel>
+        </IonListHeader>
+        <IonItem
+          lines={watch("selectedGroups")?.length ?? 0 > 0 ? "none" : "full"}
         >
-          <ControlledMultiSearchSelect
+          <IonLabel>
+            Programs
+            <p>
+              {watch("selectedGroups")?.length ?? 0} program
+              {watch("selectedGroups")?.length > 1 && "s"} selected
+            </p>
+          </IonLabel>
+
+          <IonButton id="add-group" fill="clear">
+            Edit
+            <IonIcon icon={pencil} slot="end"></IonIcon>
+          </IonButton>
+        </IonItem>
+        {watch("selectedGroups").length > 0 && (
+          <IonItem>
+            {watch("selectedGroups")
+              .map((/** @type {string} */ groupId) =>
+                userAccessibleGroups.find((group) => group.id === +groupId),
+              )
+              .map(
+                (/** @type {import("../../scanningLib.js").Group} */ group) => (
+                  <IonChip key={group.id}>{group.name}</IonChip>
+                ),
+              )}
+          </IonItem>
+        )}
+        <IonItem>
+          <Controller
             control={control}
-            name="selectedGroups"
-            modal={modal}
-            title="Select groups"
-            items={userAccessibleGroups.map((group) => ({
-              value: `${group.id}`,
-              text: group.name,
-            }))}
-            rules={{
-              required: true,
-            }}
+            name="filterCandidates"
+            render={({ field: { onChange, onBlur, disabled } }) => (
+              <IonToggle
+                justify="space-between"
+                onIonChange={(e) => onChange(e.detail.checked)}
+                onIonBlur={onBlur}
+                disabled={disabled}
+              >
+                <IonLabel>Filtering</IonLabel>
+              </IonToggle>
+            )}
           />
-        </IonModal>
-        <div className="error-container">
-          <ErrorMessage errors={errors} name="selectedGroups" />
-        </div>
-      </div>
-      <div className="filtering">
-        <Controller
-          control={control}
-          name="filterCandidates"
-          render={({ field: { onChange, onBlur, disabled } }) => (
-            <IonToggle
-              justify="space-between"
-              onIonChange={(e) => onChange(e.detail.checked)}
-              onIonBlur={onBlur}
-              disabled={disabled}
-            >
-              Filtering
-            </IonToggle>
-          )}
-        />
+        </IonItem>
         {watch("filterCandidates") && (
           <CandidateFiltering register={register}></CandidateFiltering>
         )}
-        <div className="error-container">
-          <ErrorMessage errors={errors} name="filteringType" />
-          <ErrorMessage errors={errors} name="filteringAnyOrAll" />
-        </div>
-      </div>
-    </fieldset>
+      </IonList>
+      <ErrorMessageContainer
+        errors={errors}
+        errorNames={[
+          "selectedGroups",
+          "filterCandidates",
+          "filteringType",
+          "filteringAnyOrAll",
+        ]}
+      />
+      <IonModal
+        ref={modal}
+        trigger="add-group"
+        isOpen={false}
+        onDidDismiss={() => {}}
+      >
+        <ControlledMultiSearchSelect
+          control={control}
+          name="selectedGroups"
+          modal={modal}
+          title="Select groups"
+          items={userAccessibleGroups.map((group) => ({
+            value: `${group.id}`,
+            text: group.name,
+          }))}
+          rules={{
+            required: true,
+          }}
+        />
+      </IonModal>
+    </>
   );
 };
