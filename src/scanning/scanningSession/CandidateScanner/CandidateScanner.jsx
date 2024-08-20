@@ -28,6 +28,7 @@ import { getPreference } from "../../../common/preferences.js";
 import { QUERY_KEYS } from "../../../common/constants.js";
 import { useMutation } from "@tanstack/react-query";
 import { parseIntList } from "../../scanningLib.js";
+import { ScanningRecap } from "../ScanningRecap/ScanningRecap.jsx";
 
 export const CandidateScanner = () => {
   const numPerPage = 25;
@@ -39,45 +40,49 @@ export const CandidateScanner = () => {
   /** @type {React.MutableRefObject<any>} */
   const modal = useRef(null);
 
-  const queryParams = useQueryParams();
-  /** @type {ReturnType<typeof useState<import("../../scanningLib.js").ScanningConfig>>} */
-  // @ts-ignore
-  const [scanningConfig, setScanningConfig] = useState(null);
+  const [isLastBatch, setIsLastBatch] = useState(false);
+
+  /** @type {React.MutableRefObject<import("../../scanningLib").ScanningRecap>} */
+  const scanningRecap = useRef({
+    queryId: "",
+    assigned: [],
+    notAssigned: [],
+  });
 
   const { userAccessibleGroups } = useUserAccessibleGroups();
+  const queryParams = useQueryParams();
+  /** @type {import("../../scanningLib.js").ScanningConfig} */
+  const scanningConfig = {
+    startDate: queryParams.startDate,
+    endDate: queryParams.endDate,
+    savedStatus: queryParams.savedStatus,
+    /** @type {import("../../scanningLib").DiscardBehavior} **/
+    discardBehavior: queryParams.discardBehavior,
+    saveGroupIds: parseIntList(queryParams.groupIDs),
+    /** @type {import("../../scanningLib").Group[]} **/
+    // @ts-ignore
+    saveGroups: userAccessibleGroups
+      ? parseIntList(queryParams.groupIDs)
+          .map((id) => userAccessibleGroups.find((g) => g.id === id))
+          .filter((g) => g !== undefined)
+      : [],
+    junkGroupIds: parseIntList(queryParams.junkGroupIDs),
+    /** @type {import("../../scanningLib").Group[]} **/
+    // @ts-ignore
+    junkGroups: userAccessibleGroups
+      ? parseIntList(queryParams.junkGroupIDs)
+          .map((id) => userAccessibleGroups.find((g) => g.id === id))
+          .filter((g) => g !== undefined)
+      : [],
+    numPerPage,
+  };
+
   const [presentToast] = useIonToast();
   const [presentDiscardAlert] = useIonAlert();
 
-  useEffect(() => {
-    setScanningConfig({
-      startDate: queryParams.startDate,
-      endDate: queryParams.endDate,
-      savedStatus: queryParams.savedStatus,
-      /** @type {import("../../scanningLib").DiscardBehavior} **/
-      discardBehavior: queryParams.discardBehavior,
-      saveGroupIds: parseIntList(queryParams.groupIDs),
-      /** @type {import("../../scanningLib").Group[]} **/
-      // @ts-ignore
-      saveGroups: userAccessibleGroups
-        ? parseIntList(queryParams.groupIDs)
-            .map((id) => userAccessibleGroups.find((g) => g.id === id))
-            .filter((g) => g !== undefined)
-        : [],
-      junkGroupIds: parseIntList(queryParams.junkGroupIDs),
-      /** @type {import("../../scanningLib").Group[]} **/
-      // @ts-ignore
-      junkGroups: userAccessibleGroups
-        ? parseIntList(queryParams.junkGroupIDs)
-            .map((id) => userAccessibleGroups.find((g) => g.id === id))
-            .filter((g) => g !== undefined)
-        : [],
-      numPerPage,
-    });
-  }, []);
+  const isDiscardingEnabled = scanningConfig.junkGroups?.length ?? 0 > 0;
 
-  const isDiscardingEnabled = scanningConfig?.junkGroups?.length ?? 0 > 0;
-
-  const { data, fetchNextPage, isFetching } = useSearchCandidates({
+  const { data, fetchNextPage, isFetchingNextPage } = useSearchCandidates({
     startDate: queryParams.startDate,
     endDate: queryParams.endDate,
     savedStatus: queryParams.savedStatus,
@@ -85,7 +90,10 @@ export const CandidateScanner = () => {
     numPerPage,
   });
   const totalMatches = data?.pages[0].totalMatches;
-
+  const candidates = data?.pages.map((page) => page.candidates).flat(1);
+  if (candidates && candidates.length === totalMatches && !isLastBatch) {
+    setIsLastBatch(true);
+  }
   const selectCallback = useCallback(
     (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
       setCurrentIndex(e.selectedScrollSnap());
@@ -107,7 +115,7 @@ export const CandidateScanner = () => {
   const slidesInViewCallback = useCallback(
     async (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
       if (
-        !isFetching &&
+        !isFetchingNextPage &&
         e.selectedScrollSnap() >= e.slideNodes().length - 4 &&
         e.slideNodes().length - e.selectedScrollSnap() < numPerPage &&
         totalMatches &&
@@ -117,7 +125,7 @@ export const CandidateScanner = () => {
       }
       setSlidesInView(e.slidesInView());
     },
-    [isFetching],
+    [currentIndex, isFetchingNextPage, fetchNextPage, totalMatches],
   );
 
   useEffect(() => {
@@ -130,7 +138,7 @@ export const CandidateScanner = () => {
         emblaApi.off("slidesInView", slidesInViewCallback);
       }
     };
-  }, [emblaApi]);
+  }, [emblaApi, currentIndex, isFetchingNextPage, fetchNextPage, totalMatches]);
 
   const currentCandidate = data?.pages.at(Math.floor(currentIndex / numPerPage))
     ?.candidates?.[currentIndex % numPerPage];
@@ -232,11 +240,16 @@ export const CandidateScanner = () => {
   const promptUserForGroupSelection = useCallback(
     /**
      * @param {"save"|"discard"} action
+     * @returns {Promise<number[]>}
      */
-    async (action) => {
-      if (scanningConfig && currentCandidate) {
+    (action) =>
+      new Promise((resolve, reject) => {
+        if (!scanningConfig || !currentCandidate) {
+          reject();
+          return;
+        }
         // @ts-ignore
-        await presentDiscardAlert({
+        presentDiscardAlert({
           header:
             action === "save" ? "Select a program" : "Select a junk group",
           buttons: [action === "save" ? "Save" : "Discard"],
@@ -250,72 +263,74 @@ export const CandidateScanner = () => {
           })),
           onDidDismiss: (/** @type {any} **/ e) => {
             const groupIds = e.detail.data.values;
-            (action === "save"
-              ? saveSourceMutation
-              : discardSourceMutation
-            ).mutate({
-              sourceId: currentCandidate.id,
-              groupIds,
-            });
+            resolve(groupIds);
           },
         });
-      }
-    },
+      }),
     [scanningConfig, currentCandidate],
   );
 
-  const handleDiscard = useCallback(
-    async (groupIds = scanningConfig?.junkGroupIds ?? []) => {
-      if (currentCandidate && scanningConfig) {
-        if (scanningConfig.discardBehavior === "ask") {
-          // @ts-ignore
-          await promptUserForGroupSelection("discard");
-        } else {
-          discardSourceMutation.mutate({
-            sourceId: currentCandidate.id,
-            groupIds,
-          });
-        }
-      }
-    },
-    [currentCandidate, scanningConfig],
-  );
+  const handleDiscard = useCallback(async () => {
+    if (!currentCandidate || !scanningConfig) {
+      return;
+    }
+    if (scanningConfig.discardBehavior === "ask") {
+      let groupIds = await promptUserForGroupSelection("discard");
+      discardSourceMutation.mutate({
+        sourceId: currentCandidate.id,
+        groupIds,
+      });
+    } else {
+      discardSourceMutation.mutate({
+        sourceId: currentCandidate.id,
+        groupIds: scanningConfig.junkGroupIds,
+      });
+    }
+  }, [currentCandidate, scanningConfig]);
 
   const handleSave = useCallback(async () => {
-    if (currentCandidate && scanningConfig) {
-      if (scanningConfig.saveGroupIds.length > 1) {
-        // @ts-ignore
-        await promptUserForGroupSelection("save");
-      } else {
-        saveSourceMutation.mutate({
-          sourceId: currentCandidate.id,
-          groupIds: scanningConfig.saveGroupIds,
-        });
-      }
+    if (!currentCandidate || !scanningConfig) {
+      return;
     }
+    if (scanningConfig.saveGroupIds.length > 1) {
+      // @ts-ignore
+      let groupIds = await promptUserForGroupSelection("save");
+      saveSourceMutation.mutate({
+        sourceId: currentCandidate.id,
+        groupIds,
+      });
+    } else {
+      saveSourceMutation.mutate({
+        sourceId: currentCandidate.id,
+        groupIds: scanningConfig.saveGroupIds,
+      });
+    }
+    scanningRecap.current.notAssigned.push(currentCandidate);
   }, [currentCandidate, scanningConfig]);
 
   return (
     <div className="candidate-scanner">
       <div className="embla" ref={emblaRef}>
         <div className="embla__container">
-          {data?.pages
-            .map((page) => page.candidates)
-            .flat(1)
-            .map((candidate, index) => (
-              <div key={candidate.id} className="embla__slide">
-                <ScanningCard
-                  candidate={candidate}
-                  modal={modal}
-                  currentIndex={index}
-                  isInView={slidesInView.includes(index)}
-                  // @ts-ignore
-                  nbCandidates={data.pages[0].totalMatches}
-                />
-              </div>
-            )) ?? (
+          {candidates?.map((candidate, index) => (
+            <div key={candidate.id} className="embla__slide">
+              <ScanningCard
+                candidate={candidate}
+                modal={modal}
+                currentIndex={index}
+                isInView={slidesInView.includes(index)}
+                // @ts-ignore
+                nbCandidates={data.pages[0].totalMatches}
+              />
+            </div>
+          )) ?? (
             <div className="embla__slide">
               <ScanningCardSkeleton animated={true} />
+            </div>
+          )}
+          {isLastBatch && (
+            <div className="embla__slide">
+              <ScanningRecap recap={scanningRecap} />
             </div>
           )}
         </div>
