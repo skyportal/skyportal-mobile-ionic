@@ -1,25 +1,39 @@
-import { IonItem, IonList } from "@ionic/react";
+import "./ScanningRecap.scss";
+import { IonButton, IonItem, IonLabel, IonList } from "@ionic/react";
 
 /**
  * @param {Object} props
- * @param {React.MutableRefObject<import("../../scanningLib").ScanningRecap>} props.recap
+ * @param {import("../../scanningLib").ScanningRecap} props.recap
  * @returns {JSX.Element}
  */
 export const ScanningRecap = ({ recap }) => {
   return (
-    <div>
+    <div className="scanning-recap ion-padding">
       <h1>Saved sources</h1>
-      <IonList>
-        {recap.current.assigned.length > 0 ? (
-          recap.current.assigned.map((source) => (
-            <IonItem key={source.id}>
-              <h2>{source.id}</h2>
-            </IonItem>
-          ))
+      <div className="not-assigned">
+        <h5>Not assigned</h5>
+        {recap.notAssigned.length > 0 ? (
+          <>
+            <IonList>
+              {recap.notAssigned.map((source) => (
+                <IonItem key={source.id}>
+                  <IonLabel>{source.id}</IonLabel>
+                </IonItem>
+              ))}
+            </IonList>
+          </>
         ) : (
-          <p>No saved sources</p>
+          <p>You did not save any source</p>
         )}
-      </IonList>
+      </div>
+      {recap.notAssigned.length > 0 && (
+        <div className="button-container">
+          <IonButton expand="block">Draft email</IonButton>
+          <IonButton expand="block" fill="outline">
+            Exit
+          </IonButton>
+        </div>
+      )}
     </div>
   );
 };

@@ -42,8 +42,9 @@ export const CandidateScanner = () => {
 
   const [isLastBatch, setIsLastBatch] = useState(false);
 
-  /** @type {React.MutableRefObject<import("../../scanningLib").ScanningRecap>} */
-  const scanningRecap = useRef({
+  /** @type {[import("../../scanningLib").ScanningRecap, React.Dispatch<import("../../scanningLib").ScanningRecap>]} */
+  // @ts-ignore
+  const [scanningRecap, setScanningRecap] = useState({
     queryId: "",
     assigned: [],
     notAssigned: [],
@@ -89,11 +90,14 @@ export const CandidateScanner = () => {
     groupIDs: queryParams.groupIDs,
     numPerPage,
   });
+
   const totalMatches = data?.pages[0].totalMatches;
   const candidates = data?.pages.map((page) => page.candidates).flat(1);
+  const currentCandidate = candidates?.at(currentIndex);
   if (candidates && candidates.length === totalMatches && !isLastBatch) {
     setIsLastBatch(true);
   }
+
   const selectCallback = useCallback(
     (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
       setCurrentIndex(e.selectedScrollSnap());
@@ -139,9 +143,6 @@ export const CandidateScanner = () => {
       }
     };
   }, [emblaApi, currentIndex, isFetchingNextPage, fetchNextPage, totalMatches]);
-
-  const currentCandidate = data?.pages.at(Math.floor(currentIndex / numPerPage))
-    ?.candidates?.[currentIndex % numPerPage];
 
   const addSourceToGroups = useCallback(
     /**
@@ -305,7 +306,10 @@ export const CandidateScanner = () => {
         groupIds: scanningConfig.saveGroupIds,
       });
     }
-    scanningRecap.current.notAssigned.push(currentCandidate);
+    setScanningRecap({
+      ...scanningRecap,
+      notAssigned: [...scanningRecap.notAssigned, currentCandidate],
+    });
   }, [currentCandidate, scanningConfig]);
 
   return (
@@ -335,36 +339,38 @@ export const CandidateScanner = () => {
           )}
         </div>
       </div>
-      <div className="action-buttons-container">
-        <IonButton
-          onClick={() => handleDiscard()}
-          shape="round"
-          size="large"
-          color="danger"
-          fill="outline"
-          disabled={!isDiscardingEnabled}
-        >
-          <IonIcon icon={trashBin} slot="icon-only" />
-        </IonButton>
-        <IonButton
-          onClick={() => handleSave()}
-          shape="round"
-          size="large"
-          color="success"
-          fill="outline"
-        >
-          <IonIcon icon={checkmark} slot="icon-only" />
-        </IonButton>
-        <IonButton
-          shape="round"
-          size="large"
-          color="secondary"
-          fill="outline"
-          onClick={() => emblaApi?.scrollNext()}
-        >
-          <IonIcon icon={arrowForward} slot="icon-only" />
-        </IonButton>
-      </div>
+      {currentIndex < (totalMatches ?? 99999999) && (
+        <div className="action-buttons-container">
+          <IonButton
+            onClick={() => handleDiscard()}
+            shape="round"
+            size="large"
+            color="danger"
+            fill="outline"
+            disabled={!isDiscardingEnabled}
+          >
+            <IonIcon icon={trashBin} slot="icon-only" />
+          </IonButton>
+          <IonButton
+            onClick={() => handleSave()}
+            shape="round"
+            size="large"
+            color="success"
+            fill="outline"
+          >
+            <IonIcon icon={checkmark} slot="icon-only" />
+          </IonButton>
+          <IonButton
+            shape="round"
+            size="large"
+            color="secondary"
+            fill="outline"
+            onClick={() => emblaApi?.scrollNext()}
+          >
+            <IonIcon icon={arrowForward} slot="icon-only" />
+          </IonButton>
+        </div>
+      )}
 
       <IonModal
         ref={modal}
