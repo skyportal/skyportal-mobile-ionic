@@ -7,7 +7,7 @@ import {
 } from "@ionic/react";
 import "./OnboardingLower.scss";
 import { INSTANCES, QUERY_PARAMS } from "../../common/constants.js";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { qrCode } from "ionicons/icons";
 import { CapacitorBarcodeScanner } from "@capacitor/barcode-scanner";
 import { Html5QrcodeSupportedFormats } from "html5-qrcode";
@@ -24,36 +24,40 @@ import { navigateWithParams } from "../../common/util.js";
 const OnboardingLower = ({ page, setPage }) => {
   const history = useHistory();
   const [instance, setInstance] = useState(null);
-  const [token, setToken] = useState("");
+  const [typedToken, setTypedToken] = useState("");
 
-  /**
-   * @param {string} token
-   */
-  const navigateToCheckToken = (token) => {
-    navigateWithParams(history, "/check-creds", {
-      params: {
-        [QUERY_PARAMS.TOKEN]: token,
-        [QUERY_PARAMS.INSTANCE]: JSON.stringify(instance),
-      },
-      replace: true,
-    });
-  };
+  const navigateToCheckToken = useCallback(
+    /**
+     * @param {string} token
+     */
+    (token) => {
+      navigateWithParams(history, "/check-creds", {
+        params: {
+          [QUERY_PARAMS.TOKEN]: token,
+          [QUERY_PARAMS.INSTANCE]: JSON.stringify(instance),
+        },
+        replace: true,
+      });
+    },
+    [instance],
+  );
 
   const handleScanQRCode = async () => {
+    let token = "";
     try {
       const result = await CapacitorBarcodeScanner.scanBarcode({
         hint: Html5QrcodeSupportedFormats.QR_CODE,
       });
-      setToken(result.ScanResult);
+      token = result.ScanResult;
     } catch (error) {
       console.error(error);
     }
     navigateToCheckToken(token);
   };
 
-  const handleTypeTokenSubmit = () => {
-    navigateToCheckToken(token);
-  };
+  const handleTypeTokenSubmit = useCallback(() => {
+    navigateToCheckToken(typedToken);
+  }, [typedToken, instance]);
 
   switch (page) {
     case "welcome":
@@ -114,8 +118,8 @@ const OnboardingLower = ({ page, setPage }) => {
             label="token"
             placeholder="Enter your token"
             // @ts-ignore
-            onInput={(e) => setToken(e.target.value)}
-            value={token}
+            onInput={(e) => setTypedToken(e.target.value)}
+            value={typedToken}
           ></IonInput>
           <IonButton
             onClick={() => handleTypeTokenSubmit()}
