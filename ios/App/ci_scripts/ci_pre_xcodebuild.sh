@@ -10,3 +10,4 @@ echo "Pre-build"
 brew install node
 npm ci
 npm run build
+npx cap sync ios
