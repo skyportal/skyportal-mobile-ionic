@@ -10,6 +10,7 @@ import { useUserInfo } from "../common/hooks.js";
  * @param {import("../common/constants").SavedStatus} props.savedStatus
  * @param {string} props.groupIDs
  * @param {number} props.numPerPage
+ * @param {string|null} [props.queryID=null]
  * @returns {import("@tanstack/react-query").UseInfiniteQueryResult<import("@tanstack/react-query").InfiniteData<import("./scanningRequests.js").CandidateSearchResponse, unknown>, Error>}
  */
 export const useSearchCandidates = ({
@@ -18,6 +19,7 @@ export const useSearchCandidates = ({
   savedStatus,
   groupIDs,
   numPerPage,
+  queryID = null,
 }) => {
   const { userInfo } = useUserInfo();
   return useInfiniteQuery({
@@ -41,6 +43,7 @@ export const useSearchCandidates = ({
         groupIDs,
         numPerPage,
         pageNumber: ctx.pageParam ?? "1",
+        queryID,
       });
     },
     initialPageParam: 1,

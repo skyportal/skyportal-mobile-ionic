@@ -83,11 +83,14 @@ export const CandidateScanner = () => {
 
   const isDiscardingEnabled = scanningConfig.junkGroups?.length ?? 0 > 0;
 
+  /** @type {React.MutableRefObject<string|null>} */
+  const queryID = useRef(null);
   const { data, fetchNextPage, isFetchingNextPage } = useSearchCandidates({
     startDate: queryParams.startDate,
     endDate: queryParams.endDate,
     savedStatus: queryParams.savedStatus,
     groupIDs: queryParams.groupIDs,
+    queryID: queryID.current,
     numPerPage,
   });
 
@@ -97,6 +100,7 @@ export const CandidateScanner = () => {
   if (candidates && candidates.length === totalMatches && !isLastBatch) {
     setIsLastBatch(true);
   }
+  queryID.current = data?.pages[0].queryID ?? null;
 
   const selectCallback = useCallback(
     (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
