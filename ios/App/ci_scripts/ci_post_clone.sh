@@ -8,7 +8,7 @@
 
 echo "Ionic Build"
 cd ../../..
-brew install node
+brew install node cocoapods
 npm ci
 npm run build
 npx cap sync ios
