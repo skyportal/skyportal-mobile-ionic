@@ -16,7 +16,7 @@ import moment from "moment-timezone";
 import { useUserInfo } from "../../../common/hooks.js";
 import { useCallback } from "react";
 import { useLocation } from "react-router";
-import { exitOutline } from "ionicons/icons";
+import { exitOutline, mailOutline } from "ionicons/icons";
 
 export const ScanningRecap = () => {
   const { userInfo } = useUserInfo();
@@ -77,7 +77,10 @@ export const ScanningRecap = () => {
 
           {(recap?.notAssigned?.length ?? 0) > 0 && (
             <a href={handleDraftEmail()}>
-              <IonButton expand="block">Draft email</IonButton>
+              <IonButton expand="block">
+                <IonIcon slot="start" icon={mailOutline}></IonIcon>
+                Draft email
+              </IonButton>
             </a>
           )}
           <IonRouterLink routerLink="/app/scanning">
