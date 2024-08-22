@@ -48,6 +48,7 @@ import { MainScanningScreen } from "./scanning/scanningSession/MainScanningScree
 import { SourceListScreen } from "./sources/SourceListScreen/SourceListScreen.jsx";
 import { compassOutline, list } from "ionicons/icons";
 import { ScanningHome } from "./scanning/ScanningHome/ScanningHome.jsx";
+import { ScanningRecap } from "./scanning/scanningSession/ScanningRecap/ScanningRecap.jsx";
 
 setupIonicReact();
 
@@ -76,9 +77,13 @@ const App = () => {
           <Route path="/scanning/main">
             <MainScanningScreen />
           </Route>
+          <Route path="/scanning/recap">
+            <ScanningRecap />
+          </Route>
           <Route exact path="/scanning">
             <ScanningOptionsScreen />
           </Route>
+
           <Route exact path="/">
             <Redirect to="/onboarding" />
           </Route>

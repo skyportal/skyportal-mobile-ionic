@@ -96,6 +96,7 @@ export const ScanningOptionsForm = () => {
         discardBehavior: data.discardBehavior,
         discardGroup: data.discardGroup,
       },
+      replace: true,
     });
   };
 

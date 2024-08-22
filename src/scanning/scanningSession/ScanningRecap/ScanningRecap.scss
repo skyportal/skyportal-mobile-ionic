@@ -1,18 +1,15 @@
 .scanning-recap {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: 1fr;
-  flex: 1;
-  justify-content: flex-start;
-  h1 {
-    margin-bottom: 2rem;
-  }
-  h5 {
-    margin-bottom: 0.5rem;
-  }
-  .button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  .recap-container {
+    display: grid;
+    grid-template-rows: 3fr auto auto;
+    grid-template-columns: 1fr;
+    flex: 1;
+    justify-content: flex-start;
+    height: 100%;
+    padding-bottom: var(--ion-safe-area-bottom);
+
+    h5 {
+      margin-bottom: 0.5rem;
+    }
   }
 }

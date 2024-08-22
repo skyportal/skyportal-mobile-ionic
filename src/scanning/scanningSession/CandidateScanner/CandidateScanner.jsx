@@ -28,7 +28,7 @@ import { getPreference } from "../../../common/preferences.js";
 import { QUERY_KEYS } from "../../../common/constants.js";
 import { useMutation } from "@tanstack/react-query";
 import { parseIntList } from "../../scanningLib.js";
-import { ScanningRecap } from "../ScanningRecap/ScanningRecap.jsx";
+import { ScanningEnd } from "../ScanningEnd/ScanningEnd.jsx";
 
 export const CandidateScanner = () => {
   const numPerPage = 25;
@@ -42,9 +42,9 @@ export const CandidateScanner = () => {
 
   const [isLastBatch, setIsLastBatch] = useState(false);
 
-  /** @type {[import("../../scanningLib").ScanningRecap, React.Dispatch<import("../../scanningLib").ScanningRecap>]} */
+  /** @type {React.MutableRefObject<import("../../scanningLib").ScanningRecap>} */
   // @ts-ignore
-  const [scanningRecap, setScanningRecap] = useState({
+  const scanningRecap = useRef({
     queryId: "",
     assigned: [],
     notAssigned: [],
@@ -101,6 +101,7 @@ export const CandidateScanner = () => {
     setIsLastBatch(true);
   }
   queryID.current = data?.pages[0].queryID ?? null;
+  scanningRecap.current.queryId = queryID.current ?? "";
 
   const selectCallback = useCallback(
     (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
@@ -310,10 +311,10 @@ export const CandidateScanner = () => {
         groupIds: scanningConfig.saveGroupIds,
       });
     }
-    setScanningRecap({
-      ...scanningRecap,
-      notAssigned: [...scanningRecap.notAssigned, currentCandidate],
-    });
+    scanningRecap.current = {
+      ...scanningRecap.current,
+      notAssigned: [...scanningRecap.current.notAssigned, currentCandidate],
+    };
   }, [currentCandidate, scanningConfig]);
 
   return (
@@ -338,7 +339,7 @@ export const CandidateScanner = () => {
           )}
           {isLastBatch && (
             <div className="embla__slide">
-              <ScanningRecap recap={scanningRecap} />
+              <ScanningEnd recap={scanningRecap} />
             </div>
           )}
         </div>
