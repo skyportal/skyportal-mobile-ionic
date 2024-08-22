@@ -31,9 +31,16 @@ export const ScanningRecap = () => {
     if (!userInfo || !recap) {
       return;
     }
-    const body = recap.notAssigned
+    let body = `Dear all,
+    
+    ${recap.totalMatches} candidates
+    
+    
+    Saved, not assigned:
+    `;
+    body += recap.notAssigned
       .map((source) => userInfo.instance.url + `/source/${source.id}`)
-      .join("\n");
+      .join("\n\n");
     const bodyEncoded = encodeURIComponent(body);
     const subject = "Candidate scanning " + moment().format("YYYY-MM-DD");
     const subjectEncoded = encodeURIComponent(subject);

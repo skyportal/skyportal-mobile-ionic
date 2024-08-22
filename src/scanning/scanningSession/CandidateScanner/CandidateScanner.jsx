@@ -48,6 +48,7 @@ export const CandidateScanner = () => {
     queryId: "",
     assigned: [],
     notAssigned: [],
+    totalMatches: 0,
   });
 
   const { userAccessibleGroups } = useUserAccessibleGroups();
@@ -102,6 +103,7 @@ export const CandidateScanner = () => {
   }
   queryID.current = data?.pages[0].queryID ?? null;
   scanningRecap.current.queryId = queryID.current ?? "";
+  scanningRecap.current.totalMatches = totalMatches ?? 0;
 
   const selectCallback = useCallback(
     (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {

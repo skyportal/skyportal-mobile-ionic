@@ -83,6 +83,7 @@
 /**
  * @typedef {Object} ScanningRecap
  * @property {string} queryId
+ * @property {number} totalMatches
  * @property {Candidate[]} assigned
  * @property {Candidate[]} notAssigned
  */
