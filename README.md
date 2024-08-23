@@ -97,6 +97,24 @@ npm run dev:ios:device
 npm run dev:android:device
 ```
 
+## Environment variables
+
+There are some environment variables that you can set to customize the app during development. The project uses vite's 
+environment variables management. The variables are intended for use in development only and should not be used in
+production. You can copy the `.env.development` file to a `.env.development.local` file that will be automatically ignored by
+git and set your custom variables there following the same format. The variables can then be accessed in the code using
+`import.meta.env.VITE_VARIABLE_NAME`. For more information, you can refer to the [vite documentation](https://vitejs.dev/guide/env-and-mode).
+
+| Variable                       | Type      | Default     | Description                                                                                                                                                                                |
+|--------------------------------|-----------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `VITE_SKIP_ONBOARDING`         | `boolean` | `false`     | Skips the onboarding process and goes directly to the login screen. This requires `VITE_SKYPORTAL_TOKEN`, `VITE_SKY                                                                        |
+| `VITE_SKYPORTAL_TOKEN`         | `string`  | `undefined` | The token to use to authenticate with the SkyPortal backend. This is required if `VITE_SKIP_ONBOARDING` is set to `true`.                                                                  |
+| `VITE_SKYPORTAL_INSTANCE_URL`  | `string`  | `undefined` | The URL of the SkyPortal instance to connect to. This is required if `VITE_SKIP_ONBOARDING` is set to `true`.                                                                              |
+| `VITE_SKYPORTAL_INSTANCE_NAME` | `string`  | `undefined` | The name of the SkyPortal instance to connect to. This is required if `VITE_SKIP_ONBOARDING` is set to `true`.                                                                             |
+| `VITE_CLEAR_AUTH`              | `boolean` | `false`     | Clears the authentication token and instance URL from the local storage. This is useful when you want to reset the app to the onboarding state each time you start the development server. |
+
+
+
 ## Directory structure
 
 ### `src/`
