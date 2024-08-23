@@ -8,24 +8,36 @@ import {
   IonLabel,
   IonList,
   IonPage,
-  IonRouterLink,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import moment from "moment-timezone";
 import { useUserInfo } from "../../../common/hooks.js";
 import { useCallback } from "react";
-import { useLocation } from "react-router";
-import { exitOutline, mailOutline } from "ionicons/icons";
+import { useHistory, useLocation } from "react-router";
+import { exitOutline, linkOutline, mailOutline } from "ionicons/icons";
 
 export const ScanningRecap = () => {
   const { userInfo } = useUserInfo();
   const location = useLocation();
+  const history = useHistory();
   /**
    * @type {import("../../scanningLib").ScanningRecap|undefined}
    */
   // @ts-ignore
   const recap = location.state?.recap;
+
+  const getLink = useCallback(
+    /**
+     * @param {import("../../scanningLib").Candidate} source
+     * @returns {string}
+     */
+    (source) => {
+      if (!userInfo) return "";
+      return userInfo.instance.url + `/source/${source.id}`;
+    },
+    [userInfo],
+  );
 
   const handleDraftEmail = useCallback(() => {
     if (!userInfo || !recap) {
@@ -38,9 +50,7 @@ export const ScanningRecap = () => {
     
     Saved, not assigned:
     `;
-    body += recap.notAssigned
-      .map((source) => userInfo.instance.url + `/source/${source.id}`)
-      .join("\n\n");
+    body += recap.notAssigned.map(getLink).join("\n\n");
     const bodyEncoded = encodeURIComponent(body);
     const subject = "Candidate scanning " + moment().format("YYYY-MM-DD");
     const subjectEncoded = encodeURIComponent(subject);
@@ -62,8 +72,18 @@ export const ScanningRecap = () => {
                 <h5>Not assigned</h5>
                 <IonList>
                   {(recap?.notAssigned ?? []).map((source) => (
-                    <IonItem key={source.id}>
+                    <IonItem
+                      key={source.id}
+                      onClick={() => window.open(getLink(source))}
+                      detail={false}
+                      button
+                    >
                       <IonLabel>{source.id}</IonLabel>
+                      <IonIcon
+                        slot="end"
+                        icon={linkOutline}
+                        color="primary"
+                      ></IonIcon>
                     </IonItem>
                   ))}
                 </IonList>
@@ -83,12 +103,15 @@ export const ScanningRecap = () => {
               </IonButton>
             </a>
           )}
-          <IonRouterLink routerLink="/app/scanning">
-            <IonButton expand="block" fill="outline" color="danger">
-              <IonIcon slot="start" icon={exitOutline}></IonIcon>
-              Exit
-            </IonButton>
-          </IonRouterLink>
+          <IonButton
+            expand="block"
+            fill="outline"
+            color="danger"
+            onClick={() => history.replace("/app/scanning")}
+          >
+            <IonIcon slot="start" icon={exitOutline}></IonIcon>
+            Exit
+          </IonButton>
         </div>
       </IonContent>
     </IonPage>
