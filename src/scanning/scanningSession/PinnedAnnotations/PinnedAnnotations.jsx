@@ -40,6 +40,7 @@ export const PinnedAnnotations = ({
             onClick={() =>
               handleTextCopied(annotationLine.id, annotationLine.value)
             }
+            detail={false}
             button
           >
             <IonText className="name" color="secondary">

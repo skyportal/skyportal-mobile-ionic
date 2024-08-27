@@ -24,6 +24,7 @@ export const CandidateAnnotationItem = ({ annotation }) => {
             <IonItem
               key={key}
               onClick={() => handleTextCopied(key, value)}
+              detail={false}
               button
             >
               {key}: {value}
