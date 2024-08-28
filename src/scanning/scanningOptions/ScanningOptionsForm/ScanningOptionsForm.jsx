@@ -107,33 +107,44 @@ export const ScanningOptionsForm = () => {
   const { userAccessibleGroups = [] } = useUserAccessibleGroups();
 
   return (
-    <form className="scanning-options-form" onSubmit={handleSubmit(onSubmit)}>
-      <ScanningOptionsDate
-        control={control}
-        getValues={getValues}
-        errors={errors}
-      />
-      <ScanningOptionsProgram
-        register={register}
-        control={control}
-        errors={errors}
-        modal={groupSelectionModal}
-        userAccessibleGroups={userAccessibleGroups}
-        watch={watch}
-      />
-      <ScanningOptionsDiscarding
-        register={register}
-        errors={errors}
-        control={control}
-        watch={watch}
-        modal={junkGroupSelectionModal}
-        userAccessibleGroups={userAccessibleGroups}
-      />
+    <>
+      <form
+        id="optionsForm"
+        onSubmit={handleSubmit(onSubmit)}
+        className="scanning-options-form"
+      >
+        <ScanningOptionsDate
+          control={control}
+          getValues={getValues}
+          errors={errors}
+        />
+        <ScanningOptionsProgram
+          register={register}
+          control={control}
+          errors={errors}
+          modal={groupSelectionModal}
+          userAccessibleGroups={userAccessibleGroups}
+          watch={watch}
+        />
+        <ScanningOptionsDiscarding
+          register={register}
+          errors={errors}
+          control={control}
+          watch={watch}
+          modal={junkGroupSelectionModal}
+          userAccessibleGroups={userAccessibleGroups}
+        />
+      </form>
       <div className="form-footer">
-        <IonButton type="submit" shape="round">
+        <IonButton
+          type="submit"
+          form="optionsForm"
+          shape="round"
+          expand="block"
+        >
           Scan
         </IonButton>
       </div>
-    </form>
+    </>
   );
 };

@@ -12,13 +12,13 @@ import React, { Suspense } from "react";
 
 export const ScanningOptionsScreen = () => {
   return (
-    <IonPage>
+    <IonPage className="scanning-options-screen">
       <IonHeader>
         <IonToolbar>
           <IonTitle>Scanning options</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent color="light">
         <Suspense
           fallback={
             <div className="scanning-option-loading">
