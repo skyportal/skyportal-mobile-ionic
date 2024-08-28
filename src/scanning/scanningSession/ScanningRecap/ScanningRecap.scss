@@ -1,0 +1,15 @@
+.scanning-recap {
+  .recap-container {
+    display: grid;
+    grid-template-rows: 3fr auto auto;
+    grid-template-columns: 1fr;
+    flex: 1;
+    justify-content: flex-start;
+    height: 100%;
+    padding-bottom: var(--ion-safe-area-bottom);
+
+    h5 {
+      margin-bottom: 0.5rem;
+    }
+  }
+}

@@ -1,0 +1,13 @@
+.scanning-end {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10rem 1rem 1rem;
+  gap: 3rem;
+
+  .hint {
+    text-align: center;
+  }
+}

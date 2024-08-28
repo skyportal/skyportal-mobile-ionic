@@ -8,7 +8,6 @@ import { fetchSources } from "../sources/sources.js";
 import { getPreference, setPreference } from "./preferences.js";
 import config from "../config.js";
 import { checkTokenAndFetchUser } from "../onboarding/auth.js";
-import { useState } from "react";
 import { fetchConfig } from "./requests.js";
 import { fetchGroups } from "../scanning/scanningRequests.js";
 
@@ -90,12 +89,6 @@ export const useFetchSources = ({ page, numPerPage }) => {
 /** @typedef {{user: null|import("../onboarding/auth.js").User, status: QueryStatus, error: any}} SkipOnboardingState */
 
 export const useAppStart = () => {
-  const [state, setState] =
-    /** @type {ReturnType<typeof useState<SkipOnboardingState>>} */ useState({
-      user: null,
-      status: "pending",
-      error: undefined,
-    });
   const queryClient = useQueryClient();
   const appStarted = async () => {
     if (config.CLEAR_AUTH) {
@@ -127,7 +120,7 @@ export const useAppStart = () => {
     };
     queryClient.setQueryData([QUERY_KEYS.USER_INFO], userInfo);
     await setPreference({ key: QUERY_KEYS.USER_INFO, value: userInfo });
-    setState({ user, status: "success", error: state.error });
+    return user;
   };
   return useQuery({
     // @ts-ignore
