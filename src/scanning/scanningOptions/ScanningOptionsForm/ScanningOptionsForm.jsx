@@ -2,17 +2,20 @@ import "./ScanningOptionsForm.scss";
 import { ScanningOptionsDate } from "../ScanningOptionsDate/ScanningOptionsDate.jsx";
 import { ScanningOptionsProgram } from "../ScanningOptionsProgram/ScanningOptionsProgram.jsx";
 import { ScanningOptionsDiscarding } from "../ScanningOptionsDiscarding/ScanningOptionsDiscarding.jsx";
-import { IonButton } from "@ionic/react";
+import { IonButton, useIonAlert } from "@ionic/react";
 import { useForm } from "react-hook-form";
 import moment from "moment-timezone";
 import { useRef } from "react";
 import { useUserAccessibleGroups } from "../../../common/hooks.js";
 import { SAVED_STATUS } from "../../../common/constants.js";
 import { useHistory } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { initialSearchRequest } from "../../scanningLib.js";
 import { navigateWithParams } from "../../../common/util.js";
 
 export const ScanningOptionsForm = () => {
   const history = useHistory();
+  const [presentAlert] = useIonAlert();
   const defaultValues = {
     startDate:
       import.meta.env.MODE === "development"
@@ -70,6 +73,76 @@ export const ScanningOptionsForm = () => {
     );
   };
 
+  const searchCandidatesMutation = useMutation({
+    /**
+     * @param {Object} params
+     * @param {string} params.groupIDs
+     * @param {import("../../../common/constants.js").SavedStatus} params.savedStatus
+     * @param {string} params.startDate
+     * @param {string} params.endDate
+     * @param {string} params.junkGroupIDs
+     * @param {string} params.discardBehavior
+     * @param {string} params.discardGroup
+     * @returns {Promise<any>}
+     */
+    mutationFn: async ({
+      groupIDs,
+      savedStatus,
+      startDate,
+      endDate,
+      junkGroupIDs,
+      discardBehavior,
+      discardGroup,
+    }) => {
+      const response = await initialSearchRequest({
+        groupIDs,
+        savedStatus,
+        startDate,
+        endDate,
+        pageNumber: 1,
+      });
+      if (response.totalMatches === 0) {
+        throw new Error("No candidates found");
+      }
+      return {
+        totalMatches: response.totalMatches,
+        groupIDs,
+        savedStatus,
+        startDate,
+        endDate,
+        junkGroupIDs,
+        discardBehavior,
+        discardGroup,
+        queryID: response.queryID,
+      };
+    },
+    onError: (error) => {
+      if (error.message === "No candidates found") {
+        presentAlert({
+          header: "No candidates found",
+          message:
+            "No candidates were found with the selected options. Please try again with different options.",
+          buttons: ["OK"],
+        });
+      } else {
+        presentAlert({
+          header: "Error",
+          message:
+            "An error occurred while searching for candidates. Please try again.",
+          buttons: ["OK"],
+        });
+      }
+    },
+    onSuccess: (response) => {
+      navigateWithParams(history, "/scanning/main", {
+        params: {
+          ...response,
+        },
+        replace: true,
+      });
+    },
+  });
+
   /**
    * @param {any} data
    */
@@ -86,17 +159,15 @@ export const ScanningOptionsForm = () => {
     const startDate = moment(data.startDate).format();
     const endDate = moment(data.endDate).format();
     const junkGroupIDs = data.junkGroups.join(",");
-    navigateWithParams(history, "/scanning/main", {
-      params: {
-        groupIDs,
-        savedStatus,
-        startDate,
-        endDate,
-        junkGroupIDs,
-        discardBehavior: data.discardBehavior,
-        discardGroup: data.discardGroup,
-      },
-      replace: true,
+
+    searchCandidatesMutation.mutate({
+      groupIDs,
+      savedStatus,
+      startDate,
+      endDate,
+      junkGroupIDs,
+      discardBehavior: data.discardBehavior,
+      discardGroup: data.discardGroup,
     });
   };
 

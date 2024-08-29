@@ -48,3 +48,5 @@ export const SAVED_STATUS = {
   NOT_SAVED_TO_ANY_SELECTED: "notSavedToAnySelected",
   NOT_SAVED_TO_ALL_SELECTED: "notSavedToAllSelected",
 };
+
+export const CANDIDATES_PER_PAGE = 50;

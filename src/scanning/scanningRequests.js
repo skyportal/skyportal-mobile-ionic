@@ -1,4 +1,5 @@
 import { CapacitorHttp } from "@capacitor/core";
+import { CANDIDATES_PER_PAGE } from "../common/constants.js";
 
 /**
  * @typedef {Object} CandidateSearchResponse
@@ -19,7 +20,7 @@ import { CapacitorHttp } from "@capacitor/core";
  * @param {string} params.groupIDs - The group IDs to search for
  * @param {string|null} [params.queryID=null] - The query ID
  * @param {number} params.pageNumber - The page number
- * @param {number} params.numPerPage - The number of candidates per page
+ * @param {number} [params.numPerPage] - The number of candidates per page
  * @returns {Promise<CandidateSearchResponse>}
  */
 export async function searchCandidates({
@@ -31,7 +32,7 @@ export async function searchCandidates({
   groupIDs,
   queryID = null,
   pageNumber,
-  numPerPage,
+  numPerPage = CANDIDATES_PER_PAGE,
 }) {
   // example: https://preview.fritz.science/api/candidates?pageNumber=1&numPerPage=50&groupIDs=4&savedStatus=savedToAnySelected&listNameReject=rejected_candidates&startDate=2024-07-01T21%3A27%3A27.232Z
   let response = await CapacitorHttp.get({
