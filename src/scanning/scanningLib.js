@@ -78,6 +78,7 @@
  * @property {number[]} junkGroupIds
  * @property {Group[]} junkGroups
  * @property {number} numPerPage
+ * @property {string} queryID
  */
 
 /**
@@ -91,6 +92,9 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { useIonToast } from "@ionic/react";
 import { useCallback } from "react";
+import { getPreference } from "../common/preferences.js";
+import { QUERY_KEYS } from "../common/constants.js";
+import { searchCandidates } from "./scanningRequests.js";
 
 /**
  * @type {Object<ThumbnailType, ThumbnailType>}
@@ -428,3 +432,32 @@ export const parseIntList = (intListString) =>
     .split(",")
     .filter((/** @type {string} **/ id) => id !== "")
     .map((/** @type {string} **/ id) => parseInt(id));
+
+/**
+ * @param {Object} params
+ * @param {string} params.groupIDs
+ * @param {import("../common/constants").SavedStatus} params.savedStatus
+ * @param {string} params.startDate
+ * @param {string} params.endDate
+ * @param {number} params.pageNumber
+ * @returns {Promise<import("./scanningRequests.js").CandidateSearchResponse>}
+ */
+export const initialSearchRequest = async ({
+  groupIDs,
+  savedStatus,
+  startDate,
+  endDate,
+  pageNumber,
+}) => {
+  /** @type {import("../onboarding/auth.js").UserInfo} */
+  const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
+  return searchCandidates({
+    instanceUrl: userInfo.instance.url,
+    token: userInfo.token,
+    groupIDs,
+    savedStatus,
+    startDate,
+    endDate,
+    pageNumber,
+  });
+};
