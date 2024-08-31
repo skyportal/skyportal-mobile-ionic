@@ -92,9 +92,8 @@
 import { Clipboard } from "@capacitor/clipboard";
 import { useIonToast } from "@ionic/react";
 import { useCallback } from "react";
-import { getPreference } from "../common/preferences.js";
-import { QUERY_KEYS } from "../common/constants.js";
-import { searchCandidates } from "./scanningRequests.js";
+import moment from "moment-timezone";
+import { SAVED_STATUS } from "../common/constants.js";
 
 /**
  * @type {Object<ThumbnailType, ThumbnailType>}
@@ -451,32 +450,58 @@ export const parseIntList = (intListString) => {
 };
 
 /**
- * @param {Object} params
- * @param {string} params.groupIDs
- * @param {import("../common/constants").SavedStatus} params.savedStatus
- * @param {string} params.startDate
- * @param {string} params.endDate
- * @param {number} params.pageNumber
- * @returns {Promise<import("./scanningRequests.js").CandidateSearchResponse>}
+ *
+ * @param {import("../onboarding/auth").ScanningProfile} scanningProfile
+ * @returns {string}
  */
-export const initialSearchRequest = async ({
-  groupIDs,
-  savedStatus,
-  startDate,
-  endDate,
-  pageNumber,
-}) => {
-  /** @type {import("../onboarding/auth.js").UserInfo} */
-  const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
-  return searchCandidates({
-    instanceUrl: userInfo.instance.url,
-    token: userInfo.token,
-    groupIDs,
-    savedStatus,
-    startDate,
-    endDate,
-    pageNumber,
-  });
+export const getStartDate = (scanningProfile) => {
+  if (import.meta.env.MODE === "development") {
+    return moment("2022-07-26T16:43:00-07:00").format();
+  }
+
+  return moment()
+    .subtract(parseInt(scanningProfile.timeRange), "hours")
+    .format();
+};
+
+/**
+ * @param {import("../onboarding/auth").ScanningProfile} scanningProfile
+ */
+export const getFiltering = (scanningProfile) => {
+  switch (scanningProfile.savedStatus) {
+    case SAVED_STATUS.ALL:
+      return {
+        filterCandidates: false,
+        filteringType: "include",
+        filteringAnyOrAll: "all",
+      };
+    case SAVED_STATUS.SAVED_TO_ALL_SELECTED:
+      return {
+        filterCandidates: true,
+        filteringType: "include",
+        filteringAnyOrAll: "all",
+      };
+    case SAVED_STATUS.SAVED_TO_ANY_SELECTED:
+      return {
+        filterCandidates: true,
+        filteringType: "include",
+        filteringAnyOrAll: "any",
+      };
+    case SAVED_STATUS.NOT_SAVED_TO_ALL_SELECTED:
+      return {
+        filterCandidates: true,
+        filteringType: "exclude",
+        filteringAnyOrAll: "all",
+      };
+    case SAVED_STATUS.NOT_SAVED_TO_ANY_SELECTED:
+      return {
+        filterCandidates: true,
+        filteringType: "exclude",
+        filteringAnyOrAll: "any",
+      };
+    default:
+      throw new Error("Invalid savedStatus");
+  }
 };
 
 /**

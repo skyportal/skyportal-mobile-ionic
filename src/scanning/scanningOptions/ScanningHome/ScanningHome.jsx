@@ -1,22 +1,22 @@
 import {
-  IonButton,
   IonContent,
   IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { ScanningProfiles } from "../ScanningProfiles/ScanningProfiles.jsx";
 
 export const ScanningHome = () => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Scanning Home</IonTitle>
+          <IonTitle>Candidates</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonButton routerLink="/scanning">Start</IonButton>
+        <ScanningProfiles />
       </IonContent>
     </IonPage>
   );

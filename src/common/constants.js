@@ -23,7 +23,7 @@ export const QUERY_PARAMS = {
 export const QUERY_KEYS = {
   CANDIDATES: "candidates",
   SOURCES: "sources",
-  USER: "user",
+  USER_PROFILE: "user",
   USER_INFO: "userInfo",
   GROUPS: "groups",
   SOURCE_PHOTOMETRY: "sourcePhotometry",

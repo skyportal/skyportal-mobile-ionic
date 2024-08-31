@@ -1,24 +1,26 @@
 import { IonContent, IonIcon, IonPage } from "@ionic/react";
 import "./LoginOkScreen.scss";
 import { checkmarkCircleSharp } from "ionicons/icons";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useHistory } from "react-router";
-import { useUser } from "../../common/hooks.js";
+import { useUserProfile } from "../../common/hooks.js";
+import { UserContext } from "../../common/context.js";
 
 export const LoginOkScreen = () => {
   const history = useHistory();
-  const { user } = useUser();
+  const userInfo = useContext(UserContext);
+  const { userProfile } = useUserProfile(userInfo);
 
   useEffect(() => {
     /** @type {any} */
     let timer;
-    if (user) {
+    if (userProfile) {
       timer = setTimeout(() => {
         history.replace("/app");
       }, 2000);
     }
     return () => clearTimeout(timer);
-  }, [user]);
+  }, [userProfile]);
 
   return (
     <IonPage>
@@ -31,7 +33,9 @@ export const LoginOkScreen = () => {
           />
           <div className="text">
             <p className="success-hint">Connected successfully</p>
-            <p className="welcome-hint">Welcome back {user?.first_name}! 😄</p>
+            <p className="welcome-hint">
+              Welcome back {userProfile?.first_name}! 😄
+            </p>
           </div>
         </div>
       </IonContent>

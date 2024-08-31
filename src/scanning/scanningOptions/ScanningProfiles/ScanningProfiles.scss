@@ -1,0 +1,33 @@
+.scanning-profiles {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .sp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+  }
+
+  .sp-content {
+    flex: 1;
+
+    .hint-container {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+
+      .hint {
+        text-align: center;
+      }
+    }
+  }
+  .buttons-container {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+    padding: 0 1rem 1rem;
+  }
+}

@@ -1,7 +1,7 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../common/constants.js";
 import { searchCandidates } from "./scanningRequests.js";
-import { useUserInfo } from "../common/hooks.js";
+import { fetchUserProfile } from "../onboarding/auth.js";
 
 /**
  * @param {Object} props
@@ -11,6 +11,7 @@ import { useUserInfo } from "../common/hooks.js";
  * @param {string} props.groupIDs
  * @param {number} props.numPerPage
  * @param {string|null} [props.queryID=null]
+ * @param {import("../onboarding/auth.js").UserInfo} props.userInfo
  * @returns {import("@tanstack/react-query").UseInfiniteQueryResult<import("@tanstack/react-query").InfiniteData<import("./scanningRequests.js").CandidateSearchResponse, unknown>, Error>}
  */
 export const useSearchCandidates = ({
@@ -20,8 +21,8 @@ export const useSearchCandidates = ({
   groupIDs,
   numPerPage,
   queryID = null,
+  userInfo,
 }) => {
-  const { userInfo } = useUserInfo();
   return useInfiniteQuery({
     queryKey: [
       QUERY_KEYS.CANDIDATES,
@@ -35,8 +36,7 @@ export const useSearchCandidates = ({
         throw new Error("Missing parameters");
       }
       return await searchCandidates({
-        instanceUrl: userInfo?.instance.url ?? "",
-        token: userInfo?.token ?? "",
+        userInfo,
         startDate,
         endDate,
         savedStatus,
@@ -53,6 +53,28 @@ export const useSearchCandidates = ({
       }
       return +lastPage.pageNumber + 1;
     },
-    enabled: !!userInfo && !!startDate,
   });
+};
+
+/**
+ * @param {import("../onboarding/auth.js").UserInfo} userInfo
+ * @returns {{profiles: import("../onboarding/auth.js").ScanningProfile[] | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined}}
+ */
+export const useScanningProfiles = (userInfo) => {
+  const {
+    data: profiles,
+    status,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.USER_PROFILE],
+    queryFn: () =>
+      fetchUserProfile(userInfo).then(
+        (userProfile) => userProfile.preferences.scanningProfiles,
+      ),
+  });
+  return {
+    profiles,
+    status,
+    error,
+  };
 };

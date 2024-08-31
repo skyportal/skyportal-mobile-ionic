@@ -5,18 +5,33 @@ import { ScanningOptionsDiscarding } from "../ScanningOptionsDiscarding/Scanning
 import { IonButton, useIonAlert } from "@ionic/react";
 import { useForm } from "react-hook-form";
 import moment from "moment-timezone";
-import { useRef } from "react";
-import { useUserAccessibleGroups } from "../../../common/hooks.js";
+import { useContext, useRef } from "react";
+import {
+  useQueryParams,
+  useUserAccessibleGroups,
+  useUserProfile,
+} from "../../../common/hooks.js";
 import { SAVED_STATUS } from "../../../common/constants.js";
 import { useHistory } from "react-router";
 import { useMutation } from "@tanstack/react-query";
-import { initialSearchRequest } from "../../scanningLib.js";
 import { navigateWithParams } from "../../../common/util.js";
+import { UserContext } from "../../../common/context.js";
+import { searchCandidates } from "../../scanningRequests.js";
+import { getFiltering, getStartDate } from "../../scanningLib.js";
 
 export const ScanningOptionsForm = () => {
+  const userInfo = useContext(UserContext);
+
+  const { /** @type {string|undefined} */ profile: profileName } =
+    useQueryParams();
+  const { userProfile } = useUserProfile(userInfo);
+  /** @type {import("../../../onboarding/auth.js").ScanningProfile|undefined}*/
+  const scanningProfile = userProfile?.preferences?.scanningProfiles?.find(
+    (profile) => profile.name === profileName,
+  );
   const history = useHistory();
   const [presentAlert] = useIonAlert();
-  const defaultValues = {
+  let defaultValues = {
     startDate:
       import.meta.env.MODE === "development"
         ? moment("2022-07-26T16:43:00-07:00").format()
@@ -30,6 +45,16 @@ export const ScanningOptionsForm = () => {
     discardBehavior: "specific",
     discardGroup: null,
   };
+
+  if (scanningProfile) {
+    defaultValues = {
+      ...defaultValues,
+      startDate: getStartDate(scanningProfile),
+      ...getFiltering(scanningProfile),
+      // @ts-ignore
+      selectedGroups: scanningProfile.groupIDs,
+    };
+  }
 
   const {
     register,
@@ -94,12 +119,13 @@ export const ScanningOptionsForm = () => {
       discardBehavior,
       discardGroup,
     }) => {
-      const response = await initialSearchRequest({
+      const response = await searchCandidates({
         groupIDs,
         savedStatus,
         startDate,
         endDate,
         pageNumber: 1,
+        userInfo,
       });
       if (response.totalMatches === 0) {
         throw new Error("No candidates found");
@@ -175,7 +201,7 @@ export const ScanningOptionsForm = () => {
   const groupSelectionModal = useRef(null);
   /** @type {React.MutableRefObject<any>} */
   const junkGroupSelectionModal = useRef(null);
-  const { userAccessibleGroups = [] } = useUserAccessibleGroups();
+  const { userAccessibleGroups = [] } = useUserAccessibleGroups(userInfo);
 
   return (
     <>

@@ -1,6 +1,6 @@
 import "./CandidateScanner.scss";
 import { IonModal, useIonAlert, useIonToast } from "@ionic/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useContext } from "react";
 import {
   useQueryParams,
   useUserAccessibleGroups,
@@ -12,14 +12,14 @@ import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
 import { ScanningCardSkeleton } from "../ScanningCard/ScanningCardSkeleton.jsx";
 import { useSearchCandidates } from "../../scanningHooks.js";
 import { addSourceToGroup } from "../../scanningRequests.js";
-import { getPreference } from "../../../common/preferences.js";
-import { QUERY_KEYS } from "../../../common/constants.js";
 import { useMutation } from "@tanstack/react-query";
 import { parseIntList, SCANNING_TOOLBAR_ACTION } from "../../scanningLib.js";
 import { ScanningEnd } from "../ScanningEnd/ScanningEnd.jsx";
+import { UserContext } from "../../../common/context.js";
 import { ScanningToolbar } from "../ScanningToolbar/ScanningToolbar.jsx";
 
 export const CandidateScanner = () => {
+  const userInfo = useContext(UserContext);
   const numPerPage = 25;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel();
@@ -40,7 +40,7 @@ export const CandidateScanner = () => {
     totalMatches: 0,
   });
 
-  const { userAccessibleGroups } = useUserAccessibleGroups();
+  const { userAccessibleGroups } = useUserAccessibleGroups(userInfo);
   const queryParams = useQueryParams();
   /** @type {import("../../scanningLib.js").ScanningConfig} */
   const scanningConfig = {
@@ -80,6 +80,7 @@ export const CandidateScanner = () => {
     groupIDs: queryParams.groupIDs,
     queryID: queryParams.queryID,
     numPerPage,
+    userInfo,
   });
 
   const totalMatches = data?.pages[0].totalMatches;
@@ -146,11 +147,9 @@ export const CandidateScanner = () => {
      * @returns {Promise<*>}
      */
     async ({ sourceId, groupIds }) => {
-      const userInfo = await getPreference({ key: QUERY_KEYS.USER_INFO });
       return await addSourceToGroup({
         sourceId,
-        instanceUrl: userInfo.instance.url,
-        token: userInfo.token,
+        userInfo,
         groupIds,
       });
     },
