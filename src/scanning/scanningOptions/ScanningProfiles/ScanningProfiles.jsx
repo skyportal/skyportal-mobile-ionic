@@ -32,8 +32,13 @@ export const ScanningProfiles = () => {
       params: {
         profile: profiles.find((profile) => profile.default)?.name ?? "",
       },
+      replace: true,
     });
   }, [profiles]);
+
+  const handleScanWithoutProfile = () => {
+    history.replace("/scanning");
+  };
 
   return (
     <div className="scanning-profiles">
@@ -94,7 +99,12 @@ export const ScanningProfiles = () => {
         >
           Scan with default profile
         </IonButton>
-        <IonButton shape="round" expand="block" fill="outline">
+        <IonButton
+          shape="round"
+          expand="block"
+          fill="outline"
+          onClick={handleScanWithoutProfile}
+        >
           Scan without a profile
         </IonButton>
       </div>
