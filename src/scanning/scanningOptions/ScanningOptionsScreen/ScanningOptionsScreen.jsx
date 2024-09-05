@@ -1,5 +1,7 @@
 import "./ScanningOptionsScreen.scss";
 import {
+  IonButton,
+  IonButtons,
   IonContent,
   IonHeader,
   IonPage,
@@ -15,10 +17,15 @@ export const ScanningOptionsScreen = () => {
     <IonPage className="scanning-options-screen">
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+            <IonButton routerLink="/app/scanning" routerDirection="back">
+              Exit
+            </IonButton>
+          </IonButtons>
           <IonTitle>Scanning options</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent force-overscroll="false">
         <Suspense
           fallback={
             <div className="scanning-option-loading">

@@ -1,3 +1,4 @@
+import "./SourceList.scss";
 import { SourceListItem } from "../SourceListItem/SourceListItem.jsx";
 import { useState } from "react";
 import { useFetchSources } from "../../common/hooks.js";
