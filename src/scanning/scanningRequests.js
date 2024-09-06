@@ -1,5 +1,6 @@
 import { CapacitorHttp } from "@capacitor/core";
 import { CANDIDATES_PER_PAGE } from "../common/constants.js";
+import { fetchUserProfile } from "../onboarding/auth.js";
 
 /**
  * @typedef {Object} CandidateSearchResponse
@@ -119,6 +120,35 @@ export const addSourceToGroup = async ({ sourceId, groupIds, userInfo }) => {
     data: {
       objId: sourceId,
       inviteGroupIds: groupIds,
+    },
+  });
+  return response.data.data;
+};
+
+/**
+ * @param {Object} params
+ * @param {import("../onboarding/auth.js").UserInfo} params.userInfo
+ * @param {import("../onboarding/auth.js").ScanningProfile} params.profile
+ * @returns {Promise<*>}
+ */
+export const createNewProfile = async ({ userInfo, profile }) => {
+  let userProfile = await fetchUserProfile(userInfo);
+  let scanningProfiles = userProfile.preferences.scanningProfiles;
+  const newScanningProfiles = scanningProfiles.map((p) => ({
+    ...p,
+    default: false,
+  }));
+  newScanningProfiles.push(profile);
+  let response = await CapacitorHttp.patch({
+    url: `${userInfo.instance.url}/api/internal/profile`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+      "Content-Type": "application/json",
+    },
+    data: {
+      preferences: {
+        scanningProfiles: newScanningProfiles,
+      },
     },
   });
   return response.data.data;

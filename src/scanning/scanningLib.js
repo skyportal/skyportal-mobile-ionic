@@ -505,6 +505,53 @@ export const getFiltering = (scanningProfile) => {
 };
 
 /**
+ * @param {Object} data
+ * @param {boolean} data.filterCandidates
+ * @param {string} data.filteringType
+ * @param {string} data.filteringAnyOrAll
+ * @returns {import("../common/constants.js").SavedStatus}
+ */
+export const computeSavedStatus = ({
+  filterCandidates,
+  filteringType,
+  filteringAnyOrAll,
+}) => {
+  if (!filterCandidates) {
+    return SAVED_STATUS.ALL;
+  }
+  if (filteringType === "include" && filteringAnyOrAll === "all") {
+    return SAVED_STATUS.SAVED_TO_ALL_SELECTED;
+  }
+  if (filteringType === "include" && filteringAnyOrAll === "any") {
+    return SAVED_STATUS.SAVED_TO_ANY_SELECTED;
+  }
+  if (filteringType === "exclude" && filteringAnyOrAll === "all") {
+    return SAVED_STATUS.NOT_SAVED_TO_ALL_SELECTED;
+  }
+  if (filteringType === "exclude" && filteringAnyOrAll === "any") {
+    return SAVED_STATUS.NOT_SAVED_TO_ANY_SELECTED;
+  }
+  throw new Error(
+    "Invalid filterCandidates, filteringType, or filteringAnyOrAll",
+  );
+};
+
+export const getDefaultValues = () => ({
+  startDate:
+    import.meta.env.MODE === "development"
+      ? moment("2022-07-26T16:43:00-07:00").format()
+      : moment().format(),
+  endDate: moment().format(),
+  filterCandidates: false,
+  filteringType: "include",
+  filteringAnyOrAll: "all",
+  selectedGroups: [],
+  junkGroups: [],
+  discardBehavior: "specific",
+  discardGroup: null,
+});
+
+/**
  * @typedef {"REQUEST_OBSERVING_RUN"|"REQUEST_FOLLOW_UP"|"ADD_REDSHIFT"|"SHOW_SURVEYS"|"SAVE"|"DISCARD"|"EXIT"} ScanningToolbarAction
  */
 

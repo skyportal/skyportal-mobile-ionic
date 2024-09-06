@@ -50,6 +50,7 @@ import { compassOutline, list } from "ionicons/icons";
 import { ScanningRecap } from "./scanning/scanningSession/ScanningRecap/ScanningRecap.jsx";
 import { UserContext } from "./common/context.js";
 import { ScanningHome } from "./scanning/scanningOptions/ScanningHome/ScanningHome.jsx";
+import { ScanningNewProfileScreen } from "./scanning/scanningOptions/ScanningNewProfileScreen/ScanningNewProfileScreen.jsx";
 
 setupIonicReact();
 
@@ -85,6 +86,9 @@ const App = () => {
               <LoginOkScreen />
             </Route>
 
+            <Route path="/scanning/new-profile">
+              <ScanningNewProfileScreen />
+            </Route>
             <Route path="/scanning/options">
               <ScanningOptionsScreen />
             </Route>

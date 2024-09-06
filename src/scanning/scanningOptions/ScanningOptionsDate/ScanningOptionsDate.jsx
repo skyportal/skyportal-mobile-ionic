@@ -4,7 +4,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonListHeader,
   IonModal,
 } from "@ionic/react";
 import moment from "moment-timezone";
@@ -23,16 +22,13 @@ export const ScanningOptionsDate = ({ getValues, control, errors }) => {
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return (
-    <>
+    <div className="form-section">
+      <IonLabel className="form-list-header">Dates (local time)</IonLabel>
       <IonList inset lines="full" color="light">
-        <IonListHeader>
-          <IonLabel>Dates (local time)</IonLabel>
-        </IonListHeader>
         <IonItem color="light">
           <IonLabel>Start date:</IonLabel>
           <IonDatetimeButton datetime="datetime-start"></IonDatetimeButton>
         </IonItem>
-
         <IonItem className="end-date-container">
           <IonLabel>End date:</IonLabel>
           <IonDatetimeButton datetime="datetime-end"></IonDatetimeButton>
@@ -93,6 +89,6 @@ export const ScanningOptionsDate = ({ getValues, control, errors }) => {
         errors={errors}
         errorNames={["startDate", "endDate"]}
       />
-    </>
+    </div>
   );
 };

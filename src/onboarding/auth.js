@@ -13,13 +13,13 @@ import { CapacitorHttp } from "@capacitor/core";
  * @property {boolean} default - Whether the profile is the default one
  * @property {number[]} groupIDs - The IDs of the groups that the profile is associated with
  * @property {string} timeRange - The time range of the profile
- * @property {string} sortingKey - The key to use to sort the profile
+ * @property {string} [sortingKey] - The key to use to sort the profile
  * @property {import("../common/constants.js").SavedStatus} savedStatus - The status of the profile
- * @property {string} sortingOrder - The order to use to sort the profile
- * @property {string} sortingOrigin - The origin of the sorting
+ * @property {string} [sortingOrder] - The order to use to sort the profile
+ * @property {string} [sortingOrigin] - The origin of the sorting
  * @property {string} rejectedStatus - The status of the rejected
- * @property {string} redshiftMaximum - The maximum redshift
- * @property {string} redshiftMinimum - The minimum redshift
+ * @property {string} [redshiftMaximum] - The maximum redshift
+ * @property {string} [redshiftMinimum] - The minimum redshift
  */
 
 /**

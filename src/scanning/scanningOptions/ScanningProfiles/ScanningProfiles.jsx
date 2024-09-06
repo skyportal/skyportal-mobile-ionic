@@ -40,11 +40,15 @@ export const ScanningProfiles = () => {
     history.replace("/scanning");
   };
 
+  const handleAddProfile = () => {
+    history.push("/scanning/new-profile");
+  };
+
   return (
     <div className="scanning-profiles">
       <div className="sp-header">
         <h1>Profiles</h1>
-        <IonButton size="default" fill="clear">
+        <IonButton size="default" fill="clear" onClick={handleAddProfile}>
           <IonIcon slot="start" icon={add} />
           Add
         </IonButton>

@@ -1,0 +1,11 @@
+.scanning-profile-creator {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  form {
+    width: 100%;
+    flex: 1;
+    overflow: scroll;
+    padding: 1rem 0;
+  }
+}
