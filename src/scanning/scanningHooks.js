@@ -66,7 +66,7 @@ export const useScanningProfiles = (userInfo) => {
     status,
     error,
   } = useQuery({
-    queryKey: [QUERY_KEYS.USER_PROFILE],
+    queryKey: [QUERY_KEYS.SCANNING_PROFILES],
     queryFn: () =>
       fetchUserProfile(userInfo).then(
         (userProfile) => userProfile.preferences.scanningProfiles,

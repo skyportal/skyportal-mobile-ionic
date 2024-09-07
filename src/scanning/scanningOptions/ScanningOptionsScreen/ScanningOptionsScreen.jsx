@@ -1,6 +1,6 @@
 import "./ScanningOptionsScreen.scss";
 import {
-  IonButton,
+  IonBackButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -18,9 +18,7 @@ export const ScanningOptionsScreen = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton routerLink="/app/scanning" routerDirection="back">
-              Exit
-            </IonButton>
+            <IonBackButton />
           </IonButtons>
           <IonTitle>Scanning options</IonTitle>
         </IonToolbar>

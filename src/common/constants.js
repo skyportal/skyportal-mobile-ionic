@@ -30,6 +30,7 @@ export const QUERY_KEYS = {
   CONFIG: "config",
   APP_START: "appStart",
   BANDPASS_COLORS: "bandpassColors",
+  SCANNING_PROFILES: "scanningProfiles",
 };
 
 /**

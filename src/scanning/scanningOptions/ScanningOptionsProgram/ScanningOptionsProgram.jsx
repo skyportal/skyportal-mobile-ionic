@@ -71,12 +71,16 @@ export const ScanningOptionsProgram = ({
           <Controller
             control={control}
             name="filterCandidates"
-            render={({ field: { onChange, onBlur, disabled } }) => (
+            render={({ field: { onChange, onBlur, disabled, value } }) => (
               <IonToggle
                 justify="space-between"
-                onIonChange={(e) => onChange(e.detail.checked)}
+                onIonChange={(e) => {
+                  e.preventDefault();
+                  onChange(e.detail.checked);
+                }}
                 onIonBlur={onBlur}
                 disabled={disabled}
+                checked={value}
               >
                 <IonLabel>Filtering</IonLabel>
               </IonToggle>

@@ -51,6 +51,7 @@ import { ScanningRecap } from "./scanning/scanningSession/ScanningRecap/Scanning
 import { UserContext } from "./common/context.js";
 import { ScanningHome } from "./scanning/scanningOptions/ScanningHome/ScanningHome.jsx";
 import { ScanningNewProfileScreen } from "./scanning/scanningOptions/ScanningNewProfileScreen/ScanningNewProfileScreen.jsx";
+import { ScanningProfiles } from "./scanning/scanningOptions/ScanningProfiles/ScanningProfiles.jsx";
 
 setupIonicReact();
 
@@ -86,6 +87,9 @@ const App = () => {
               <LoginOkScreen />
             </Route>
 
+            <Route path="/scanning/profiles">
+              <ScanningProfiles />
+            </Route>
             <Route path="/scanning/new-profile">
               <ScanningNewProfileScreen />
             </Route>

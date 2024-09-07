@@ -1,6 +1,6 @@
 import "./ScanningHome.scss";
 import { IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
-import { ScanningProfiles } from "../ScanningProfiles/ScanningProfiles.jsx";
+import { RecentProfiles } from "../RecentProfiles/RecentProfiles.jsx";
 
 export const ScanningHome = () => {
   return (
@@ -11,7 +11,7 @@ export const ScanningHome = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent force-overscroll="false">
-        <ScanningProfiles />
+        <RecentProfiles />
       </IonContent>
     </>
   );
