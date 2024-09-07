@@ -22,3 +22,12 @@ export async function getPreference(key) {
   }
   return null;
 }
+
+/**
+ * Clear a preference in the app
+ * @param {string} key - The key to clear from preferences.
+ * @returns {Promise<void>}
+ */
+export async function clearPreference(key) {
+  return await Preferences.remove({ key });
+}

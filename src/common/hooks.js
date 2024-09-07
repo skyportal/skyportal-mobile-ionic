@@ -5,7 +5,11 @@ import {
 } from "@tanstack/react-query";
 import { QUERY_KEYS } from "./constants.js";
 import { fetchSources } from "../sources/sources.js";
-import { getPreference, setPreference } from "./preferences.js";
+import {
+  clearPreference,
+  getPreference,
+  setPreference,
+} from "./preferences.js";
 import config from "../config.js";
 import { fetchUserProfile } from "../onboarding/auth.js";
 import { fetchConfig } from "./requests.js";
@@ -45,10 +49,10 @@ export const useUserInfo = () => {
  * @param {Object} props
  * @param {number} props.page
  * @param {number} props.numPerPage
+ * @param {import("../onboarding/auth.js").UserInfo} props.userInfo
  * @returns {{sources: import("../sources/sources.js").Source[]|undefined, status: QueryStatus, error: any|undefined}}
  */
-export const useFetchSources = ({ page, numPerPage }) => {
-  const { userInfo } = useUserInfo();
+export const useFetchSources = ({ page, numPerPage, userInfo }) => {
   const {
     /** @type {import("../sources/sources.js").Source[]} */ data: sources,
     status,
@@ -57,12 +61,10 @@ export const useFetchSources = ({ page, numPerPage }) => {
     queryKey: [QUERY_KEYS.SOURCES, page, numPerPage],
     queryFn: () =>
       fetchSources({
-        instanceUrl: userInfo?.instance.url ?? "",
-        token: userInfo?.token ?? "",
+        userInfo,
         page,
         numPerPage,
       }),
-    enabled: !!userInfo,
     // @ts-ignore
     suspense: true,
   });
@@ -84,7 +86,7 @@ export const useAppStart = () => {
   const appStarted = async () => {
     // Clear saved credentials if needed
     if (config.CLEAR_AUTH) {
-      await setPreference(QUERY_KEYS.USER_INFO, null);
+      await clearPreference(QUERY_KEYS.USER_INFO);
     }
 
     // Try getting user info from preferences
@@ -96,7 +98,7 @@ export const useAppStart = () => {
         return { userInfo, userProfile };
       } catch (error) {
         // If an error occurs, clear the user info and go to onboarding
-        await setPreference(QUERY_KEYS.USER_INFO, null);
+        await clearPreference(QUERY_KEYS.USER_INFO);
         return { userInfo: null, userProfile: null };
       }
     }
@@ -150,8 +152,6 @@ export const useUserAccessibleGroups = (userInfo) => {
   } = useQuery({
     queryKey: [QUERY_KEYS.GROUPS],
     queryFn: () => fetchGroups(userInfo),
-    // @ts-ignore
-    suspense: true,
   });
   return {
     userAccessibleGroups: groups?.user_accessible_groups,

@@ -19,10 +19,12 @@ import { useHistory } from "react-router";
 import { useScanningProfiles } from "../../scanningHooks.js";
 
 export const ScanningProfiles = () => {
+  const history = useHistory();
   const userInfo = useContext(UserContext);
   const { profiles } = useScanningProfiles(userInfo);
-  const history = useHistory();
   const { userAccessibleGroups } = useUserAccessibleGroups(userInfo);
+  console.log("profiles", profiles);
+  console.log("userAccessibleGroups", userAccessibleGroups);
 
   const handleScanWithDefault = useCallback(() => {
     if (!profiles) {
@@ -53,7 +55,7 @@ export const ScanningProfiles = () => {
           Add
         </IonButton>
       </div>
-      {profiles && userAccessibleGroups ? (
+      {profiles !== undefined && userAccessibleGroups !== undefined ? (
         <div className="sp-content">
           {profiles.length > 0 ? (
             <IonList color="light" inset>

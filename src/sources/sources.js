@@ -1,5 +1,4 @@
-import { Capacitor, CapacitorHttp } from "@capacitor/core";
-import mockSources from "../../mock/sources.json";
+import { CapacitorHttp } from "@capacitor/core";
 
 /**
  * @typedef {Object} Source
@@ -11,20 +10,16 @@ import mockSources from "../../mock/sources.json";
 /**
  * Fetch sources from the API
  * @param {Object} props
- * @param {string} props.instanceUrl - URL of the SkyPortal instance
- * @param {string} props.token - User token
+ * @param {import("../onboarding/auth.js").UserInfo} props.userInfo - User info
  * @param {number} props.page - page number
  * @param {number} props.numPerPage - number of sources per page
  * @returns {Promise<import("../sources/sources.js").Source[]>}
  */
-export async function fetchSources({ instanceUrl, token, page, numPerPage }) {
-  if (Capacitor.getPlatform() === "web") {
-    return mockSources.data.sources;
-  }
+export async function fetchSources({ userInfo, page, numPerPage }) {
   let response = await CapacitorHttp.get({
-    url: `${instanceUrl}/api/sources`,
+    url: `${userInfo.instance.url}/api/sources`,
     headers: {
-      Authorization: `token ${token}`,
+      Authorization: `token ${userInfo.token}`,
     },
     params: {
       pageNumber: `${page}`,
