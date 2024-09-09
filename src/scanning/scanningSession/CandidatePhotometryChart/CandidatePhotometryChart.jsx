@@ -5,8 +5,6 @@ import { getVegaPlotSpec } from "../../scanningLib.js";
 import { useBandpassesColors } from "../../../common/hooks.js";
 import { IonSkeletonText } from "@ionic/react";
 import { fetchSourcePhotometry } from "../../scanningRequests.js";
-import { getPreference } from "../../../common/preferences.js";
-import { QUERY_KEYS } from "../../../common/constants.js";
 import { useMutation } from "@tanstack/react-query";
 import { UserContext } from "../../../common/context.js";
 
@@ -29,11 +27,9 @@ const CandidatePhotometryChartBase = ({ candidateId, isInView }) => {
 
   const mountMutation = useMutation({
     mutationFn: async () => {
-      const userInfo = await getPreference(QUERY_KEYS.USER_INFO);
       const photometry = await fetchSourcePhotometry({
         sourceId: candidateId,
-        instanceUrl: userInfo.instance.url,
-        token: userInfo.token,
+        userInfo,
       });
       if (!container.current || !bandpassesColors || !photometry) {
         throw new Error("Missing parameters");
