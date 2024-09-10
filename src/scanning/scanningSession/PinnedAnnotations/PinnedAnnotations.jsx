@@ -1,6 +1,7 @@
 import "./PinnedAnnotations.scss";
-import { IonButton, IonItem, IonText } from "@ionic/react";
+import { IonButton, IonIcon, IonItem, IonText } from "@ionic/react";
 import { useCopyAnnotationLineOnClick } from "../../scanningLib.js";
+import { copyOutline } from "ionicons/icons";
 
 /**
  * @param {Object} props
@@ -47,7 +48,21 @@ export const PinnedAnnotations = ({
               {annotationLine.id}:
             </IonText>
             {"\u00A0"}
-            <div>{annotationLine.value}</div>
+            {annotationLine.value ? (
+              <div>
+                {annotationLine.value}
+                {"\u00A0"}
+                {"\u00A0"}
+                {"\u00A0"}
+                <IonIcon icon={copyOutline} size="small" color="secondary" />
+              </div>
+            ) : (
+              <>
+                <IonText color="warning" className="no-value">
+                  No value
+                </IonText>
+              </>
+            )}
           </IonItem>
         ))}
       </div>

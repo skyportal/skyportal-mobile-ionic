@@ -410,6 +410,9 @@ export const useCopyAnnotationLineOnClick = () => {
      * @param {string|number|undefined} value
      */
     async (key, value) => {
+      if (value === undefined) {
+        return;
+      }
       await Clipboard.write({
         string: `${key}: ${value}`,
       });

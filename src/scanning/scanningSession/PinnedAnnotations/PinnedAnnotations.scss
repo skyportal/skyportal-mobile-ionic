@@ -13,12 +13,11 @@
     flex-direction: column;
     justify-content: space-around;
     flex: 1;
-    gap: 0.1rem;
 
     ion-item {
       --background: none;
-      --inner-padding-bottom: 0;
-      --inner-padding-top: 0;
+      --inner-padding-bottom: 0.2rem;
+      --inner-padding-top: 0.1rem;
       --padding-start: 0.2rem;
       --min-height: 0;
     }
