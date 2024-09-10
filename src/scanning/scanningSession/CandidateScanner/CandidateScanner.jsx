@@ -1,23 +1,11 @@
 import "./CandidateScanner.scss";
-import {
-  IonButton,
-  IonIcon,
-  IonModal,
-  useIonAlert,
-  useIonToast,
-} from "@ionic/react";
+import { IonModal, useIonAlert, useIonToast } from "@ionic/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   useQueryParams,
   useUserAccessibleGroups,
 } from "../../../common/hooks.js";
-import {
-  arrowForward,
-  checkmark,
-  checkmarkCircleOutline,
-  trashBin,
-  warningOutline,
-} from "ionicons/icons";
+import { checkmarkCircleOutline, warningOutline } from "ionicons/icons";
 import useEmblaCarousel from "embla-carousel-react";
 import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
@@ -27,8 +15,9 @@ import { addSourceToGroup } from "../../scanningRequests.js";
 import { getPreference } from "../../../common/preferences.js";
 import { QUERY_KEYS } from "../../../common/constants.js";
 import { useMutation } from "@tanstack/react-query";
-import { parseIntList } from "../../scanningLib.js";
+import { parseIntList, SCANNING_TOOLBAR_ACTION } from "../../scanningLib.js";
 import { ScanningEnd } from "../ScanningEnd/ScanningEnd.jsx";
+import { ScanningToolbar } from "../ScanningToolbar/ScanningToolbar.jsx";
 
 export const CandidateScanner = () => {
   const numPerPage = 25;
@@ -317,6 +306,30 @@ export const CandidateScanner = () => {
     };
   }, [currentCandidate, scanningConfig]);
 
+  /**
+   * @param {import("../../scanningLib.js").ScanningToolbarAction} action
+   */
+  const handleToolbarAction = async (action) => {
+    switch (action) {
+      case SCANNING_TOOLBAR_ACTION.MORE:
+        break;
+      case SCANNING_TOOLBAR_ACTION.REQUEST_OBSERVING_RUN:
+        break;
+      case SCANNING_TOOLBAR_ACTION.REQUEST_FOLLOW_UP:
+        break;
+      case SCANNING_TOOLBAR_ACTION.ADD_REDSHIFT:
+        break;
+      case SCANNING_TOOLBAR_ACTION.SHOW_SURVEYS:
+        break;
+      case SCANNING_TOOLBAR_ACTION.SAVE:
+        await handleSave();
+        break;
+      case SCANNING_TOOLBAR_ACTION.DISCARD:
+        await handleDiscard();
+        break;
+    }
+  };
+
   return (
     <div className="candidate-scanner">
       <div className="embla" ref={emblaRef}>
@@ -345,36 +358,7 @@ export const CandidateScanner = () => {
         </div>
       </div>
       {currentIndex < (totalMatches ?? 99999999) && (
-        <div className="action-buttons-container">
-          <IonButton
-            onClick={() => handleDiscard()}
-            shape="round"
-            size="large"
-            color="danger"
-            fill="outline"
-            disabled={!isDiscardingEnabled}
-          >
-            <IonIcon icon={trashBin} slot="icon-only" />
-          </IonButton>
-          <IonButton
-            onClick={() => handleSave()}
-            shape="round"
-            size="large"
-            color="success"
-            fill="outline"
-          >
-            <IonIcon icon={checkmark} slot="icon-only" />
-          </IonButton>
-          <IonButton
-            shape="round"
-            size="large"
-            color="secondary"
-            fill="outline"
-            onClick={() => emblaApi?.scrollNext()}
-          >
-            <IonIcon icon={arrowForward} slot="icon-only" />
-          </IonButton>
-        </div>
+        <ScanningToolbar onAction={handleToolbarAction} />
       )}
 
       <IonModal

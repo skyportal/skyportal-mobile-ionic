@@ -473,3 +473,20 @@ export const initialSearchRequest = async ({
     pageNumber,
   });
 };
+
+/**
+ * @typedef {"MORE"|"REQUEST_OBSERVING_RUN"|"REQUEST_FOLLOW_UP"|"ADD_REDSHIFT"|"SHOW_SURVEYS"|"SAVE"|"DISCARD"} ScanningToolbarAction
+ */
+
+/**
+ * @type {Object<ScanningToolbarAction, ScanningToolbarAction>}
+ */
+export const SCANNING_TOOLBAR_ACTION = {
+  MORE: "MORE",
+  REQUEST_FOLLOW_UP: "REQUEST_FOLLOW_UP",
+  REQUEST_OBSERVING_RUN: "REQUEST_OBSERVING_RUN",
+  ADD_REDSHIFT: "ADD_REDSHIFT",
+  SHOW_SURVEYS: "SHOW_SURVEYS",
+  SAVE: "SAVE",
+  DISCARD: "DISCARD",
+};
