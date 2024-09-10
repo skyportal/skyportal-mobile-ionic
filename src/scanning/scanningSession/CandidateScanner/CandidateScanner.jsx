@@ -310,8 +310,10 @@ export const CandidateScanner = () => {
    * @param {import("../../scanningLib.js").ScanningToolbarAction} action
    */
   const handleToolbarAction = async (action) => {
+    console.log("action", action);
     switch (action) {
-      case SCANNING_TOOLBAR_ACTION.MORE:
+      case SCANNING_TOOLBAR_ACTION.EXIT:
+        history.back();
         break;
       case SCANNING_TOOLBAR_ACTION.REQUEST_OBSERVING_RUN:
         break;

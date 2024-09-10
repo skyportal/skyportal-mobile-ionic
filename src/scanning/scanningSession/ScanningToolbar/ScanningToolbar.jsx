@@ -32,7 +32,11 @@ export const ScanningToolbar = ({ onAction }) => {
   const [present, dismiss] = useIonPopover(
     <IonContent>
       <IonList>
-        <IonItem detail={false} button>
+        <IonItem
+          detail={false}
+          onClick={() => onAction(SCANNING_TOOLBAR_ACTION.EXIT)}
+          button
+        >
           <IonIcon
             color="danger"
             slot="start"
@@ -64,6 +68,7 @@ export const ScanningToolbar = ({ onAction }) => {
               // @ts-ignore
               event: e,
               onWillDismiss: () => setIsMenuOpen(false),
+              dismissOnSelect: true,
             })
           }
         >
