@@ -70,9 +70,8 @@ export const CandidateScanner = () => {
   };
 
   const [presentToast] = useIonToast();
-  const [presentDiscardAlert] = useIonAlert();
-
-  const isDiscardingEnabled = scanningConfig.junkGroups?.length ?? 0 > 0;
+  const [presentAlert] = useIonAlert();
+  const isDiscardingEnabled = (scanningConfig.junkGroups?.length ?? 0) > 0;
 
   const { data, fetchNextPage, isFetchingNextPage } = useSearchCandidates({
     startDate: queryParams.startDate,
@@ -202,6 +201,26 @@ export const CandidateScanner = () => {
      * @returns {Promise<*>}
      */
     mutationFn: async ({ sourceId, groupIds }) => {
+      const areYouSure = await new Promise((resolve) => {
+        presentAlert({
+          header: "Are you sure?",
+          message: "Do you want to discard this source?",
+          buttons: [
+            {
+              text: "Cancel",
+              role: "cancel",
+            },
+            {
+              text: "Discard",
+              role: "destructive",
+              handler: () => resolve(true),
+            },
+          ],
+        });
+      });
+      if (!areYouSure) {
+        return;
+      }
       return await addSourceToGroups({ sourceId, groupIds });
     },
     onSuccess: (data, variables) => {
@@ -244,7 +263,7 @@ export const CandidateScanner = () => {
           return;
         }
         // @ts-ignore
-        presentDiscardAlert({
+        presentAlert({
           header:
             action === "save" ? "Select a program" : "Select a junk group",
           buttons: [action === "save" ? "Save" : "Discard"],
@@ -360,7 +379,10 @@ export const CandidateScanner = () => {
         </div>
       </div>
       {currentIndex < (totalMatches ?? 99999999) && (
-        <ScanningToolbar onAction={handleToolbarAction} />
+        <ScanningToolbar
+          onAction={handleToolbarAction}
+          isDiscardingEnabled={isDiscardingEnabled}
+        />
       )}
 
       <IonModal

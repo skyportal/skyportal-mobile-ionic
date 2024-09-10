@@ -24,9 +24,10 @@ import { useState } from "react";
 /**
  * @param {Object} props
  * @param {(action: import("../../scanningLib").ScanningToolbarAction) => void} props.onAction
+ * @param {boolean} props.isDiscardingEnabled
  * @returns {JSX.Element}
  */
-export const ScanningToolbar = ({ onAction }) => {
+export const ScanningToolbar = ({ onAction, isDiscardingEnabled }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [present, dismiss] = useIonPopover(
@@ -45,7 +46,11 @@ export const ScanningToolbar = ({ onAction }) => {
           />
           <IonLabel color="danger">Exit</IonLabel>
         </IonItem>
-        <IonItem detail={false} button>
+        <IonItem
+          detail={false}
+          onClick={() => onAction(SCANNING_TOOLBAR_ACTION.DISCARD)}
+          button
+        >
           <IonIcon slot="start" icon={trashBinOutline} size="small" />
           <IonLabel>Discard</IonLabel>
         </IonItem>
@@ -60,23 +65,35 @@ export const ScanningToolbar = ({ onAction }) => {
   return (
     <>
       <div className="scanning-toolbar">
-        <IonButton
-          fill="clear"
-          color="secondary"
-          onClick={(e) =>
-            present({
-              // @ts-ignore
-              event: e,
-              onWillDismiss: () => setIsMenuOpen(false),
-              dismissOnSelect: true,
-            })
-          }
-        >
-          <IonIcon
-            slot="icon-only"
-            icon={isMenuOpen ? ellipsisHorizontal : ellipsisHorizontalOutline}
-          />
-        </IonButton>
+        {isDiscardingEnabled && (
+          <IonButton
+            fill="clear"
+            color="secondary"
+            onClick={(e) =>
+              present({
+                // @ts-ignore
+                event: e,
+                onWillDismiss: () => setIsMenuOpen(false),
+                dismissOnSelect: true,
+              })
+            }
+          >
+            <IonIcon
+              slot="icon-only"
+              icon={isMenuOpen ? ellipsisHorizontal : ellipsisHorizontalOutline}
+            />
+          </IonButton>
+        )}
+
+        {!isDiscardingEnabled && (
+          <IonButton
+            fill="clear"
+            color="danger"
+            onClick={() => onAction(SCANNING_TOOLBAR_ACTION.EXIT)}
+          >
+            <IonIcon slot="icon-only" icon={exitOutline} />
+          </IonButton>
+        )}
 
         <IonButton
           fill="clear"
