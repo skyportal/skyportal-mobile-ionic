@@ -1,6 +1,14 @@
 import "./CandidateAnnotationItem.scss";
-import { IonItem, IonLabel, IonList, IonListHeader } from "@ionic/react";
+import {
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonText,
+} from "@ionic/react";
 import { useCopyAnnotationLineOnClick } from "../../scanningLib.js";
+import { copyOutline } from "ionicons/icons";
 
 /**
  * @param {Object} props
@@ -24,9 +32,16 @@ export const CandidateAnnotationItem = ({ annotation }) => {
             <IonItem
               key={key}
               onClick={() => handleTextCopied(key, value)}
+              detail={false}
               button
             >
-              {key}: {value}
+              <IonText color="secondary">{key}:</IonText>
+              {"\u00A0"}
+              <IonText>{value}</IonText>
+              {"\u00A0"}
+              {"\u00A0"}
+              {"\u00A0"}
+              <IonIcon icon={copyOutline} size="small" color="secondary" />
             </IonItem>
           ))}
       </IonList>
