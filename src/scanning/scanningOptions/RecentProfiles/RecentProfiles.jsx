@@ -14,6 +14,8 @@ export const RecentProfiles = () => {
   const { profiles } = useScanningProfiles(userInfo);
   const { userAccessibleGroups } = useUserAccessibleGroups(userInfo);
 
+  const defaultProfileIndex = profiles?.findIndex((profile) => profile.default);
+
   const handleScanWithProfile = useCallback(
     /**
      * @param {import("../../../onboarding/auth").ScanningProfile} profile
@@ -51,20 +53,34 @@ export const RecentProfiles = () => {
           See all
         </IonButton>
       </div>
-      {profiles !== undefined && userAccessibleGroups !== undefined ? (
+      {profiles !== undefined &&
+      (profiles.length < 0 || defaultProfileIndex) !== undefined &&
+      userAccessibleGroups !== undefined ? (
         <div className="sp-content">
-          {profiles.length > 0 ? (
+          {profiles.length > 0 && (
             <IonList color="light" inset>
-              {profiles.toSpliced(2, profiles.length - 3).map((profile) => (
-                <ProfileListItem
-                  key={profile.name}
-                  profile={profile}
-                  userAccessibleGroups={userAccessibleGroups}
-                  onClick={() => handleScanWithProfile(profile)}
-                />
-              ))}
+              <ProfileListItem
+                key={profiles[defaultProfileIndex ?? 0].name}
+                profile={profiles[defaultProfileIndex ?? 0]}
+                userAccessibleGroups={userAccessibleGroups}
+                onClick={() =>
+                  handleScanWithProfile(profiles[defaultProfileIndex ?? 0])
+                }
+              />
+              {profiles
+                .toSpliced(defaultProfileIndex ?? 0, 1)
+                .toSpliced(2)
+                .map((profile) => (
+                  <ProfileListItem
+                    key={profile.name}
+                    profile={profile}
+                    userAccessibleGroups={userAccessibleGroups}
+                    onClick={() => handleScanWithProfile(profile)}
+                  />
+                ))}
             </IonList>
-          ) : (
+          )}{" "}
+          {profiles.length === 0 && (
             <div className="hint-container">
               <IonText color="secondary" className="hint">
                 You don’t have any profiles yet. You can add a new one or click

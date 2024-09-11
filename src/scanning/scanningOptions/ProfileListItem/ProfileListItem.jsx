@@ -1,4 +1,5 @@
 import {
+  IonBadge,
   IonChip,
   IonIcon,
   IonItem,
@@ -6,7 +7,6 @@ import {
   IonItemOptions,
   IonItemSliding,
   IonLabel,
-  IonNote,
 } from "@ionic/react";
 import { trash } from "ionicons/icons";
 import { useRef } from "react";
@@ -64,7 +64,11 @@ export const ProfileListItem = ({
               ))}
           </p>
         </IonLabel>
-        {profile.default && <IonNote slot="end">Default</IonNote>}
+        {profile.default && (
+          <IonBadge color="secondary" slot="end">
+            Default
+          </IonBadge>
+        )}
       </IonItem>
       <IonItemOptions slot="end">
         <IonItemOption color="danger" expandable>
