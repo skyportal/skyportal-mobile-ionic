@@ -18,10 +18,16 @@ export const ScanningCardSkeleton = ({ animated = false, visible = true }) => {
     >
       <div className="candidate-name">
         <h1>
-          <IonSkeletonText style={{ width: "8rem" }} animated={animated} />
+          <IonSkeletonText
+            style={{ width: "8rem", height: "1.2rem" }}
+            animated={animated}
+          />
         </h1>
         <div className="pagination-indicator">
-          <IonSkeletonText style={{ width: "2rem" }} animated={animated} />
+          <IonSkeletonText
+            style={{ width: "2rem", height: ".8rem" }}
+            animated={animated}
+          />
         </div>
       </div>
       <div className="thumbnails-container">
