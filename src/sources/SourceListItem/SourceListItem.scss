@@ -5,7 +5,7 @@
   align-items: flex-start;
   padding: 0.75rem 1rem;
   border-radius: 1rem;
-  background-color: white;
+  background-color: var(--ion-color-light);
   gap: 0.5rem;
 
   .header {
@@ -22,12 +22,12 @@
         font-weight: 500;
       }
       .tns-name {
-        color: #717983;
+        color: var(--ion-color-secondary);
       }
     }
 
     .icon {
-      color: #a9adb1;
+      color: var(--ion-color-primary);
       font-size: 1.2rem;
     }
   }
@@ -39,7 +39,7 @@
     font-size: 0.75rem;
 
     .label {
-      color: #717983;
+      color: var(--ion-color-secondary);
     }
   }
   .coords {
