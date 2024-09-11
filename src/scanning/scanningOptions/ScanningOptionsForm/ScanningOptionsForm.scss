@@ -4,10 +4,10 @@
   overflow: scroll;
 
   ion-list {
-    background: white;
+    background: var(--ion-color-light);
 
     ion-item {
-      --background: white;
+      --background: var(--ion-color-light);
     }
 
     ion-list-header {
@@ -30,7 +30,7 @@
   z-index: 2;
   width: 100%;
   height: auto;
-  box-shadow: 1px -1px 5px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 1px -1px 5px 0 rgba(var(--ion-color-medium-rgb), 0.25);
 
   ion-button {
     --padding-start: 4rem;

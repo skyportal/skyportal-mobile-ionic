@@ -24,11 +24,11 @@ export const ScanningOptionsDate = ({ getValues, control, errors }) => {
 
   return (
     <>
-      <IonList inset lines="full">
+      <IonList inset lines="full" color="light">
         <IonListHeader>
           <IonLabel>Dates (local time)</IonLabel>
         </IonListHeader>
-        <IonItem>
+        <IonItem color="light">
           <IonLabel>Start date:</IonLabel>
           <IonDatetimeButton datetime="datetime-start"></IonDatetimeButton>
         </IonItem>
