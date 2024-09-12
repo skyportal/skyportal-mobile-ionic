@@ -10,7 +10,7 @@
   .canvas-loading {
     display: flex;
     flex-direction: column;
-    background: #ffffff;
+    background: var(--ion-color-light);
     justify-content: center;
     align-items: center;
     z-index: 100;

@@ -13,7 +13,6 @@ export const PinnedAnnotationsSkeleton = ({ animated }) => {
         {[1, 2, 3].map((index) => (
           <div key={index} className="annotation-line">
             <IonSkeletonText
-              className="name"
               style={{ width: "2rem", height: ".8rem" }}
               animated={animated}
             />

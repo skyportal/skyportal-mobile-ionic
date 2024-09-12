@@ -18,7 +18,7 @@ export const ScanningOptionsScreen = () => {
           <IonTitle>Scanning options</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent color="light">
+      <IonContent>
         <Suspense
           fallback={
             <div className="scanning-option-loading">

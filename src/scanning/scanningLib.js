@@ -201,6 +201,9 @@ export const getVegaPlotSpec = ({
     colorScale.domain.push(f);
     colorScale.range.push(`rgb(${bandpassesColors[f].join(",")})`);
   });
+  const isDarkMode =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
   const mjdNow = Date.now() / 86400000.0 + 40587.0;
   return /** @type {any} */ ({
     $schema: "https://vega.github.io/schema/vega-lite/v5.2.0.json",
@@ -262,6 +265,8 @@ export const getVegaPlotSpec = ({
               title: "mag",
               titleFontSize,
               labelFontSize,
+              titleColor: isDarkMode ? "white" : "black",
+              labelColor: isDarkMode ? "white" : "black",
             },
           },
           color: {
@@ -319,6 +324,8 @@ export const getVegaPlotSpec = ({
               title: "days ago",
               titleFontSize,
               labelFontSize,
+              titleColor: isDarkMode ? "white" : "black",
+              labelColor: isDarkMode ? "white" : "black",
             },
           },
           y: {
@@ -344,6 +351,8 @@ export const getVegaPlotSpec = ({
               orient: "bottom",
               titleFontSize,
               labelFontSize,
+              titleColor: isDarkMode ? "white" : "black",
+              labelColor: isDarkMode ? "white" : "black",
             },
           },
           opacity: {
