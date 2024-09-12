@@ -83,6 +83,7 @@ export const CandidateScanner = () => {
   });
 
   const totalMatches = data?.pages[0].totalMatches;
+  /** @type {import("../../scanningLib.js").Candidate[]|undefined} */
   const candidates = data?.pages.map((page) => page.candidates).flat(1);
   const currentCandidate = candidates?.at(currentIndex);
   if (candidates && candidates.length === totalMatches && !isLastBatch) {
@@ -165,7 +166,7 @@ export const CandidateScanner = () => {
      */
     mutationFn: ({ sourceId, groupIds }) =>
       addSourceToGroups({ sourceId, groupIds }),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) =>
       presentToast({
         message:
           `Source saved to group${variables.groupIds.length > 1 ? "s" : ""} ` +
@@ -180,17 +181,15 @@ export const CandidateScanner = () => {
         position: "top",
         color: "success",
         icon: checkmarkCircleOutline,
-      });
-    },
-    onError: () => {
+      }),
+    onError: () =>
       presentToast({
         message: "Failed to save source",
         duration: 2000,
         position: "top",
         color: "danger",
         icon: warningOutline,
-      });
-    },
+      }),
   });
 
   const discardSourceMutation = useMutation({
@@ -223,7 +222,7 @@ export const CandidateScanner = () => {
       }
       return await addSourceToGroups({ sourceId, groupIds });
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) =>
       presentToast({
         message:
           `Source discarded to group${variables.groupIds.length > 1 ? "s" : ""} ` +
@@ -238,17 +237,15 @@ export const CandidateScanner = () => {
         position: "top",
         color: "secondary",
         icon: checkmarkCircleOutline,
-      });
-    },
-    onError: () => {
+      }),
+    onError: () =>
       presentToast({
         message: "Failed to discard source",
         duration: 2000,
         position: "top",
         color: "danger",
         icon: warningOutline,
-      });
-    },
+      }),
   });
 
   const promptUserForGroupSelection = useCallback(
@@ -281,7 +278,7 @@ export const CandidateScanner = () => {
           },
         });
       }),
-    [scanningConfig, currentCandidate],
+    [scanningConfig, currentCandidate, presentAlert],
   );
 
   const handleDiscard = useCallback(async () => {
@@ -325,14 +322,42 @@ export const CandidateScanner = () => {
     };
   }, [currentCandidate, scanningConfig]);
 
+  const handleExit = useCallback(async () => {
+    const areYouSure = await new Promise((resolve) => {
+      presentAlert({
+        header: "Are you sure?",
+        message: "Do you want to exit the scanning session?",
+        buttons: [
+          {
+            text: "Cancel",
+            role: "cancel",
+          },
+          {
+            text: "Exit",
+            role: "destructive",
+            handler: () => resolve(true),
+          },
+        ],
+      });
+    });
+    if (areYouSure) {
+      history.back();
+    }
+  }, [presentAlert]);
+
   /**
    * @param {import("../../scanningLib.js").ScanningToolbarAction} action
    */
   const handleToolbarAction = async (action) => {
-    console.log("action", action);
     switch (action) {
       case SCANNING_TOOLBAR_ACTION.EXIT:
-        history.back();
+        await handleExit();
+        break;
+      case SCANNING_TOOLBAR_ACTION.SAVE:
+        await handleSave();
+        break;
+      case SCANNING_TOOLBAR_ACTION.DISCARD:
+        await handleDiscard();
         break;
       case SCANNING_TOOLBAR_ACTION.REQUEST_OBSERVING_RUN:
         break;
@@ -341,12 +366,6 @@ export const CandidateScanner = () => {
       case SCANNING_TOOLBAR_ACTION.ADD_REDSHIFT:
         break;
       case SCANNING_TOOLBAR_ACTION.SHOW_SURVEYS:
-        break;
-      case SCANNING_TOOLBAR_ACTION.SAVE:
-        await handleSave();
-        break;
-      case SCANNING_TOOLBAR_ACTION.DISCARD:
-        await handleDiscard();
         break;
     }
   };
