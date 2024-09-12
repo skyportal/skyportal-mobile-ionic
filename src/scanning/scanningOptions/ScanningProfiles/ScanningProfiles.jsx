@@ -22,6 +22,7 @@ export const ScanningProfiles = () => {
   const userInfo = useContext(UserContext);
   const { profiles } = useScanningProfiles(userInfo);
   const { userAccessibleGroups } = useUserAccessibleGroups(userInfo);
+  const defaultProfileIndex = profiles?.findIndex((profile) => profile.default);
 
   const handleOnProfileClick = useCallback(
     /**
@@ -48,13 +49,21 @@ export const ScanningProfiles = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        {profiles && userAccessibleGroups ? (
+        {profiles && defaultProfileIndex && userAccessibleGroups ? (
           <IonList>
-            {profiles?.map((profile) => (
+            <ProfileListItem
+              profile={profiles[defaultProfileIndex]}
+              userAccessibleGroups={userAccessibleGroups}
+              itemSliding={true}
+              onClick={() =>
+                handleOnProfileClick(profiles[defaultProfileIndex])
+              }
+            />
+            {profiles.toSpliced(defaultProfileIndex, 1).map((profile) => (
               <ProfileListItem
                 key={profile.name}
                 profile={profile}
-                userAccessibleGroups={userAccessibleGroups ?? []}
+                userAccessibleGroups={userAccessibleGroups}
                 itemSliding={true}
                 onClick={() => handleOnProfileClick(profile)}
               />

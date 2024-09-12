@@ -1,5 +1,5 @@
 import "./RecentProfiles.scss";
-import { IonButton, IonList, IonLoading, IonText } from "@ionic/react";
+import { IonButton, IonIcon, IonList, IonLoading, IonText } from "@ionic/react";
 import { useUserAccessibleGroups } from "../../../common/hooks.js";
 import { useCallback, useContext } from "react";
 import { UserContext } from "../../../common/context.js";
@@ -7,6 +7,7 @@ import { navigateWithParams } from "../../../common/util.js";
 import { useHistory } from "react-router";
 import { useScanningProfiles } from "../../scanningHooks.js";
 import { ProfileListItem } from "../ProfileListItem/ProfileListItem.jsx";
+import { chevronForwardOutline } from "ionicons/icons";
 
 export const RecentProfiles = () => {
   const history = useHistory();
@@ -51,24 +52,23 @@ export const RecentProfiles = () => {
         <h1>Recent profiles</h1>
         <IonButton fill="clear" onClick={handleSeeAll}>
           See all
+          <IonIcon icon={chevronForwardOutline} />
         </IonButton>
       </div>
-      {profiles !== undefined &&
-      (profiles.length < 0 || defaultProfileIndex) !== undefined &&
-      userAccessibleGroups !== undefined ? (
+      {profiles && userAccessibleGroups && (
         <div className="sp-content">
-          {profiles.length > 0 && (
+          {profiles.length > 0 && defaultProfileIndex && (
             <IonList color="light" inset>
               <ProfileListItem
-                key={profiles[defaultProfileIndex ?? 0].name}
-                profile={profiles[defaultProfileIndex ?? 0]}
+                key={profiles[defaultProfileIndex].name}
+                profile={profiles[defaultProfileIndex]}
                 userAccessibleGroups={userAccessibleGroups}
                 onClick={() =>
-                  handleScanWithProfile(profiles[defaultProfileIndex ?? 0])
+                  handleScanWithProfile(profiles[defaultProfileIndex])
                 }
               />
               {profiles
-                .toSpliced(defaultProfileIndex ?? 0, 1)
+                .toSpliced(defaultProfileIndex, 1)
                 .toSpliced(2)
                 .map((profile) => (
                   <ProfileListItem
@@ -79,7 +79,7 @@ export const RecentProfiles = () => {
                   />
                 ))}
             </IonList>
-          )}{" "}
+          )}
           {profiles.length === 0 && (
             <div className="hint-container">
               <IonText color="secondary" className="hint">
@@ -90,9 +90,8 @@ export const RecentProfiles = () => {
             </div>
           )}
         </div>
-      ) : (
-        <IonLoading />
       )}
+      {!profiles || (!userAccessibleGroups && <IonLoading />)}
       <div className="buttons-container">
         <IonButton
           shape="round"
