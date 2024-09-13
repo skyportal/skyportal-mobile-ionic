@@ -15,16 +15,14 @@ import { CapacitorHttp } from "@capacitor/core";
 
 /**
  * Fetch the configuration from the server
- * @param {Object} options
- * @param {string} options.instanceUrl
- * @param {string} options.token
+ * @param {import("../onboarding/auth").UserInfo} userInfo - The user info
  * @returns {Promise<SkyPortalConfig>}
  */
-export const fetchConfig = async ({ instanceUrl, token }) => {
+export const fetchConfig = async (userInfo) => {
   const response = await CapacitorHttp.get({
-    url: `${instanceUrl}/api/config`,
+    url: `${userInfo.instance.url}/api/config`,
     headers: {
-      Authorization: `token ${token}`,
+      Authorization: `token ${userInfo.token}`,
     },
   });
   return response.data.data;

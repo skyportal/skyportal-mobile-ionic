@@ -47,75 +47,98 @@ import { ScanningOptionsScreen } from "./scanning/scanningOptions/ScanningOption
 import { MainScanningScreen } from "./scanning/scanningSession/MainScanningScreen/MainScanningScreen.jsx";
 import { SourceListScreen } from "./sources/SourceListScreen/SourceListScreen.jsx";
 import { compassOutline, list } from "ionicons/icons";
-import { ScanningHome } from "./scanning/ScanningHome/ScanningHome.jsx";
 import { ScanningRecap } from "./scanning/scanningSession/ScanningRecap/ScanningRecap.jsx";
+import { UserContext } from "./common/context.js";
+import { ScanningHome } from "./scanning/scanningOptions/ScanningHome/ScanningHome.jsx";
+import { ScanningNewProfileScreen } from "./scanning/scanningOptions/ScanningNewProfileScreen/ScanningNewProfileScreen.jsx";
+import { ScanningProfiles } from "./scanning/scanningOptions/ScanningProfiles/ScanningProfiles.jsx";
 
 setupIonicReact();
 
 const App = () => {
-  const { data: user } = useAppStart();
+  const { data } = useAppStart();
+
   return (
-    <IonApp>
-      <IonReactRouter>
-        <IonRouterOutlet>
-          <Route exact path="/onboarding">
-            {
-              /* If the user is logged in, redirect them to the app */
-              user !== null ? <Redirect to="/app" /> : <OnboardingScreen />
-            }
-          </Route>
-          <Route path="/check-creds">
-            <CheckQRCodeScreen />
-          </Route>
-          <Route path="/login-ok">
-            <LoginOkScreen />
-          </Route>
+    <UserContext.Provider
+      value={
+        data.userInfo ?? {
+          instance: { name: "", url: "" },
+          token: "",
+        }
+      }
+    >
+      <IonApp>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route exact path="/onboarding">
+              {
+                /* If the user is logged in, redirect them to the app */
+                data.userInfo !== null ? (
+                  <Redirect to="/app" />
+                ) : (
+                  <OnboardingScreen />
+                )
+              }
+            </Route>
+            <Route path="/check-creds">
+              <CheckQRCodeScreen />
+            </Route>
+            <Route path="/login-ok">
+              <LoginOkScreen />
+            </Route>
 
-          <Route path="/scanning/options">
-            <ScanningOptionsScreen />
-          </Route>
-          <Route path="/scanning/main">
-            <MainScanningScreen />
-          </Route>
-          <Route path="/scanning/recap">
-            <ScanningRecap />
-          </Route>
-          <Route exact path="/scanning">
-            <ScanningOptionsScreen />
-          </Route>
+            <Route path="/scanning/profiles">
+              <ScanningProfiles />
+            </Route>
+            <Route path="/scanning/new-profile">
+              <ScanningNewProfileScreen />
+            </Route>
+            <Route path="/scanning/options">
+              <ScanningOptionsScreen />
+            </Route>
+            <Route path="/scanning/main">
+              <MainScanningScreen />
+            </Route>
+            <Route path="/scanning/recap">
+              <ScanningRecap />
+            </Route>
+            <Route exact path="/scanning">
+              <ScanningOptionsScreen />
+            </Route>
 
-          <Route exact path="/">
-            <Redirect to="/onboarding" />
-          </Route>
+            <Route exact path="/">
+              <Redirect to="/onboarding" />
+            </Route>
 
-          <Route path="/app">
-            <IonTabs>
-              <IonRouterOutlet>
-                <Redirect exact path="/app" to="/app/source-list" />
-                <Route path="/app/source-list">
-                  <SourceListScreen />
-                </Route>
-                <Route path="/app/scanning">
-                  <ScanningHome />
-                </Route>
-              </IonRouterOutlet>
+            <Route path="/app">
+              <IonTabs>
+                <IonRouterOutlet>
+                  <Redirect exact path="/app" to="/app/source-list" />
+                  <Route path="/app/source-list">
+                    <SourceListScreen />
+                  </Route>
+                  <Route path="/app/scanning">
+                    <ScanningHome />
+                  </Route>
+                </IonRouterOutlet>
 
-              <IonTabBar slot="bottom">
-                <IonTabButton tab="source-list" href="/app/source-list">
-                  <IonIcon icon={list} />
-                  <IonLabel>Source</IonLabel>
-                </IonTabButton>
+                <IonTabBar slot="bottom">
+                  <IonTabButton tab="source-list" href="/app/source-list">
+                    <IonIcon icon={list} />
+                    <IonLabel>Source</IonLabel>
+                  </IonTabButton>
 
-                <IonTabButton tab="scanning" href="/app/scanning">
-                  <IonIcon icon={compassOutline} />
-                  <IonLabel>Candidates</IonLabel>
-                </IonTabButton>
-              </IonTabBar>
-            </IonTabs>
-          </Route>
-        </IonRouterOutlet>
-      </IonReactRouter>
-    </IonApp>
+                  <IonTabButton tab="scanning" href="/app/scanning">
+                    <IonIcon icon={compassOutline} />
+                    <IonLabel>Candidates</IonLabel>
+                  </IonTabButton>
+                </IonTabBar>
+              </IonTabs>
+            </Route>
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+    </UserContext.Provider>
   );
 };
 

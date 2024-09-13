@@ -6,7 +6,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonListHeader,
   IonModal,
   IonToggle,
 } from "@ionic/react";
@@ -36,11 +35,9 @@ export const ScanningOptionsProgram = ({
   errors,
 }) => {
   return (
-    <>
+    <div className="form-section">
+      <IonLabel className="form-list-header">Program selection</IonLabel>
       <IonList className="program-section" lines="full" inset>
-        <IonListHeader>
-          <IonLabel>Program selection</IonLabel>
-        </IonListHeader>
         <IonItem
           lines={watch("selectedGroups")?.length ?? 0 > 0 ? "none" : "full"}
         >
@@ -74,12 +71,16 @@ export const ScanningOptionsProgram = ({
           <Controller
             control={control}
             name="filterCandidates"
-            render={({ field: { onChange, onBlur, disabled } }) => (
+            render={({ field: { onChange, onBlur, disabled, value } }) => (
               <IonToggle
                 justify="space-between"
-                onIonChange={(e) => onChange(e.detail.checked)}
+                onIonChange={(e) => {
+                  e.preventDefault();
+                  onChange(e.detail.checked);
+                }}
                 onIonBlur={onBlur}
                 disabled={disabled}
+                checked={value}
               >
                 <IonLabel>Filtering</IonLabel>
               </IonToggle>
@@ -119,6 +120,6 @@ export const ScanningOptionsProgram = ({
           }}
         />
       </IonModal>
-    </>
+    </div>
   );
 };

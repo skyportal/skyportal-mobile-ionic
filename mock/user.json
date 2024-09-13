@@ -461,7 +461,34 @@
             "isResizable": true
           }
         ]
-      }
+      },
+      "scanningProfiles": [
+        {
+          "name": "Test profile",
+          "default": true,
+          "groupIDs": [
+            4
+          ],
+          "timeRange": "24",
+          "sortingKey": "n_det",
+          "savedStatus": "notSavedToAnySelected",
+          "sortingOrder": "desc",
+          "sortingOrigin": "ZTF Science Validation:Public Transients",
+          "rejectedStatus": "hide",
+          "redshiftMaximum": "0.046",
+          "redshiftMinimum": "0.001"
+        },
+        {
+          "groupIDs": [
+            4
+          ],
+          "name": "Test profile 2",
+          "savedStatus": "all",
+          "default": true,
+          "rejectedStatus": "hide",
+          "timeRange": "24"
+        }
+      ]
     },
     "groupAdmissionRequests": []
   },

@@ -23,13 +23,14 @@ export const QUERY_PARAMS = {
 export const QUERY_KEYS = {
   CANDIDATES: "candidates",
   SOURCES: "sources",
-  USER: "user",
+  USER_PROFILE: "user",
   USER_INFO: "userInfo",
   GROUPS: "groups",
   SOURCE_PHOTOMETRY: "sourcePhotometry",
   CONFIG: "config",
   APP_START: "appStart",
   BANDPASS_COLORS: "bandpassColors",
+  SCANNING_PROFILES: "scanningProfiles",
 };
 
 /**

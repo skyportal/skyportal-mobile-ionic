@@ -6,7 +6,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonListHeader,
   IonModal,
   IonSelect,
   IonSelectOption,
@@ -40,11 +39,10 @@ export const ScanningOptionsDiscarding = ({
       userAccessibleGroups.find((group) => group.id === +groupId),
   );
   return (
-    <>
+    <div className="form-section">
+      <IonLabel className="form-list-header">Junk</IonLabel>
+
       <IonList inset>
-        <IonListHeader>
-          <IonLabel>Junk</IonLabel>
-        </IonListHeader>
         <IonItem lines="none">
           <IonLabel>
             Junk groups
@@ -137,6 +135,6 @@ export const ScanningOptionsDiscarding = ({
           }))}
         />
       </IonModal>
-    </>
+    </div>
   );
 };

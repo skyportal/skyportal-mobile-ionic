@@ -1,5 +1,4 @@
-import { Capacitor, CapacitorHttp } from "@capacitor/core";
-import mockUser from "../../mock/user.json";
+import { CapacitorHttp } from "@capacitor/core";
 
 /**
  * @template T
@@ -9,12 +8,33 @@ import mockUser from "../../mock/user.json";
  */
 
 /**
- * @typedef {Object} User
+ * @typedef {Object} ScanningProfile
+ * @property {string} name - The name of the scanning profile
+ * @property {boolean} default - Whether the profile is the default one
+ * @property {number[]} groupIDs - The IDs of the groups that the profile is associated with
+ * @property {string} timeRange - The time range of the profile
+ * @property {string} [sortingKey] - The key to use to sort the profile
+ * @property {import("../common/constants.js").SavedStatus} savedStatus - The status of the profile
+ * @property {string} [sortingOrder] - The order to use to sort the profile
+ * @property {string} [sortingOrigin] - The origin of the sorting
+ * @property {string} rejectedStatus - The status of the rejected
+ * @property {string} [redshiftMaximum] - The maximum redshift
+ * @property {string} [redshiftMinimum] - The minimum redshift
+ */
+
+/**
+ * @typedef {Object} UserPreferences
+ * @property {ScanningProfile[]} scanningProfiles - The scanning profiles of the user
+ */
+
+/**
+ * @typedef {Object} UserProfile
  * @property {string} username - The username of the user
  * @property {string} first_name - The first name of the user
  * @property {string} last_name - The last name of the user
  * @property {string|null} contact_email - The email of the user
  * @property {string|null} contact_phone - The phone number of the user
+ * @property {UserPreferences} preferences - The preferences of the user
  */
 
 /**
@@ -29,19 +49,14 @@ import mockUser from "../../mock/user.json";
 
 /**
  * Check the token and fetch the user from the API
- * @param {Object} params
- * @param {string} params.token - The token to use to fetch the user
- * @param {string} params.instanceUrl - The url of the instance to use to fetch the user
- * @returns {Promise<User>} - The user from the API
+ * @param {UserInfo} userInfo - The user info
+ * @returns {Promise<UserProfile>} - The user from the API
  */
-export const checkTokenAndFetchUser = async ({ token, instanceUrl }) => {
-  if (Capacitor.getPlatform() === "web") {
-    return mockUser.data;
-  }
+export const fetchUserProfile = async (userInfo) => {
   const response = await CapacitorHttp.get({
-    url: `${instanceUrl}/api/internal/profile`,
+    url: `${userInfo.instance.url}/api/internal/profile`,
     headers: {
-      Authorization: `token ${token}`,
+      Authorization: `token ${userInfo.token}`,
     },
   });
   return response.data.data;
