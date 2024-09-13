@@ -439,11 +439,16 @@ export const useCopyAnnotationLineOnClick = () => {
  * @param {string} intListString
  * @returns {number[]}
  */
-export const parseIntList = (intListString) =>
-  intListString
-    .split(",")
-    .filter((/** @type {string} **/ id) => id !== "")
-    .map((/** @type {string} **/ id) => parseInt(id));
+export const parseIntList = (intListString) => {
+  try {
+    return intListString
+      .split(",")
+      .filter((/** @type {string} **/ id) => id !== "")
+      .map((/** @type {string} **/ id) => parseInt(id));
+  } catch (e) {
+    return [];
+  }
+};
 
 /**
  * @param {Object} params
@@ -472,4 +477,21 @@ export const initialSearchRequest = async ({
     endDate,
     pageNumber,
   });
+};
+
+/**
+ * @typedef {"REQUEST_OBSERVING_RUN"|"REQUEST_FOLLOW_UP"|"ADD_REDSHIFT"|"SHOW_SURVEYS"|"SAVE"|"DISCARD"|"EXIT"} ScanningToolbarAction
+ */
+
+/**
+ * @type {Object<ScanningToolbarAction, ScanningToolbarAction>}
+ */
+export const SCANNING_TOOLBAR_ACTION = {
+  REQUEST_FOLLOW_UP: "REQUEST_FOLLOW_UP",
+  REQUEST_OBSERVING_RUN: "REQUEST_OBSERVING_RUN",
+  ADD_REDSHIFT: "ADD_REDSHIFT",
+  SHOW_SURVEYS: "SHOW_SURVEYS",
+  SAVE: "SAVE",
+  DISCARD: "DISCARD",
+  EXIT: "EXIT",
 };

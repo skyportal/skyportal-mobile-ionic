@@ -1,23 +1,11 @@
 import "./CandidateScanner.scss";
-import {
-  IonButton,
-  IonIcon,
-  IonModal,
-  useIonAlert,
-  useIonToast,
-} from "@ionic/react";
+import { IonModal, useIonAlert, useIonToast } from "@ionic/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   useQueryParams,
   useUserAccessibleGroups,
 } from "../../../common/hooks.js";
-import {
-  arrowForward,
-  checkmark,
-  checkmarkCircleOutline,
-  trashBin,
-  warningOutline,
-} from "ionicons/icons";
+import { checkmarkCircleOutline, warningOutline } from "ionicons/icons";
 import useEmblaCarousel from "embla-carousel-react";
 import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
@@ -27,8 +15,9 @@ import { addSourceToGroup } from "../../scanningRequests.js";
 import { getPreference } from "../../../common/preferences.js";
 import { QUERY_KEYS } from "../../../common/constants.js";
 import { useMutation } from "@tanstack/react-query";
-import { parseIntList } from "../../scanningLib.js";
+import { parseIntList, SCANNING_TOOLBAR_ACTION } from "../../scanningLib.js";
 import { ScanningEnd } from "../ScanningEnd/ScanningEnd.jsx";
+import { ScanningToolbar } from "../ScanningToolbar/ScanningToolbar.jsx";
 
 export const CandidateScanner = () => {
   const numPerPage = 25;
@@ -81,9 +70,8 @@ export const CandidateScanner = () => {
   };
 
   const [presentToast] = useIonToast();
-  const [presentDiscardAlert] = useIonAlert();
-
-  const isDiscardingEnabled = scanningConfig.junkGroups?.length ?? 0 > 0;
+  const [presentAlert] = useIonAlert();
+  const isDiscardingEnabled = (scanningConfig.junkGroups?.length ?? 0) > 0;
 
   const { data, fetchNextPage, isFetchingNextPage } = useSearchCandidates({
     startDate: queryParams.startDate,
@@ -95,6 +83,7 @@ export const CandidateScanner = () => {
   });
 
   const totalMatches = data?.pages[0].totalMatches;
+  /** @type {import("../../scanningLib.js").Candidate[]|undefined} */
   const candidates = data?.pages.map((page) => page.candidates).flat(1);
   const currentCandidate = candidates?.at(currentIndex);
   if (candidates && candidates.length === totalMatches && !isLastBatch) {
@@ -177,7 +166,7 @@ export const CandidateScanner = () => {
      */
     mutationFn: ({ sourceId, groupIds }) =>
       addSourceToGroups({ sourceId, groupIds }),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) =>
       presentToast({
         message:
           `Source saved to group${variables.groupIds.length > 1 ? "s" : ""} ` +
@@ -192,17 +181,15 @@ export const CandidateScanner = () => {
         position: "top",
         color: "success",
         icon: checkmarkCircleOutline,
-      });
-    },
-    onError: () => {
+      }),
+    onError: () =>
       presentToast({
         message: "Failed to save source",
         duration: 2000,
         position: "top",
         color: "danger",
         icon: warningOutline,
-      });
-    },
+      }),
   });
 
   const discardSourceMutation = useMutation({
@@ -213,9 +200,29 @@ export const CandidateScanner = () => {
      * @returns {Promise<*>}
      */
     mutationFn: async ({ sourceId, groupIds }) => {
+      const areYouSure = await new Promise((resolve) => {
+        presentAlert({
+          header: "Are you sure?",
+          message: "Do you want to discard this source?",
+          buttons: [
+            {
+              text: "Cancel",
+              role: "cancel",
+            },
+            {
+              text: "Discard",
+              role: "destructive",
+              handler: () => resolve(true),
+            },
+          ],
+        });
+      });
+      if (!areYouSure) {
+        return;
+      }
       return await addSourceToGroups({ sourceId, groupIds });
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) =>
       presentToast({
         message:
           `Source discarded to group${variables.groupIds.length > 1 ? "s" : ""} ` +
@@ -230,17 +237,15 @@ export const CandidateScanner = () => {
         position: "top",
         color: "secondary",
         icon: checkmarkCircleOutline,
-      });
-    },
-    onError: () => {
+      }),
+    onError: () =>
       presentToast({
         message: "Failed to discard source",
         duration: 2000,
         position: "top",
         color: "danger",
         icon: warningOutline,
-      });
-    },
+      }),
   });
 
   const promptUserForGroupSelection = useCallback(
@@ -255,7 +260,7 @@ export const CandidateScanner = () => {
           return;
         }
         // @ts-ignore
-        presentDiscardAlert({
+        presentAlert({
           header:
             action === "save" ? "Select a program" : "Select a junk group",
           buttons: [action === "save" ? "Save" : "Discard"],
@@ -273,7 +278,7 @@ export const CandidateScanner = () => {
           },
         });
       }),
-    [scanningConfig, currentCandidate],
+    [scanningConfig, currentCandidate, presentAlert],
   );
 
   const handleDiscard = useCallback(async () => {
@@ -317,6 +322,54 @@ export const CandidateScanner = () => {
     };
   }, [currentCandidate, scanningConfig]);
 
+  const handleExit = useCallback(async () => {
+    const areYouSure = await new Promise((resolve) => {
+      presentAlert({
+        header: "Are you sure?",
+        message: "Do you want to exit the scanning session?",
+        buttons: [
+          {
+            text: "Cancel",
+            role: "cancel",
+          },
+          {
+            text: "Exit",
+            role: "destructive",
+            handler: () => resolve(true),
+          },
+        ],
+      });
+    });
+    if (areYouSure) {
+      history.back();
+    }
+  }, [presentAlert]);
+
+  /**
+   * @param {import("../../scanningLib.js").ScanningToolbarAction} action
+   */
+  const handleToolbarAction = async (action) => {
+    switch (action) {
+      case SCANNING_TOOLBAR_ACTION.EXIT:
+        await handleExit();
+        break;
+      case SCANNING_TOOLBAR_ACTION.SAVE:
+        await handleSave();
+        break;
+      case SCANNING_TOOLBAR_ACTION.DISCARD:
+        await handleDiscard();
+        break;
+      case SCANNING_TOOLBAR_ACTION.REQUEST_OBSERVING_RUN:
+        break;
+      case SCANNING_TOOLBAR_ACTION.REQUEST_FOLLOW_UP:
+        break;
+      case SCANNING_TOOLBAR_ACTION.ADD_REDSHIFT:
+        break;
+      case SCANNING_TOOLBAR_ACTION.SHOW_SURVEYS:
+        break;
+    }
+  };
+
   return (
     <div className="candidate-scanner">
       <div className="embla" ref={emblaRef}>
@@ -345,36 +398,10 @@ export const CandidateScanner = () => {
         </div>
       </div>
       {currentIndex < (totalMatches ?? 99999999) && (
-        <div className="action-buttons-container">
-          <IonButton
-            onClick={() => handleDiscard()}
-            shape="round"
-            size="large"
-            color="danger"
-            fill="outline"
-            disabled={!isDiscardingEnabled}
-          >
-            <IonIcon icon={trashBin} slot="icon-only" />
-          </IonButton>
-          <IonButton
-            onClick={() => handleSave()}
-            shape="round"
-            size="large"
-            color="success"
-            fill="outline"
-          >
-            <IonIcon icon={checkmark} slot="icon-only" />
-          </IonButton>
-          <IonButton
-            shape="round"
-            size="large"
-            color="secondary"
-            fill="outline"
-            onClick={() => emblaApi?.scrollNext()}
-          >
-            <IonIcon icon={arrowForward} slot="icon-only" />
-          </IonButton>
-        </div>
+        <ScanningToolbar
+          onAction={handleToolbarAction}
+          isDiscardingEnabled={isDiscardingEnabled}
+        />
       )}
 
       <IonModal
