@@ -77,6 +77,7 @@
  * @property {Group[]} saveGroups
  * @property {number[]} junkGroupIds
  * @property {Group[]} junkGroups
+ * @property {string[]} pinnedAnnotations
  * @property {number} numPerPage
  * @property {string} queryID
  */

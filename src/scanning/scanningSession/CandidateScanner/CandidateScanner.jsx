@@ -1,6 +1,6 @@
 import "./CandidateScanner.scss";
 import { IonModal, useIonAlert, useIonToast } from "@ionic/react";
-import { useCallback, useEffect, useRef, useState, useContext } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
   useQueryParams,
   useUserAccessibleGroups,
@@ -65,6 +65,7 @@ export const CandidateScanner = () => {
           .map((id) => userAccessibleGroups.find((g) => g.id === id))
           .filter((g) => g !== undefined)
       : [],
+    pinnedAnnotations: queryParams.pinnedAnnotations.split(","),
     numPerPage,
     queryID: queryParams.queryID,
   };
@@ -382,6 +383,7 @@ export const CandidateScanner = () => {
                 isInView={slidesInView.includes(index)}
                 // @ts-ignore
                 nbCandidates={data.pages[0].totalMatches}
+                pinnedAnnotations={scanningConfig.pinnedAnnotations}
               />
             </div>
           )) ?? (

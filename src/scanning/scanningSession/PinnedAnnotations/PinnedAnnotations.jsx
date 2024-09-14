@@ -21,17 +21,19 @@ export const PinnedAnnotations = ({
 }) => {
   const handleTextCopied = useCopyAnnotationLineOnClick();
   const [pinnedAnnotations, setPinnedAnnotations] = useState(
-    pinnedAnnotationIds.map((id) => {
-      const lastIndexOfSlash = id.lastIndexOf("/");
-      const annotationOrigin = id.slice(0, lastIndexOfSlash);
-      const dataItem = id.slice(lastIndexOfSlash + 1);
-      return {
-        id: dataItem,
-        value: candidate.annotations.find(
-          (annotation) => annotation.origin === annotationOrigin,
-        )?.data[dataItem],
-      };
-    }),
+    pinnedAnnotationIds
+      .map((id) => {
+        const lastIndexOfSlash = id.lastIndexOf("/");
+        const annotationOrigin = id.slice(0, lastIndexOfSlash);
+        const dataItem = id.slice(lastIndexOfSlash + 1);
+        return {
+          id: dataItem,
+          value: candidate.annotations.find(
+            (annotation) => annotation.origin === annotationOrigin,
+          )?.data[dataItem],
+        };
+      })
+      .filter((annotationItem) => annotationItem.value),
   );
 
   if (pinnedAnnotations.length < 3) {
@@ -43,6 +45,9 @@ export const PinnedAnnotations = ({
         if (
           value &&
           !otherAnnotationIds.find(
+            (annotationItem) => annotationItem.id === annotationId,
+          ) &&
+          !pinnedAnnotations.find(
             (annotationItem) => annotationItem.id === annotationId,
           )
         ) {

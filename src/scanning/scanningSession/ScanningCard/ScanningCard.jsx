@@ -14,6 +14,7 @@ import { ScanningCardSkeleton } from "./ScanningCardSkeleton.jsx";
  * @param {number} props.currentIndex
  * @param {number} props.nbCandidates
  * @param {boolean} props.isInView
+ * @param {string[]} props.pinnedAnnotations
  * @returns {JSX.Element}
  */
 const ScanningCardBase = ({
@@ -22,6 +23,7 @@ const ScanningCardBase = ({
   currentIndex,
   nbCandidates,
   isInView,
+  pinnedAnnotations,
 }) => {
   return (
     <div className="scanning-card-container">
@@ -43,6 +45,7 @@ const ScanningCardBase = ({
         <PinnedAnnotations
           candidate={candidate}
           onButtonClick={() => modal.current?.present()}
+          pinnedAnnotationIds={pinnedAnnotations}
         />
         <div className="plot-container">
           <CandidatePhotometryChart
