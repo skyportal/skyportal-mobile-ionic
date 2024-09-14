@@ -1,7 +1,11 @@
 import "./PinnedAnnotations.scss";
 import { IonButton, IonIcon, IonItem, IonText } from "@ionic/react";
-import { useCopyAnnotationLineOnClick } from "../../scanningLib.js";
+import {
+  getAnnotationId,
+  useCopyAnnotationLineOnClick,
+} from "../../scanningLib.js";
 import { copyOutline } from "ionicons/icons";
+import { useState } from "react";
 
 /**
  * @param {Object} props
@@ -13,22 +17,47 @@ import { copyOutline } from "ionicons/icons";
 export const PinnedAnnotations = ({
   candidate,
   onButtonClick,
-  pinnedAnnotationIds = [
-    "ZTF Science Validation:Public Transients.age",
-    "ZTF Science Validation:Public Transients.acai_b",
-    "ZTF Science Validation:Public Transients.acai_h",
-  ],
+  pinnedAnnotationIds = [],
 }) => {
   const handleTextCopied = useCopyAnnotationLineOnClick();
-  const pinnedAnnotations = pinnedAnnotationIds.map((id) => {
-    const [annotationOrigin, dataItem] = id.split(".");
-    return {
-      id: dataItem,
-      value: candidate.annotations.find(
-        (annotation) => annotation.origin === annotationOrigin,
-      )?.data[dataItem],
-    };
-  });
+  const [pinnedAnnotations, setPinnedAnnotations] = useState(
+    pinnedAnnotationIds.map((id) => {
+      const lastIndexOfSlash = id.lastIndexOf("/");
+      const annotationOrigin = id.slice(0, lastIndexOfSlash);
+      const dataItem = id.slice(lastIndexOfSlash + 1);
+      return {
+        id: dataItem,
+        value: candidate.annotations.find(
+          (annotation) => annotation.origin === annotationOrigin,
+        )?.data[dataItem],
+      };
+    }),
+  );
+
+  if (pinnedAnnotations.length < 3) {
+    /** @type {{id: string, value: string|number}[]} */
+    let otherAnnotationIds = [];
+    outerLoop: for (let annotation of candidate.annotations) {
+      for (let [key, value] of Object.entries(annotation.data)) {
+        const annotationId = getAnnotationId(annotation.origin, key);
+        if (
+          value &&
+          !otherAnnotationIds.find(
+            (annotationItem) => annotationItem.id === annotationId,
+          )
+        ) {
+          otherAnnotationIds.push({
+            id: key,
+            value,
+          });
+          if (otherAnnotationIds.length === 3 - pinnedAnnotations.length) {
+            break outerLoop;
+          }
+        }
+      }
+    }
+    setPinnedAnnotations((prev) => [...prev, ...otherAnnotationIds]);
+  }
 
   return (
     <div className="pinned-annotations">
@@ -49,11 +78,8 @@ export const PinnedAnnotations = ({
             </IonText>
             {"\u00A0"}
             {annotationLine.value ? (
-              <div>
-                {annotationLine.value}
-                {"\u00A0"}
-                {"\u00A0"}
-                {"\u00A0"}
+              <div className="annotation-line-content">
+                <span className="annotation-value">{annotationLine.value}</span>
                 <IonIcon icon={copyOutline} size="small" color="secondary" />
               </div>
             ) : (

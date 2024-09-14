@@ -12,6 +12,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useCallback, useState } from "react";
+import { getAnnotationId } from "../../scanningLib.js";
 
 /**
  * @param {Object} props
@@ -37,7 +38,9 @@ export const PinnedAnnotationsPicker = ({
      * @returns {number}
      */
     (group, annotationKey) =>
-      localSelected.findIndex((key) => key === `${group}:${annotationKey}`),
+      localSelected.findIndex(
+        (key) => key === getAnnotationId(group, annotationKey),
+      ),
     [localSelected],
   );
 
@@ -47,7 +50,7 @@ export const PinnedAnnotationsPicker = ({
      * @param {string} annotationKey
      */
     (group, annotationKey) => {
-      const annotationId = `${group}:${annotationKey}`;
+      const annotationId = getAnnotationId(group, annotationKey);
       if (selectedIndex(group, annotationKey) !== -1) {
         setLocalSelected((prev) =>
           prev.filter((item) => item !== annotationId),

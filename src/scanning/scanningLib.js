@@ -568,3 +568,11 @@ export const SCANNING_TOOLBAR_ACTION = {
   DISCARD: "DISCARD",
   EXIT: "EXIT",
 };
+
+/**
+ * @param {string} group
+ * @param {string} annotationKey
+ * @returns {`${string}/${string}`}
+ */
+export const getAnnotationId = (group, annotationKey) =>
+  `${group}/${annotationKey}`;
