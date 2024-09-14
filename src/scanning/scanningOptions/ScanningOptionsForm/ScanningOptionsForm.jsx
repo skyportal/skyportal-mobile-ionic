@@ -22,6 +22,7 @@ import {
   getFiltering,
   getStartDate,
 } from "../../scanningLib.js";
+import { ScanningOptionsPinnedAnnotations } from "../ScanningOptionsPinnedAnnotations/ScanningOptionsPinnedAnnotations.jsx";
 
 export const ScanningOptionsForm = () => {
   const userInfo = useContext(UserContext);
@@ -67,6 +68,7 @@ export const ScanningOptionsForm = () => {
      * @param {string} params.junkGroupIDs
      * @param {string} params.discardBehavior
      * @param {string} params.discardGroup
+     * @param {string} params.pinnedAnnotations
      * @returns {Promise<any>}
      */
     mutationFn: async ({
@@ -77,6 +79,7 @@ export const ScanningOptionsForm = () => {
       junkGroupIDs,
       discardBehavior,
       discardGroup,
+      pinnedAnnotations,
     }) => {
       const response = await searchCandidates({
         groupIDs,
@@ -98,6 +101,7 @@ export const ScanningOptionsForm = () => {
         junkGroupIDs,
         discardBehavior,
         discardGroup,
+        pinnedAnnotations,
         queryID: response.queryID,
       };
     },
@@ -144,6 +148,7 @@ export const ScanningOptionsForm = () => {
     const startDate = moment(data.startDate).format();
     const endDate = moment(data.endDate).format();
     const junkGroupIDs = data.junkGroups.join(",");
+    const pinnedAnnotations = data.pinnedAnnotations.join(",");
 
     searchCandidatesMutation.mutate({
       groupIDs,
@@ -151,6 +156,7 @@ export const ScanningOptionsForm = () => {
       startDate,
       endDate,
       junkGroupIDs,
+      pinnedAnnotations,
       discardBehavior: data.discardBehavior,
       discardGroup: data.discardGroup,
     });
@@ -160,6 +166,7 @@ export const ScanningOptionsForm = () => {
   const groupSelectionModal = useRef(null);
   /** @type {React.MutableRefObject<any>} */
   const junkGroupSelectionModal = useRef(null);
+  const pinnedAnnotationSelectionModal = useRef(null);
   const { userAccessibleGroups = [] } = useUserAccessibleGroups(userInfo);
 
   return (
@@ -189,6 +196,11 @@ export const ScanningOptionsForm = () => {
           watch={watch}
           modal={junkGroupSelectionModal}
           userAccessibleGroups={userAccessibleGroups}
+        />
+        <ScanningOptionsPinnedAnnotations
+          control={control}
+          watch={watch}
+          modal={pinnedAnnotationSelectionModal}
         />
       </form>
       <div className="form-footer">

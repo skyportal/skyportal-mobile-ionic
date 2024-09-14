@@ -1,7 +1,9 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../common/constants.js";
-import { searchCandidates } from "./scanningRequests.js";
+import { fetchAnnotationInfo, searchCandidates } from "./scanningRequests.js";
 import { fetchUserProfile } from "../onboarding/auth.js";
+import { useContext } from "react";
+import { UserContext } from "../common/context.js";
 
 /**
  * @param {Object} props
@@ -74,6 +76,26 @@ export const useScanningProfiles = (userInfo) => {
   });
   return {
     profiles,
+    status,
+    error,
+  };
+};
+
+/**
+ * @returns {{annotationsInfo: import("./scanningRequests.js").AnnotationsInfo | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined }}
+ */
+export const useAnnotationsInfo = () => {
+  const userInfo = useContext(UserContext);
+  const {
+    data: annotationsInfo,
+    status,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.ANNOTATIONS_INFO],
+    queryFn: () => fetchAnnotationInfo({ userInfo }),
+  });
+  return {
+    annotationsInfo,
     status,
     error,
   };

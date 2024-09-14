@@ -40,8 +40,6 @@ export const ScanningOptionsDiscarding = ({
   );
   return (
     <div className="form-section">
-      <IonLabel className="form-list-header">Junk</IonLabel>
-
       <IonList inset>
         <IonItem lines="none">
           <IonLabel>

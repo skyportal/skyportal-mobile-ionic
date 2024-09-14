@@ -549,6 +549,7 @@ export const getDefaultValues = () => ({
   junkGroups: [],
   discardBehavior: "specific",
   discardGroup: null,
+  pinnedAnnotations: [],
 });
 
 /**

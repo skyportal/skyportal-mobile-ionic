@@ -11,6 +11,18 @@ import { fetchUserProfile } from "../onboarding/auth.js";
  */
 
 /**
+ * @typedef {{[key: string]: "number"|"string"|null}} AnnotationKeyInfo
+ */
+
+/**
+ * @typedef {{[key: string]: AnnotationKeyInfo[]}} AnnotationInfoItem
+ */
+
+/**
+ * @typedef {AnnotationInfoItem[]} AnnotationsInfo
+ */
+
+/**
  * Returns the candidates from the API
  * @param {Object} params
  * @param {import("../onboarding/auth.js").UserInfo} params.userInfo - The user info
@@ -149,6 +161,22 @@ export const createNewProfile = async ({ userInfo, profile }) => {
       preferences: {
         scanningProfiles: newScanningProfiles,
       },
+    },
+  });
+  return response.data.data;
+};
+
+/**
+ * @param {Object} params
+ * @param {import("../onboarding/auth.js").UserInfo} params.userInfo
+ * @returns {Promise<AnnotationsInfo>}
+ */
+export const fetchAnnotationInfo = async ({ userInfo }) => {
+  let response = await CapacitorHttp.get({
+    url: `${userInfo.instance.url}/api/internal/annotations_info`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+      "Content-Type": "application/json",
     },
   });
   return response.data.data;
