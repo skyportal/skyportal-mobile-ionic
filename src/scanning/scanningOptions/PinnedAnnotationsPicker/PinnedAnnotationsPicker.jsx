@@ -9,6 +9,7 @@ import {
   IonItemGroup,
   IonLabel,
   IonSearchbar,
+  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -123,6 +124,11 @@ export const PinnedAnnotationsPicker = ({
             onIonInput={onSearchQuery}
             debounce={300}
           ></IonSearchbar>
+        </IonToolbar>
+        <IonToolbar>
+          <IonText className="ion-padding">
+            {localSelected.length} selected
+          </IonText>
         </IonToolbar>
       </IonHeader>
       <IonContent>
