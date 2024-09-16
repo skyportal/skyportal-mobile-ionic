@@ -15,11 +15,7 @@ import { fetchUserProfile } from "../onboarding/auth.js";
  */
 
 /**
- * @typedef {{[key: string]: AnnotationKeyInfo[]}} AnnotationInfoItem
- */
-
-/**
- * @typedef {AnnotationInfoItem[]} AnnotationsInfo
+ * @typedef {{[key: string]: AnnotationKeyInfo[]}} AnnotationsInfo
  */
 
 /**

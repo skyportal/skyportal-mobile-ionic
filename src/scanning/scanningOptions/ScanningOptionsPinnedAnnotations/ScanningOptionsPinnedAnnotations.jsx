@@ -10,6 +10,7 @@ import { useAnnotationsInfo } from "../../scanningHooks.js";
 import { pencil } from "ionicons/icons";
 import { PinnedAnnotationsPicker } from "../PinnedAnnotationsPicker/PinnedAnnotationsPicker.jsx";
 import { Controller } from "react-hook-form";
+import { extractAnnotationOriginAndKey } from "../../scanningLib.js";
 
 /**
  * @param {Object} props
@@ -34,9 +35,16 @@ export const ScanningOptionsPinnedAnnotations = ({ control, watch, modal }) => {
             Edit<IonIcon slot="end" icon={pencil}></IonIcon>
           </IonButton>
         </IonItem>
-        {pinnedAnnotations.map((annotationKey) => (
-          <IonItem key={annotationKey}>{annotationKey}</IonItem>
-        ))}
+        {pinnedAnnotations
+          .map((annotationKey) => extractAnnotationOriginAndKey(annotationKey))
+          .map(({ origin, key }) => (
+            <IonItem key={`${origin}${key}`}>
+              <IonLabel>
+                {key}
+                <p>{origin}</p>
+              </IonLabel>
+            </IonItem>
+          ))}
       </IonList>
       {annotationsInfo && (
         <IonModal

@@ -8,6 +8,7 @@ import {
   IonItemDivider,
   IonItemGroup,
   IonLabel,
+  IonSearchbar,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -31,6 +32,8 @@ export const PinnedAnnotationsPicker = ({
   onDismiss,
 }) => {
   const [localSelected, setLocalSelected] = useState(selectedAnnotationKeys);
+  const [filteredSelected, setFilteredSelected] = useState(annotationsInfo);
+
   const selectedIndex = useCallback(
     /**
      * @param {string} group
@@ -56,7 +59,7 @@ export const PinnedAnnotationsPicker = ({
           prev.filter((item) => item !== annotationId),
         );
       } else {
-        if (localSelected.length <= limit) {
+        if (localSelected.length < limit) {
           setLocalSelected((prev) => [...prev, annotationId]);
         }
       }
@@ -67,6 +70,38 @@ export const PinnedAnnotationsPicker = ({
   const onDone = () => {
     onDismiss(localSelected);
     modal.current?.dismiss();
+  };
+
+  /**
+   * @param {string} searchQuery
+   */
+  const filterList = (searchQuery) => {
+    if (searchQuery === "") {
+      setFilteredSelected(annotationsInfo);
+    } else {
+      const normalizedQuery = searchQuery.toLowerCase();
+      setFilteredSelected(
+        Object.entries(annotationsInfo)
+          .map(([group, annotationInfoItem]) => ({
+            group,
+            annotationInfoItem: annotationInfoItem.filter((keyInfo) =>
+              Object.keys(keyInfo)[0].toLowerCase().includes(normalizedQuery),
+            ),
+          }))
+          .filter(({ annotationInfoItem }) => annotationInfoItem.length > 0)
+          .reduce((previousValue, currentValue) => {
+            previousValue[currentValue.group] = currentValue.annotationInfoItem;
+            return previousValue;
+          }, Object.create({})),
+      );
+    }
+  };
+
+  /**
+   * @param {any} e
+   */
+  const onSearchQuery = (e) => {
+    filterList(e.target.value ?? "");
   };
 
   return (
@@ -83,37 +118,38 @@ export const PinnedAnnotationsPicker = ({
             <IonButton onClick={onDone}>Done</IonButton>
           </IonButtons>
         </IonToolbar>
+        <IonToolbar>
+          <IonSearchbar
+            onIonInput={onSearchQuery}
+            debounce={300}
+          ></IonSearchbar>
+        </IonToolbar>
       </IonHeader>
       <IonContent>
-        {Object.entries(annotationsInfo).map(([group, annotationInfoItem]) => (
+        {Object.entries(filteredSelected).map(([group, annotationInfoItem]) => (
           <IonItemGroup key={group}>
             <IonItemDivider>
               <IonLabel>{group}</IonLabel>
             </IonItemDivider>
-            {annotationInfoItem
-              // @ts-ignore
-              .map(
-                (
-                  /** @type {import("../../scanningRequests").AnnotationKeyInfo} */ annotationKeyInfo,
-                ) => {
-                  const annotationKey = Object.keys(annotationKeyInfo)[0];
-                  return (
-                    <IonItem
-                      key={annotationKey}
-                      onClick={() => togglePinAnnotation(group, annotationKey)}
-                      detail={false}
-                      button
-                    >
-                      <IonLabel>{annotationKey}</IonLabel>
-                      {selectedIndex(group, annotationKey) !== -1 && (
-                        <IonBadge>
-                          {selectedIndex(group, annotationKey) + 1}
-                        </IonBadge>
-                      )}
-                    </IonItem>
-                  );
-                },
-              )}
+            {annotationInfoItem.map((annotationKeyInfo) => {
+              const annotationKey = Object.keys(annotationKeyInfo)[0];
+              return (
+                <IonItem
+                  key={annotationKey}
+                  onClick={() => togglePinAnnotation(group, annotationKey)}
+                  detail={false}
+                  color="light"
+                  button
+                >
+                  <IonLabel>{annotationKey}</IonLabel>
+                  {selectedIndex(group, annotationKey) !== -1 && (
+                    <IonBadge>
+                      {selectedIndex(group, annotationKey) + 1}
+                    </IonBadge>
+                  )}
+                </IonItem>
+              );
+            })}
           </IonItemGroup>
         ))}
       </IonContent>

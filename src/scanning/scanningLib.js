@@ -577,3 +577,14 @@ export const SCANNING_TOOLBAR_ACTION = {
  */
 export const getAnnotationId = (group, annotationKey) =>
   `${group}/${annotationKey}`;
+
+/**
+ * @param {string} annotationId
+ * @returns {{key: string, origin: string}}
+ */
+export const extractAnnotationOriginAndKey = (annotationId) => {
+  const lastIndexOfSlash = annotationId.lastIndexOf("/");
+  const origin = annotationId.slice(0, lastIndexOfSlash);
+  const key = annotationId.slice(lastIndexOfSlash + 1);
+  return { origin, key };
+};

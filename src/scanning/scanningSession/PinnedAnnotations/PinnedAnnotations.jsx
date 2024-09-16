@@ -1,6 +1,7 @@
 import "./PinnedAnnotations.scss";
 import { IonButton, IonIcon, IonItem, IonText } from "@ionic/react";
 import {
+  extractAnnotationOriginAndKey,
   getAnnotationId,
   useCopyAnnotationLineOnClick,
 } from "../../scanningLib.js";
@@ -23,14 +24,12 @@ export const PinnedAnnotations = ({
   const [pinnedAnnotations, setPinnedAnnotations] = useState(
     pinnedAnnotationIds
       .map((id) => {
-        const lastIndexOfSlash = id.lastIndexOf("/");
-        const annotationOrigin = id.slice(0, lastIndexOfSlash);
-        const dataItem = id.slice(lastIndexOfSlash + 1);
+        const { key, origin } = extractAnnotationOriginAndKey(id);
         return {
-          id: dataItem,
+          id: key,
           value: candidate.annotations.find(
-            (annotation) => annotation.origin === annotationOrigin,
-          )?.data[dataItem],
+            (annotation) => annotation.origin === origin,
+          )?.data[key],
         };
       })
       .filter((annotationItem) => annotationItem.value),
