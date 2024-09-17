@@ -4,14 +4,16 @@
  * @param {string} path
  * @param {Object} options
  * @param {Record<string, string>} [options.params]
+ * @param {any} [options.state]
  * @param {boolean} [options.replace]
  */
 export const navigateWithParams = (
   history,
   path,
-  { params, replace = false },
+  { params, state, replace = false },
 ) => {
   history[replace ? "replace" : "push"](
     `${path}?${new URLSearchParams(params).toString()}`,
+    state,
   );
 };

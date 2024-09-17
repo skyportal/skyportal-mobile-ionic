@@ -75,11 +75,11 @@
  * @property {DiscardBehavior} discardBehavior
  * @property {number[]} saveGroupIds
  * @property {Group[]} saveGroups
- * @property {number[]} junkGroupIds
+ * @property {number[]} junkGroupIDs
  * @property {Group[]} junkGroups
  * @property {string[]} pinnedAnnotations
- * @property {number} numPerPage
  * @property {string} queryID
+ * @property {number} totalMatches
  */
 
 /**

@@ -1,6 +1,8 @@
 import { CapacitorHttp } from "@capacitor/core";
 import { CANDIDATES_PER_PAGE } from "../common/constants.js";
 import { fetchUserProfile } from "../onboarding/auth.js";
+import { useContext } from "react";
+import { UserContext } from "../common/context.js";
 
 /**
  * @typedef {Object} CandidateSearchResponse
@@ -25,7 +27,7 @@ import { fetchUserProfile } from "../onboarding/auth.js";
  * @param {string} params.startDate - The start date of the candidates
  * @param {string|null} [params.endDate=null] - The end date of the candidates
  * @param {import("../common/constants").SavedStatus} params.savedStatus - The saved status of the candidates
- * @param {string} params.groupIDs - The group IDs to search for
+ * @param {number[]} params.groupIDs - The group IDs to search for
  * @param {string|null} [params.queryID=null] - The query ID
  * @param {number} params.pageNumber - The page number
  * @param {number} [params.numPerPage] - The number of candidates per page
@@ -50,7 +52,7 @@ export async function searchCandidates({
     params: {
       pageNumber: pageNumber.toString(),
       numPerPage: numPerPage.toString(),
-      groupIDs,
+      groupIDs: groupIDs.join(","),
       savedStatus,
       listNameReject: "rejected_candidates",
       startDate,
@@ -115,10 +117,10 @@ export const fetchSourcePhotometry = async ({
  * @param {Object} params
  * @param {string} params.sourceId
  * @param {number[]} params.groupIds
- * @param {import("../onboarding/auth.js").UserInfo} params.userInfo
  * @returns {Promise<any>}
  */
-export const addSourceToGroup = async ({ sourceId, groupIds, userInfo }) => {
+export const addSourceToGroups = async ({ sourceId, groupIds }) => {
+  const userInfo = useContext(UserContext);
   let response = await CapacitorHttp.post({
     url: `${userInfo.instance.url}/api/source_groups`,
     headers: {

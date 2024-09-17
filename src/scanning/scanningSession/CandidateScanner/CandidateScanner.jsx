@@ -1,31 +1,63 @@
 import "./CandidateScanner.scss";
 import { IonModal, useIonAlert, useIonToast } from "@ionic/react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import {
-  useQueryParams,
-  useUserAccessibleGroups,
-} from "../../../common/hooks.js";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useUserAccessibleGroups } from "../../../common/hooks.js";
 import { checkmarkCircleOutline, warningOutline } from "ionicons/icons";
 import useEmblaCarousel from "embla-carousel-react";
 import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
 import { ScanningCardSkeleton } from "../ScanningCard/ScanningCardSkeleton.jsx";
 import { useSearchCandidates } from "../../scanningHooks.js";
-import { addSourceToGroup } from "../../scanningRequests.js";
+import { addSourceToGroups } from "../../scanningRequests.js";
 import { useMutation } from "@tanstack/react-query";
 import { parseIntList, SCANNING_TOOLBAR_ACTION } from "../../scanningLib.js";
 import { ScanningEnd } from "../ScanningEnd/ScanningEnd.jsx";
-import { UserContext } from "../../../common/context.js";
 import { ScanningToolbar } from "../ScanningToolbar/ScanningToolbar.jsx";
+import { useLocation } from "react-router";
+import { CANDIDATES_PER_PAGE } from "../../../common/constants.js";
 
 export const CandidateScanner = () => {
-  const userInfo = useContext(UserContext);
-  const numPerPage = 25;
+  const { userAccessibleGroups } = useUserAccessibleGroups();
+
+  /** @type {{state: any}} */
+  const { state } = useLocation();
+
+  /** @type {import("../../scanningLib.js").ScanningConfig|undefined} */
+  let scanningConfig = undefined;
+  if (state) {
+    scanningConfig = {
+      ...state,
+      /** @type {import("../../scanningLib").Group[]} **/
+      saveGroups: userAccessibleGroups
+        ? state.saveGroupIds
+            .map((/** @type {number} */ id) =>
+              userAccessibleGroups.find((g) => g.id === id),
+            )
+            .filter(
+              (
+                /** @type {import("../../scanningLib.js").Group | undefined} */ g,
+              ) => g !== undefined,
+            )
+        : [],
+      /** @type {import("../../scanningLib").Group[]} **/
+      // @ts-ignore
+      junkGroups: userAccessibleGroups
+        ? parseIntList(state.junkGroupIDs)
+            .map((id) => userAccessibleGroups.find((g) => g.id === id))
+            .filter((g) => g !== undefined)
+        : [],
+      pinnedAnnotations: state.pinnedAnnotations,
+      queryID: state.queryID,
+      totalMatches: state.totalMatches,
+    };
+  }
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel();
   /** @type {[number[], React.Dispatch<number[]>]} */
   // @ts-ignore
   const [slidesInView, setSlidesInView] = useState([]);
+
   /** @type {React.MutableRefObject<any>} */
   const modal = useRef(null);
 
@@ -39,67 +71,14 @@ export const CandidateScanner = () => {
     notAssigned: [],
     totalMatches: 0,
   });
-
-  const { userAccessibleGroups } = useUserAccessibleGroups(userInfo);
-  const queryParams = useQueryParams();
-  /** @type {import("../../scanningLib.js").ScanningConfig} */
-  const scanningConfig = {
-    startDate: queryParams.startDate,
-    endDate: queryParams.endDate,
-    savedStatus: queryParams.savedStatus,
-    /** @type {import("../../scanningLib").DiscardBehavior} **/
-    discardBehavior: queryParams.discardBehavior,
-    saveGroupIds: parseIntList(queryParams.groupIDs),
-    /** @type {import("../../scanningLib").Group[]} **/
-    // @ts-ignore
-    saveGroups: userAccessibleGroups
-      ? parseIntList(queryParams.groupIDs)
-          .map((id) => userAccessibleGroups.find((g) => g.id === id))
-          .filter((g) => g !== undefined)
-      : [],
-    junkGroupIds: parseIntList(queryParams.junkGroupIDs),
-    /** @type {import("../../scanningLib").Group[]} **/
-    // @ts-ignore
-    junkGroups: userAccessibleGroups
-      ? parseIntList(queryParams.junkGroupIDs)
-          .map((id) => userAccessibleGroups.find((g) => g.id === id))
-          .filter((g) => g !== undefined)
-      : [],
-    pinnedAnnotations: queryParams.pinnedAnnotations.split(","),
-    numPerPage,
-    queryID: queryParams.queryID,
-  };
-
-  const [presentToast] = useIonToast();
-  const [presentAlert] = useIonAlert();
-  const isDiscardingEnabled = (scanningConfig.junkGroups?.length ?? 0) > 0;
-
-  const { data, fetchNextPage, isFetchingNextPage } = useSearchCandidates({
-    startDate: queryParams.startDate,
-    endDate: queryParams.endDate,
-    savedStatus: queryParams.savedStatus,
-    groupIDs: queryParams.groupIDs,
-    queryID: queryParams.queryID,
-    numPerPage,
-    userInfo,
-  });
-
+  const { data, fetchNextPage, isFetchingNextPage } = useSearchCandidates();
   const totalMatches = data?.pages[0].totalMatches;
   /** @type {import("../../scanningLib.js").Candidate[]|undefined} */
   const candidates = data?.pages.map((page) => page.candidates).flat(1);
   const currentCandidate = candidates?.at(currentIndex);
-  if (candidates && candidates.length === totalMatches && !isLastBatch) {
-    setIsLastBatch(true);
-  }
-  scanningRecap.current.queryId = scanningConfig.queryID ?? "";
-  scanningRecap.current.totalMatches = totalMatches ?? 0;
 
-  const selectCallback = useCallback(
-    (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
-      setCurrentIndex(e.selectedScrollSnap());
-    },
-    [],
-  );
+  const [presentToast] = useIonToast();
+  const [presentAlert] = useIonAlert();
 
   useEffect(() => {
     if (emblaApi) {
@@ -114,10 +93,11 @@ export const CandidateScanner = () => {
 
   const slidesInViewCallback = useCallback(
     async (/** @type {import("embla-carousel").EmblaCarouselType} */ e) => {
+      if (!scanningConfig) return;
       if (
         !isFetchingNextPage &&
         e.selectedScrollSnap() >= e.slideNodes().length - 4 &&
-        e.slideNodes().length - e.selectedScrollSnap() < numPerPage &&
+        e.slideNodes().length - e.selectedScrollSnap() < CANDIDATES_PER_PAGE &&
         totalMatches &&
         e.slideNodes().length < totalMatches
       ) {
@@ -125,7 +105,7 @@ export const CandidateScanner = () => {
       }
       setSlidesInView(e.slidesInView());
     },
-    [currentIndex, isFetchingNextPage, fetchNextPage, totalMatches],
+    [currentIndex, isFetchingNextPage, fetchNextPage, data],
   );
 
   useEffect(() => {
@@ -138,24 +118,7 @@ export const CandidateScanner = () => {
         emblaApi.off("slidesInView", slidesInViewCallback);
       }
     };
-  }, [emblaApi, currentIndex, isFetchingNextPage, fetchNextPage, totalMatches]);
-
-  const addSourceToGroups = useCallback(
-    /**
-     * @param {Object} params
-     * @param {string} params.sourceId
-     * @param {number[]} params.groupIds
-     * @returns {Promise<*>}
-     */
-    async ({ sourceId, groupIds }) => {
-      return await addSourceToGroup({
-        sourceId,
-        userInfo,
-        groupIds,
-      });
-    },
-    [],
-  );
+  }, [emblaApi, currentIndex, isFetchingNextPage, fetchNextPage, data]);
 
   const saveSourceMutation = useMutation({
     /**
@@ -278,7 +241,7 @@ export const CandidateScanner = () => {
           },
         });
       }),
-    [scanningConfig, currentCandidate, presentAlert],
+    [state, currentCandidate, presentAlert],
   );
 
   const handleDiscard = useCallback(async () => {
@@ -294,10 +257,10 @@ export const CandidateScanner = () => {
     } else {
       discardSourceMutation.mutate({
         sourceId: currentCandidate.id,
-        groupIds: scanningConfig.junkGroupIds,
+        groupIds: scanningConfig.junkGroupIDs,
       });
     }
-  }, [currentCandidate, scanningConfig]);
+  }, [currentCandidate, state]);
 
   const handleSave = useCallback(async () => {
     if (!currentCandidate || !scanningConfig) {
@@ -320,7 +283,7 @@ export const CandidateScanner = () => {
       ...scanningRecap.current,
       notAssigned: [...scanningRecap.current.notAssigned, currentCandidate],
     };
-  }, [currentCandidate, scanningConfig]);
+  }, [currentCandidate, state]);
 
   const handleExit = useCallback(async () => {
     const areYouSure = await new Promise((resolve) => {
@@ -344,6 +307,21 @@ export const CandidateScanner = () => {
       history.back();
     }
   }, [presentAlert]);
+
+  const isDiscardingEnabled = (scanningConfig?.junkGroups?.length ?? 0) > 0;
+
+  scanningRecap.current.queryId = scanningConfig?.queryID ?? "";
+  scanningRecap.current.totalMatches = totalMatches ?? 0;
+
+  if (candidates && candidates.length === totalMatches && !isLastBatch) {
+    setIsLastBatch(true);
+  }
+
+  const selectCallback = (
+    /** @type {import("embla-carousel").EmblaCarouselType} */ e,
+  ) => {
+    setCurrentIndex(e.selectedScrollSnap());
+  };
 
   /**
    * @param {import("../../scanningLib.js").ScanningToolbarAction} action
@@ -374,26 +352,31 @@ export const CandidateScanner = () => {
     <div className="candidate-scanner">
       <div className="embla" ref={emblaRef}>
         <div className="embla__container">
-          {candidates?.map((candidate, index) => (
-            <div key={candidate.id} className="embla__slide">
-              <ScanningCard
-                candidate={candidate}
-                modal={modal}
-                currentIndex={index}
-                isInView={slidesInView.includes(index)}
-                // @ts-ignore
-                nbCandidates={data.pages[0].totalMatches}
-                pinnedAnnotations={scanningConfig.pinnedAnnotations}
-              />
-            </div>
-          )) ?? (
+          {scanningConfig && candidates && (
+            <>
+              {candidates.map((candidate, index) => (
+                <div key={candidate.id} className="embla__slide">
+                  <ScanningCard
+                    candidate={candidate}
+                    modal={modal}
+                    currentIndex={index}
+                    isInView={slidesInView.includes(index)}
+                    // @ts-ignore
+                    nbCandidates={data.pages[0].totalMatches}
+                    pinnedAnnotations={scanningConfig.pinnedAnnotations}
+                  />
+                </div>
+              ))}
+              {isLastBatch && (
+                <div className="embla__slide">
+                  <ScanningEnd recap={scanningRecap} />
+                </div>
+              )}
+            </>
+          )}
+          {(!scanningConfig || !candidates) && (
             <div className="embla__slide">
               <ScanningCardSkeleton animated={true} />
-            </div>
-          )}
-          {isLastBatch && (
-            <div className="embla__slide">
-              <ScanningEnd recap={scanningRecap} />
             </div>
           )}
         </div>

@@ -14,6 +14,8 @@ import config from "../config.js";
 import { fetchUserProfile } from "../onboarding/auth.js";
 import { fetchConfig } from "./requests.js";
 import { fetchGroups } from "../scanning/scanningRequests.js";
+import { useContext } from "react";
+import { UserContext } from "./context.js";
 
 /**
  * @typedef {"success" | "error" | "pending"} QueryStatus
@@ -141,10 +143,10 @@ export const useAppStart = () => {
 };
 
 /**
- * @param {import("../onboarding/auth.js").UserInfo} userInfo
  * @returns {{userAccessibleGroups: import("../scanning/scanningLib.js").Group[]|undefined, status: QueryStatus, error: any|undefined}}
  */
-export const useUserAccessibleGroups = (userInfo) => {
+export const useUserAccessibleGroups = () => {
+  const userInfo = useContext(UserContext);
   const {
     /** @type {import("../scanning/scanningLib.js").GroupsResponse} */ data: groups,
     status,
@@ -158,19 +160,6 @@ export const useUserAccessibleGroups = (userInfo) => {
     status,
     error,
   };
-};
-
-/**
- * @returns {{[key: string]: any}}
- */
-export const useQueryParams = () => {
-  const params = new URLSearchParams(location.search);
-  const paramsObject = {};
-  for (const [key, value] of params) {
-    // @ts-ignore
-    paramsObject[key] = value;
-  }
-  return paramsObject;
 };
 
 /**

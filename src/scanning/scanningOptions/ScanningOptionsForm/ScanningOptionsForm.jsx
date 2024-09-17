@@ -7,13 +7,11 @@ import { useForm } from "react-hook-form";
 import moment from "moment-timezone";
 import { useContext, useRef } from "react";
 import {
-  useQueryParams,
   useUserAccessibleGroups,
   useUserProfile,
 } from "../../../common/hooks.js";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { useMutation } from "@tanstack/react-query";
-import { navigateWithParams } from "../../../common/util.js";
 import { UserContext } from "../../../common/context.js";
 import { searchCandidates } from "../../scanningRequests.js";
 import {
@@ -27,8 +25,8 @@ import { ScanningOptionsPinnedAnnotations } from "../ScanningOptionsPinnedAnnota
 export const ScanningOptionsForm = () => {
   const userInfo = useContext(UserContext);
 
-  const { /** @type {string|undefined} */ profile: profileName } =
-    useQueryParams();
+  /** @type {any} */
+  const { /** @type {string|undefined} */ profile: profileName } = useParams();
   const { userProfile } = useUserProfile(userInfo);
   /** @type {import("../../../onboarding/auth.js").ScanningProfile|undefined}*/
   const scanningProfile = userProfile?.preferences?.scanningProfiles?.find(
@@ -61,28 +59,15 @@ export const ScanningOptionsForm = () => {
   const searchCandidatesMutation = useMutation({
     /**
      * @param {Object} params
-     * @param {string} params.groupIDs
+     * @param {number[]} params.saveGroupIds
      * @param {import("../../../common/constants.js").SavedStatus} params.savedStatus
      * @param {string} params.startDate
      * @param {string} params.endDate
-     * @param {string} params.junkGroupIDs
-     * @param {string} params.discardBehavior
-     * @param {string} params.discardGroup
-     * @param {string} params.pinnedAnnotations
      * @returns {Promise<any>}
      */
-    mutationFn: async ({
-      groupIDs,
-      savedStatus,
-      startDate,
-      endDate,
-      junkGroupIDs,
-      discardBehavior,
-      discardGroup,
-      pinnedAnnotations,
-    }) => {
+    mutationFn: async ({ saveGroupIds, savedStatus, startDate, endDate }) => {
       const response = await searchCandidates({
-        groupIDs,
+        groupIDs: saveGroupIds,
         savedStatus,
         startDate,
         endDate,
@@ -94,14 +79,10 @@ export const ScanningOptionsForm = () => {
       }
       return {
         totalMatches: response.totalMatches,
-        groupIDs,
+        saveGroupIds,
         savedStatus,
         startDate,
         endDate,
-        junkGroupIDs,
-        discardBehavior,
-        discardGroup,
-        pinnedAnnotations,
         queryID: response.queryID,
       };
     },
@@ -122,20 +103,12 @@ export const ScanningOptionsForm = () => {
         });
       }
     },
-    onSuccess: (response) => {
-      navigateWithParams(history, "/scanning/main", {
-        params: {
-          ...response,
-        },
-        replace: true,
-      });
-    },
   });
 
   /**
    * @param {any} data
    */
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (data.selectedGroups.length === 0) {
       setError("selectedGroups", {
         type: "custom",
@@ -143,22 +116,24 @@ export const ScanningOptionsForm = () => {
       });
       return;
     }
-    const groupIDs = data.selectedGroups.join(",");
+    const saveGroupIds = data.selectedGroups;
     const savedStatus = computeSavedStatus({ ...data });
     const startDate = moment(data.startDate).format();
     const endDate = moment(data.endDate).format();
-    const junkGroupIDs = data.junkGroups.join(",");
-    const pinnedAnnotations = data.pinnedAnnotations.join(",");
+    const junkGroupIDs = data.junkGroups;
+    const pinnedAnnotations = data.pinnedAnnotations;
 
-    searchCandidatesMutation.mutate({
-      groupIDs,
+    const response = await searchCandidatesMutation.mutateAsync({
+      saveGroupIds,
       savedStatus,
       startDate,
       endDate,
+    });
+
+    history.push("/scanning/main", {
+      ...response,
       junkGroupIDs,
       pinnedAnnotations,
-      discardBehavior: data.discardBehavior,
-      discardGroup: data.discardGroup,
     });
   };
 
@@ -167,7 +142,7 @@ export const ScanningOptionsForm = () => {
   /** @type {React.MutableRefObject<any>} */
   const junkGroupSelectionModal = useRef(null);
   const pinnedAnnotationSelectionModal = useRef(null);
-  const { userAccessibleGroups = [] } = useUserAccessibleGroups(userInfo);
+  const { userAccessibleGroups = [] } = useUserAccessibleGroups();
 
   return (
     <>
