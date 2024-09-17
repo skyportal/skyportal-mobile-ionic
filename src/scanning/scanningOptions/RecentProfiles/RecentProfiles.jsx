@@ -1,8 +1,7 @@
 import "./RecentProfiles.scss";
 import { IonButton, IonIcon, IonList, IonLoading, IonText } from "@ionic/react";
 import { useUserAccessibleGroups } from "../../../common/hooks.js";
-import { useCallback, useContext } from "react";
-import { UserContext } from "../../../common/context.js";
+import { useCallback } from "react";
 import { navigateWithParams } from "../../../common/util.js";
 import { useHistory } from "react-router";
 import { useScanningProfiles } from "../../scanningHooks.js";
@@ -11,8 +10,7 @@ import { chevronForwardOutline } from "ionicons/icons";
 
 export const RecentProfiles = () => {
   const history = useHistory();
-  const { userInfo } = useContext(UserContext);
-  const { profiles } = useScanningProfiles(userInfo);
+  const { profiles } = useScanningProfiles();
   const { userAccessibleGroups } = useUserAccessibleGroups();
 
   const defaultProfileIndex = profiles?.findIndex((profile) => profile.default);

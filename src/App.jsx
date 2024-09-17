@@ -35,6 +35,7 @@ import "@ionic/react/css/display.css";
 import "@ionic/react/css/palettes/dark.class.css";
 // import "@ionic/react/css/palettes/dark.system.css";
 /* Theme variables */
+import "./global.scss";
 import "./theme/variables.scss";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router";

@@ -66,10 +66,10 @@ export const useSearchCandidates = () => {
 };
 
 /**
- * @param {import("../onboarding/auth.js").UserInfo} userInfo
  * @returns {{profiles: import("../onboarding/auth.js").ScanningProfile[] | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined}}
  */
-export const useScanningProfiles = (userInfo) => {
+export const useScanningProfiles = () => {
+  const userInfo = useContext(UserContext);
   const {
     data: profiles,
     status,
