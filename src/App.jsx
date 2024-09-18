@@ -120,7 +120,7 @@ const App = ({ darkMode: initialDarkMode }) => {
                 <LoginOkScreen />
               </Route>
 
-              <Route path="/app">
+              <Route path="/scanning">
                 {userInfo.token === "" ? (
                   <Redirect to="/onboarding" />
                 ) : (

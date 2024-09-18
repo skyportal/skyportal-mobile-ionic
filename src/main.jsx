@@ -12,7 +12,9 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 const queryClient = new QueryClient();
 (async () => {
-  const { darkMode } = await getPreference(QUERY_KEYS.APP_PREFERENCES);
+  /** @type {import("./common/hooks").AppPreferences|null} */
+  const appPreferences = await getPreference(QUERY_KEYS.APP_PREFERENCES);
+  const darkMode = appPreferences?.darkMode ?? "auto";
   setDarkModeInDocument(darkMode);
   return darkMode;
 })().then((darkMode) => {

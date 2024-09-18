@@ -1,5 +1,5 @@
 .onboarding-screen-content {
-  --background: url("/images/onboarding_bg.png") contain !important;
+  --background: url("/images/onboarding_bg.png") no-repeat center center / cover !important;
 
   .onboarding-screen-container {
     display: flex;

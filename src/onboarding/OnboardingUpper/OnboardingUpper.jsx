@@ -38,8 +38,8 @@ const OnboardingUpper = ({ page }) => {
         <img
           src={
             isActuallyDarkMode(darkMode)
-              ? "/images/logo_dark.png"
-              : "/images/logo.png"
+              ? "/images/logo_n_text_dark.png"
+              : "/images/logo_n_text.png"
           }
           alt="logo"
         />
