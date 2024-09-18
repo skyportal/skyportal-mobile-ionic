@@ -21,6 +21,22 @@ export const navigateWithParams = (
 /**
  * @typedef {"auto"|"light"|"dark"} DarkMode
  */
+
+/**
+ * @param {DarkMode} darkModePreference
+ * @param {boolean} [systemIsDark]
+ * @returns {boolean}
+ */
+export const isActuallyDarkMode = (
+  darkModePreference,
+  systemIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches,
+) => {
+  return (
+    darkModePreference === "dark" ||
+    (systemIsDark && darkModePreference === "auto")
+  );
+};
+
 /**
  * @param {DarkMode} darkModePreference
  * @param {boolean} [systemIsDark]
@@ -31,7 +47,6 @@ export const setDarkModeInDocument = (
 ) => {
   document.documentElement.classList.toggle(
     "ion-palette-dark",
-    darkModePreference === "dark" ||
-      (systemIsDark && darkModePreference === "auto"),
+    isActuallyDarkMode(darkModePreference, systemIsDark),
   );
 };

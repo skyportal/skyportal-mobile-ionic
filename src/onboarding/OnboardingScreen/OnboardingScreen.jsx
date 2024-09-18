@@ -9,8 +9,8 @@ const OnboardingScreen = () => {
   const [page, setPage] = useState("welcome");
   return (
     <IonPage>
-      <IonContent class="content">
-        <div className="container">
+      <IonContent class="onboarding-screen-content">
+        <div className="onboarding-screen-container">
           <OnboardingUpper page={page} />
           <OnboardingLower page={page} setPage={setPage} />
         </div>

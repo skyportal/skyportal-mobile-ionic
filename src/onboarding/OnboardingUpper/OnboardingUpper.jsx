@@ -1,4 +1,7 @@
 import "./OnboardingUpper.scss";
+import { useContext } from "react";
+import { AppContext } from "../../common/context.js";
+import { isActuallyDarkMode } from "../../common/util.js";
 
 /**
  * @param {Object} props
@@ -6,6 +9,7 @@ import "./OnboardingUpper.scss";
  * @returns {JSX.Element}
  */
 const OnboardingUpper = ({ page }) => {
+  const { darkMode } = useContext(AppContext);
   function getTagline() {
     switch (page) {
       case "welcome":
@@ -31,8 +35,14 @@ const OnboardingUpper = ({ page }) => {
   return (
     <div className="upper">
       <div className="logo-n-text">
-        <img src="/images/logo.png" alt="logo" />
-        <h1>SkyPortal</h1>
+        <img
+          src={
+            isActuallyDarkMode(darkMode)
+              ? "/images/logo_dark.png"
+              : "/images/logo.png"
+          }
+          alt="logo"
+        />
       </div>
       <div className="tagline">{getTagline()}</div>
     </div>

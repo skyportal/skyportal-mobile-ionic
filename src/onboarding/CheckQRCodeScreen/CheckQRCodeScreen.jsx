@@ -1,15 +1,17 @@
 import { IonContent, IonPage, IonSpinner } from "@ionic/react";
 import "./CheckQRCodeScreen.scss";
 import { useHistory, useLocation } from "react-router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { fetchUserProfile } from "../auth.js";
 import { QUERY_KEYS, QUERY_PARAMS } from "../../common/constants.js";
 import { setPreference } from "../../common/preferences.js";
 import { useMutation } from "@tanstack/react-query";
+import { UserContext } from "../../common/context.js";
 
 export const CheckQRCodeScreen = () => {
   const history = useHistory();
   const location = useLocation();
+  const { updateUserInfo } = useContext(UserContext);
   const params = new URLSearchParams(location.search);
   const [token] = useState(params.get(QUERY_PARAMS.TOKEN) ?? "");
   const [instanceParam] = useState(params.get(QUERY_PARAMS.INSTANCE) ?? "");
@@ -19,6 +21,7 @@ export const CheckQRCodeScreen = () => {
     mutationFn: async (variables) => await fetchUserProfile(variables),
     onSuccess: async () => {
       await setPreference(QUERY_KEYS.USER_INFO, { token, instance });
+      updateUserInfo({ token, instance });
       history.replace("/login-ok");
     },
     onError: (error) => {

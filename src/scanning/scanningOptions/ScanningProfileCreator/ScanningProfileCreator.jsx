@@ -12,7 +12,7 @@ import { createNewProfile } from "../../scanningRequests.js";
 import { useHistory } from "react-router";
 
 export const ScanningProfileCreator = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const history = useHistory();
   const defaultValues = {
     ...getDefaultValues(),

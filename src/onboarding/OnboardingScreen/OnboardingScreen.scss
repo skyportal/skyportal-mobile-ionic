@@ -1,7 +1,7 @@
-.content {
-  --background: url("/images/sky_bg.png") !important;
+.onboarding-screen-content {
+  --background: url("/images/onboarding_bg.png") contain !important;
 
-  .container {
+  .onboarding-screen-container {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -10,3 +10,13 @@
   }
 }
 
+.ion-palette-dark.ios,
+.ion-palette-dark.md {
+  .onboarding-screen-content {
+    --background: url("/images/onboarding_bg_dark.png") no-repeat center center /
+      cover !important;
+    #background-content {
+      background-size: cover;
+    }
+  }
+}

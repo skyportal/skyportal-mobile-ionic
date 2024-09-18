@@ -15,7 +15,7 @@ import { UserContext } from "../../../common/context.js";
  * @returns {JSX.Element}
  */
 const CandidatePhotometryChartBase = ({ candidateId, isInView }) => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [loaderIsHidden, setLoaderIsHidden] = useState(false);
   /** @type {React.MutableRefObject<HTMLDivElement|null>} */

@@ -70,6 +70,16 @@ const App = ({ darkMode: initialDarkMode }) => {
   const { data } = useAppStart();
   /** @type {[import("./common/util").DarkMode, React.Dispatch<import("./common/util").DarkMode>]} */
   const [darkMode, setDarkMode] = useState(initialDarkMode);
+  const [userInfo, setUserInfo] = useState({
+    instance: { name: "", url: "" },
+    token: "",
+  });
+
+  useEffect(() => {
+    if (data?.userInfo) {
+      setUserInfo(data.userInfo);
+    }
+  }, [data]);
 
   useEffect(() => {
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
@@ -89,21 +99,14 @@ const App = ({ darkMode: initialDarkMode }) => {
     <AppContext.Provider
       value={{ darkMode: darkMode ?? "auto", updateDarkMode: setDarkMode }}
     >
-      <UserContext.Provider
-        value={
-          data.userInfo ?? {
-            instance: { name: "", url: "" },
-            token: "",
-          }
-        }
-      >
+      <UserContext.Provider value={{ userInfo, updateUserInfo: setUserInfo }}>
         <IonApp>
           <IonReactRouter>
             <IonRouterOutlet>
               <Route exact path="/onboarding">
                 {
                   /* If the user is logged in, redirect them to the app */
-                  data.userInfo !== null ? (
+                  userInfo.token !== "" ? (
                     <Redirect to="/app" />
                   ) : (
                     <OnboardingScreen />
@@ -118,7 +121,7 @@ const App = ({ darkMode: initialDarkMode }) => {
               </Route>
 
               <Route path="/app">
-                {data.userInfo === null ? (
+                {userInfo.token === "" ? (
                   <Redirect to="/onboarding" />
                 ) : (
                   <>
@@ -149,7 +152,7 @@ const App = ({ darkMode: initialDarkMode }) => {
               </Route>
 
               <Route path="/app">
-                {data.userInfo === null ? (
+                {userInfo.token === "" ? (
                   <Redirect to="/onboarding" />
                 ) : (
                   <IonTabs>

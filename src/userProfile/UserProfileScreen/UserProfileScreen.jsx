@@ -25,7 +25,7 @@ import { setDarkModeInDocument } from "../../common/util.js";
 
 export const UserProfileScreen = () => {
   const { darkMode, updateDarkMode } = useContext(AppContext);
-  const userInfo = useContext(UserContext);
+  const { userInfo, updateUserInfo } = useContext(UserContext);
   const [presentAlert] = useIonAlert();
   const { userProfile } = useUserProfile();
 
@@ -63,10 +63,10 @@ export const UserProfileScreen = () => {
         },
         {
           text: "Yes",
-          handler: () =>
-            clearPreference(QUERY_KEYS.USER_INFO).then(() =>
-              window.location.reload(),
-            ),
+          handler: async () => {
+            await clearPreference(QUERY_KEYS.USER_INFO);
+            updateUserInfo({ token: "", instance: { url: "", name: "" } });
+          },
         },
       ],
     });

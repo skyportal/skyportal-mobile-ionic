@@ -186,7 +186,7 @@ export const useBandpassesColors = (userInfo) => {
  * @returns {{userProfile: import("../onboarding/auth.js").UserProfile|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useUserProfile = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const { data, status, error } = useQuery({
     queryKey: [QUERY_KEYS.USER_PROFILE],
     queryFn: () => fetchUserProfile(userInfo),

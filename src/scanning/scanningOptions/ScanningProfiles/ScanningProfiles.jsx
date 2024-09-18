@@ -19,7 +19,7 @@ import { navigateWithParams } from "../../../common/util.js";
 
 export const ScanningProfiles = () => {
   const history = useHistory();
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const { profiles } = useScanningProfiles(userInfo);
   const { userAccessibleGroups } = useUserAccessibleGroups(userInfo);
   const defaultProfileIndex = profiles?.findIndex((profile) => profile.default);

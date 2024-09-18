@@ -1,13 +1,14 @@
 import { createContext } from "react";
 
-/** @type {React.Context<import("../onboarding/auth").UserInfo>} */
-// @ts-ignore
 export const UserContext = createContext({
-  instance: { name: "", url: "" },
-  token: "",
+  /** @type {import("../onboarding/auth").UserInfo} */
+  userInfo: { instance: { name: "", url: "" }, token: "" },
+  /** @type {React.Dispatch<import("../onboarding/auth").UserInfo>} */
+  updateUserInfo: (userInfo) => {},
 });
 
 export const AppContext = createContext({
+  /** @type {import("./util").DarkMode} */
   darkMode: "auto",
   /** @type {React.Dispatch<import("./util").DarkMode>} */
   updateDarkMode: (newDarkMode) => {},
