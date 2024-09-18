@@ -6,3 +6,9 @@ export const UserContext = createContext({
   instance: { name: "", url: "" },
   token: "",
 });
+
+export const AppContext = createContext({
+  darkMode: "auto",
+  /** @type {React.Dispatch<import("./util").DarkMode>} */
+  updateDarkMode: (newDarkMode) => {},
+});

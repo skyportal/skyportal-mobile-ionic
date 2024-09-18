@@ -77,7 +77,10 @@ export const useFetchSources = ({ page, numPerPage, userInfo }) => {
   };
 };
 
-/** @typedef {{data: null|{userInfo: import("../onboarding/auth.js").UserInfo, userProfile: import("../onboarding/auth.js").UserProfile}, status: QueryStatus, error: any}} SkipOnboardingState */
+/**
+ * @typedef {Object} AppPreferences
+ * @property {"auto"|"light"|"dark"} darkMode
+ */
 
 /**
  * @returns {{data: {userInfo: import("../onboarding/auth.js").UserInfo|null, userProfile: import("../onboarding/auth.js").UserProfile|null}, status: QueryStatus, error: any|undefined}}
@@ -180,10 +183,10 @@ export const useBandpassesColors = (userInfo) => {
 };
 
 /**
- * @param {import("../onboarding/auth.js").UserInfo} userInfo
  * @returns {{userProfile: import("../onboarding/auth.js").UserProfile|undefined, status: QueryStatus, error: any|undefined}}
  */
-export const useUserProfile = (userInfo) => {
+export const useUserProfile = () => {
+  const userInfo = useContext(UserContext);
   const { data, status, error } = useQuery({
     queryKey: [QUERY_KEYS.USER_PROFILE],
     queryFn: () => fetchUserProfile(userInfo),

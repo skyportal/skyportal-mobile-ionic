@@ -27,8 +27,8 @@ export const CheckQRCodeScreen = () => {
   });
   useEffect(() => {
     // @ts-ignore
-    loginMutation.mutate({ token, instanceUrl: instance.url });
-  }, []);
+    loginMutation.mutate({ token, instance });
+  }, [token, instanceParam]);
 
   return (
     <IonPage>
