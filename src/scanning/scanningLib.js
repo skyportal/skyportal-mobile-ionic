@@ -75,10 +75,11 @@
  * @property {DiscardBehavior} discardBehavior
  * @property {number[]} saveGroupIds
  * @property {Group[]} saveGroups
- * @property {number[]} junkGroupIds
+ * @property {number[]} junkGroupIDs
  * @property {Group[]} junkGroups
- * @property {number} numPerPage
+ * @property {string[]} pinnedAnnotations
  * @property {string} queryID
+ * @property {number} totalMatches
  */
 
 /**
@@ -549,6 +550,7 @@ export const getDefaultValues = () => ({
   junkGroups: [],
   discardBehavior: "specific",
   discardGroup: null,
+  pinnedAnnotations: [],
 });
 
 /**
@@ -566,4 +568,23 @@ export const SCANNING_TOOLBAR_ACTION = {
   SAVE: "SAVE",
   DISCARD: "DISCARD",
   EXIT: "EXIT",
+};
+
+/**
+ * @param {string} group
+ * @param {string} annotationKey
+ * @returns {`${string}/${string}`}
+ */
+export const getAnnotationId = (group, annotationKey) =>
+  `${group}/${annotationKey}`;
+
+/**
+ * @param {string} annotationId
+ * @returns {{key: string, origin: string}}
+ */
+export const extractAnnotationOriginAndKey = (annotationId) => {
+  const lastIndexOfSlash = annotationId.lastIndexOf("/");
+  const origin = annotationId.slice(0, lastIndexOfSlash);
+  const key = annotationId.slice(lastIndexOfSlash + 1);
+  return { origin, key };
 };

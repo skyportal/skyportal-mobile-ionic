@@ -1,28 +1,37 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { QUERY_KEYS } from "../common/constants.js";
-import { searchCandidates } from "./scanningRequests.js";
+import { CANDIDATES_PER_PAGE, QUERY_KEYS } from "../common/constants.js";
+import { fetchAnnotationInfo, searchCandidates } from "./scanningRequests.js";
 import { fetchUserProfile } from "../onboarding/auth.js";
+import { useContext } from "react";
+import { UserContext } from "../common/context.js";
+import { useLocation } from "react-router";
 
 /**
- * @param {Object} props
- * @param {string} props.startDate
- * @param {string|null} [props.endDate=null]
- * @param {import("../common/constants").SavedStatus} props.savedStatus
- * @param {string} props.groupIDs
- * @param {number} props.numPerPage
- * @param {string|null} [props.queryID=null]
- * @param {import("../onboarding/auth.js").UserInfo} props.userInfo
  * @returns {import("@tanstack/react-query").UseInfiniteQueryResult<import("@tanstack/react-query").InfiniteData<import("./scanningRequests.js").CandidateSearchResponse, unknown>, Error>}
  */
-export const useSearchCandidates = ({
-  startDate,
-  endDate = null,
-  savedStatus,
-  groupIDs,
-  numPerPage,
-  queryID = null,
-  userInfo,
-}) => {
+export const useSearchCandidates = () => {
+  const userInfo = useContext(UserContext);
+  /** @type {any} */
+  const { state } = useLocation();
+  /** @type {string} */
+  let startDate = "";
+  /** @type {string} */
+  let endDate = "";
+  /** @type {import("../common/constants.js").SavedStatus} */
+  let savedStatus = "all";
+  /** @type {number[]} */
+  let groupIDs = [];
+  /** @type {string} */
+  let queryID = "";
+
+  if (state) {
+    startDate = state.startDate;
+    endDate = state.endDate;
+    savedStatus = state.savedStatus;
+    groupIDs = state.saveGroupIds;
+    queryID = state.queryID;
+  }
+
   return useInfiniteQuery({
     queryKey: [
       QUERY_KEYS.CANDIDATES,
@@ -41,18 +50,18 @@ export const useSearchCandidates = ({
         endDate,
         savedStatus,
         groupIDs,
-        numPerPage,
         pageNumber: ctx.pageParam ?? "1",
         queryID,
       });
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      if (lastPage.candidates.length < numPerPage) {
+      if (lastPage.candidates.length < CANDIDATES_PER_PAGE) {
         return undefined;
       }
       return +lastPage.pageNumber + 1;
     },
+    enabled: !!state,
   });
 };
 
@@ -74,6 +83,26 @@ export const useScanningProfiles = (userInfo) => {
   });
   return {
     profiles,
+    status,
+    error,
+  };
+};
+
+/**
+ * @returns {{annotationsInfo: import("./scanningRequests.js").AnnotationsInfo | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined }}
+ */
+export const useAnnotationsInfo = () => {
+  const userInfo = useContext(UserContext);
+  const {
+    data: annotationsInfo,
+    status,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.ANNOTATIONS_INFO],
+    queryFn: () => fetchAnnotationInfo({ userInfo }),
+  });
+  return {
+    annotationsInfo,
     status,
     error,
   };

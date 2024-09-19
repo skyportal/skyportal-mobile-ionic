@@ -6,7 +6,7 @@ import React, { Suspense } from "react";
 export const MainScanningScreen = () => {
   return (
     <IonPage className="main-scanning-screen">
-      <IonContent>
+      <IonContent forceOverscroll={false}>
         <Suspense
           fallback={
             <div

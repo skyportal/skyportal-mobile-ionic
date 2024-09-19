@@ -1,12 +1,13 @@
 .pinned-annotations {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 0.5rem;
   border: 0.5px rgba(var(--ion-color-secondary-rgb), 0.3) solid;
   align-self: center;
   border-radius: 0.5rem;
   box-shadow: 0 0 3px rgba(var(--ion-color-medium-rgb), 0.2);
+  height: 100%;
 
   .annotations {
     display: flex;
@@ -30,10 +31,23 @@
       display: flex;
       gap: 0.5rem;
       font-size: 0.9rem;
+
+      .annotation-line-content {
+        display: flex;
+        gap: 0.5rem;
+
+        .annotation-value {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          max-lines: 1;
+        }
+      }
     }
   }
 
   .button-container {
     display: flex;
+    width: 5rem;
   }
 }

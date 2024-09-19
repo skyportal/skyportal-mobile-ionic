@@ -174,8 +174,12 @@ form {
   }
 
   ion-list.list-ios.list-inset {
-    margin-top: 0.2rem;
+    margin-top: 1.7rem;
     margin-bottom: 0.5rem;
+  }
+
+  .form-list-header + ion-list.list-ios.list-inset {
+    margin-top: 0.2rem;
   }
 
   ion-list {

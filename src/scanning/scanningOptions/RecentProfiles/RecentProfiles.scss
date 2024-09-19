@@ -1,6 +1,6 @@
 .scanning-profiles {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   height: 100%;
   padding-bottom: calc(55px + #{var(--ion-safe-area-bottom)} + 1rem);
 
@@ -12,11 +12,8 @@
   }
 
   .sp-content {
-    flex: 1;
-
     .hint-container {
       display: flex;
-      flex: 1;
       align-items: center;
       justify-content: center;
 
@@ -25,6 +22,7 @@
       }
     }
   }
+
   .buttons-container {
     display: flex;
     gap: 0.25rem;

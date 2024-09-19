@@ -55,43 +55,45 @@ export const RecentProfiles = () => {
           <IonIcon icon={chevronForwardOutline} />
         </IonButton>
       </div>
-      {profiles && userAccessibleGroups && (
-        <div className="sp-content">
-          {profiles.length > 0 && defaultProfileIndex && (
-            <IonList color="light" inset>
-              <ProfileListItem
-                key={profiles[defaultProfileIndex].name}
-                profile={profiles[defaultProfileIndex]}
-                userAccessibleGroups={userAccessibleGroups}
-                onClick={() =>
-                  handleScanWithProfile(profiles[defaultProfileIndex])
-                }
-              />
-              {profiles
-                .toSpliced(defaultProfileIndex, 1)
-                .toSpliced(2)
-                .map((profile) => (
-                  <ProfileListItem
-                    key={profile.name}
-                    profile={profile}
-                    userAccessibleGroups={userAccessibleGroups}
-                    onClick={() => handleScanWithProfile(profile)}
-                  />
-                ))}
-            </IonList>
-          )}
-          {profiles.length === 0 && (
-            <div className="hint-container">
-              <IonText color="secondary" className="hint">
-                You don’t have any profiles yet. You can add a new one or click
-                the “Scan without a profile” button below to configure the
-                scanning session manually.
-              </IonText>
-            </div>
-          )}
-        </div>
-      )}
-      {!profiles || (!userAccessibleGroups && <IonLoading />)}
+      <div className="sp-content">
+        {profiles && userAccessibleGroups && (
+          <>
+            {profiles.length > 0 && defaultProfileIndex && (
+              <IonList color="light" inset>
+                <ProfileListItem
+                  key={profiles[defaultProfileIndex].name}
+                  profile={profiles[defaultProfileIndex]}
+                  userAccessibleGroups={userAccessibleGroups}
+                  onClick={() =>
+                    handleScanWithProfile(profiles[defaultProfileIndex])
+                  }
+                />
+                {profiles
+                  .toSpliced(defaultProfileIndex, 1)
+                  .toSpliced(2)
+                  .map((profile) => (
+                    <ProfileListItem
+                      key={profile.name}
+                      profile={profile}
+                      userAccessibleGroups={userAccessibleGroups}
+                      onClick={() => handleScanWithProfile(profile)}
+                    />
+                  ))}
+              </IonList>
+            )}
+            {profiles.length === 0 && (
+              <div className="hint-container">
+                <IonText color="secondary" className="hint">
+                  You don’t have any profiles yet. You can add a new one or
+                  click the “Scan without a profile” button below to configure
+                  the scanning session manually.
+                </IonText>
+              </div>
+            )}
+          </>
+        )}
+        {(!profiles || !userAccessibleGroups) && <IonLoading />}
+      </div>
       <div className="buttons-container">
         <IonButton
           shape="round"
