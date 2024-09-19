@@ -1,6 +1,6 @@
 import "./CandidateScanner.scss";
 import { IonModal, useIonAlert, useIonToast } from "@ionic/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useUserAccessibleGroups } from "../../../common/hooks.js";
 import { checkmarkCircleOutline, warningOutline } from "ionicons/icons";
 import useEmblaCarousel from "embla-carousel-react";
@@ -15,8 +15,10 @@ import { ScanningEnd } from "../ScanningEnd/ScanningEnd.jsx";
 import { ScanningToolbar } from "../ScanningToolbar/ScanningToolbar.jsx";
 import { useLocation } from "react-router";
 import { CANDIDATES_PER_PAGE } from "../../../common/constants.js";
+import { UserContext } from "../../../common/context.js";
 
 export const CandidateScanner = () => {
+  const { userInfo } = useContext(UserContext);
   const { userAccessibleGroups } = useUserAccessibleGroups();
 
   /** @type {{state: any}} */
@@ -128,7 +130,7 @@ export const CandidateScanner = () => {
      * @returns {Promise<*>}
      */
     mutationFn: ({ sourceId, groupIds }) =>
-      addSourceToGroups({ sourceId, groupIds }),
+      addSourceToGroups({ userInfo, sourceId, groupIds }),
     onSuccess: (_data, variables) =>
       presentToast({
         message:
@@ -183,7 +185,7 @@ export const CandidateScanner = () => {
       if (!areYouSure) {
         return;
       }
-      return await addSourceToGroups({ sourceId, groupIds });
+      return await addSourceToGroups({ userInfo, sourceId, groupIds });
     },
     onSuccess: (_data, variables) =>
       presentToast({
@@ -363,6 +365,7 @@ export const CandidateScanner = () => {
                     isInView={slidesInView.includes(index)}
                     // @ts-ignore
                     nbCandidates={data.pages[0].totalMatches}
+                    // @ts-ignore
                     pinnedAnnotations={scanningConfig.pinnedAnnotations}
                   />
                 </div>

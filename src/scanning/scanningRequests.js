@@ -1,8 +1,6 @@
 import { CapacitorHttp } from "@capacitor/core";
 import { CANDIDATES_PER_PAGE } from "../common/constants.js";
 import { fetchUserProfile } from "../onboarding/auth.js";
-import { useContext } from "react";
-import { UserContext } from "../common/context.js";
 
 /**
  * @typedef {Object} CandidateSearchResponse
@@ -115,12 +113,12 @@ export const fetchSourcePhotometry = async ({
 
 /**
  * @param {Object} params
+ * @param {import("../onboarding/auth.js").UserInfo} params.userInfo
  * @param {string} params.sourceId
  * @param {number[]} params.groupIds
  * @returns {Promise<any>}
  */
-export const addSourceToGroups = async ({ sourceId, groupIds }) => {
-  const userInfo = useContext(UserContext);
+export const addSourceToGroups = async ({ userInfo, sourceId, groupIds }) => {
   let response = await CapacitorHttp.post({
     url: `${userInfo.instance.url}/api/source_groups`,
     headers: {

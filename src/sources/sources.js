@@ -5,6 +5,8 @@ import { CapacitorHttp } from "@capacitor/core";
  * @property {string} id - Source ID
  * @property {number} ra - Right ascension
  * @property {number} dec - Declination
+ * @property {string} tns_name
+ * @property {string} created_at
  */
 
 /**

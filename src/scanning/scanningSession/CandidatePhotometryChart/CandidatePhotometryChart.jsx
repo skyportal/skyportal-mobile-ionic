@@ -21,7 +21,7 @@ const CandidatePhotometryChartBase = ({ candidateId, isInView }) => {
   /** @type {React.MutableRefObject<HTMLDivElement|null>} */
   const container = useRef(null);
   const unmountVega = useRef(() => {});
-  const { bandpassesColors } = useBandpassesColors(userInfo);
+  const { bandpassesColors } = useBandpassesColors();
   /** @type {React.MutableRefObject<NodeJS.Timeout|undefined>} */
   const revealTimeout = useRef(undefined);
 

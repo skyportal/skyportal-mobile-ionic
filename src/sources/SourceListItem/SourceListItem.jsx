@@ -2,6 +2,11 @@ import "./SourceListItem.scss";
 import { IonIcon } from "@ionic/react";
 import { starOutline } from "ionicons/icons";
 
+/**
+ * @param {Object} props
+ * @param {import("../sources").Source} props.source
+ * @returns {JSX.Element}
+ */
 export const SourceListItem = ({ source }) => {
   return (
     <div className="source-list-item">

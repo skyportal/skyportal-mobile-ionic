@@ -66,7 +66,7 @@ export const ScanningProfileCreator = () => {
 
   /** @type {React.MutableRefObject<any>} */
   const groupSelectionModal = useRef(null);
-  const { userAccessibleGroups = [] } = useUserAccessibleGroups(userInfo);
+  const { userAccessibleGroups = [] } = useUserAccessibleGroups();
 
   return (
     <div className="scanning-profile-creator">

@@ -21,7 +21,7 @@ export const ScanningProfiles = () => {
   const history = useHistory();
   const { userInfo } = useContext(UserContext);
   const { profiles } = useScanningProfiles(userInfo);
-  const { userAccessibleGroups } = useUserAccessibleGroups(userInfo);
+  const { userAccessibleGroups } = useUserAccessibleGroups();
   const defaultProfileIndex = profiles?.findIndex((profile) => profile.default);
 
   const handleOnProfileClick = useCallback(
