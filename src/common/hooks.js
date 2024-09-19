@@ -1,8 +1,4 @@
-import {
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "./constants.js";
 import { fetchSources } from "../sources/sources.js";
 import {
@@ -22,39 +18,14 @@ import { UserContext } from "./context.js";
  */
 
 /**
- * @template T
- * Custom hook to get a preference from the preferences
- * @param {string} key
- * @returns {{data:T|undefined, status: QueryStatus, error: any|undefined}}
- */
-const usePreference = (key) => {
-  return useSuspenseQuery({
-    queryKey: [key],
-    queryFn: () => getPreference(key),
-  });
-};
-
-/**
- * Custom hook to get the user info from the preferences
- * @returns {{userInfo: import("../onboarding/auth.js").UserInfo|undefined, status: QueryStatus, error: any|undefined}}
- */
-export const useUserInfo = () => {
-  const res = usePreference(QUERY_KEYS.USER_INFO);
-  return {
-    userInfo: res.data,
-    status: res.status,
-    error: res.error,
-  };
-};
-
-/**
  * @param {Object} props
  * @param {number} props.page
  * @param {number} props.numPerPage
- * @param {import("../onboarding/auth.js").UserInfo} props.userInfo
  * @returns {{sources: import("../sources/sources.js").Source[]|undefined, status: QueryStatus, error: any|undefined}}
  */
-export const useFetchSources = ({ page, numPerPage, userInfo }) => {
+export const useFetchSources = ({ page, numPerPage }) => {
+  const { userInfo } = useContext(UserContext);
+
   const {
     /** @type {import("../sources/sources.js").Source[]} */ data: sources,
     status,
@@ -77,7 +48,10 @@ export const useFetchSources = ({ page, numPerPage, userInfo }) => {
   };
 };
 
-/** @typedef {{data: null|{userInfo: import("../onboarding/auth.js").UserInfo, userProfile: import("../onboarding/auth.js").UserProfile}, status: QueryStatus, error: any}} SkipOnboardingState */
+/**
+ * @typedef {Object} AppPreferences
+ * @property {"auto"|"light"|"dark"} darkMode
+ */
 
 /**
  * @returns {{data: {userInfo: import("../onboarding/auth.js").UserInfo|null, userProfile: import("../onboarding/auth.js").UserProfile|null}, status: QueryStatus, error: any|undefined}}
@@ -146,7 +120,7 @@ export const useAppStart = () => {
  * @returns {{userAccessibleGroups: import("../scanning/scanningLib.js").Group[]|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useUserAccessibleGroups = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const {
     /** @type {import("../scanning/scanningLib.js").GroupsResponse} */ data: groups,
     status,
@@ -164,10 +138,10 @@ export const useUserAccessibleGroups = () => {
 
 /**
  *
- * @param {import("../onboarding/auth.js").UserInfo} userInfo
  * @returns {{bandpassesColors: import("./requests.js").BandpassesColors|undefined,status: QueryStatus, error: any|undefined}}
  */
-export const useBandpassesColors = (userInfo) => {
+export const useBandpassesColors = () => {
+  const { userInfo } = useContext(UserContext);
   const { data, status, error } = useQuery({
     queryKey: [QUERY_KEYS.BANDPASS_COLORS],
     queryFn: () => fetchConfig(userInfo),
@@ -180,10 +154,10 @@ export const useBandpassesColors = (userInfo) => {
 };
 
 /**
- * @param {import("../onboarding/auth.js").UserInfo} userInfo
  * @returns {{userProfile: import("../onboarding/auth.js").UserProfile|undefined, status: QueryStatus, error: any|undefined}}
  */
-export const useUserProfile = (userInfo) => {
+export const useUserProfile = () => {
+  const { userInfo } = useContext(UserContext);
   const { data, status, error } = useQuery({
     queryKey: [QUERY_KEYS.USER_PROFILE],
     queryFn: () => fetchUserProfile(userInfo),

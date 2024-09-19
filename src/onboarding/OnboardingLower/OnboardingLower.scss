@@ -8,7 +8,7 @@
 
   .instance-container {
     ion-select {
-      --background: white;
+      --background: var(--ion-color-light);
       --border-radius: 50rem;
       --padding-start: 1.5rem;
       --padding-end: 1.5rem;

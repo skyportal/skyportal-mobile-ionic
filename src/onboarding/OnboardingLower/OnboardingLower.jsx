@@ -104,6 +104,7 @@ const OnboardingLower = ({ page, setPage }) => {
               onClick={() => setPage("type_token")}
               shape="round"
               disabled={instance === null}
+              fill="outline"
               strong
             >
               Log in with token

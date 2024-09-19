@@ -32,6 +32,7 @@ export const QUERY_KEYS = {
   BANDPASS_COLORS: "bandpassColors",
   SCANNING_PROFILES: "scanningProfiles",
   ANNOTATIONS_INFO: "annotationsInfo",
+  APP_PREFERENCES: "appPreferences",
 };
 
 /**

@@ -15,13 +15,13 @@ import { UserContext } from "../../../common/context.js";
  * @returns {JSX.Element}
  */
 const CandidatePhotometryChartBase = ({ candidateId, isInView }) => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [loaderIsHidden, setLoaderIsHidden] = useState(false);
   /** @type {React.MutableRefObject<HTMLDivElement|null>} */
   const container = useRef(null);
   const unmountVega = useRef(() => {});
-  const { bandpassesColors } = useBandpassesColors(userInfo);
+  const { bandpassesColors } = useBandpassesColors();
   /** @type {React.MutableRefObject<NodeJS.Timeout|undefined>} */
   const revealTimeout = useRef(undefined);
 

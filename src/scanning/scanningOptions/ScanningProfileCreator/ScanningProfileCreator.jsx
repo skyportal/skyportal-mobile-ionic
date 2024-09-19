@@ -12,7 +12,7 @@ import { createNewProfile } from "../../scanningRequests.js";
 import { useHistory } from "react-router";
 
 export const ScanningProfileCreator = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const history = useHistory();
   const defaultValues = {
     ...getDefaultValues(),
@@ -66,7 +66,7 @@ export const ScanningProfileCreator = () => {
 
   /** @type {React.MutableRefObject<any>} */
   const groupSelectionModal = useRef(null);
-  const { userAccessibleGroups = [] } = useUserAccessibleGroups(userInfo);
+  const { userAccessibleGroups = [] } = useUserAccessibleGroups();
 
   return (
     <div className="scanning-profile-creator">

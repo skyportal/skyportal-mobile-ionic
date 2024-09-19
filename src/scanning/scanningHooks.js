@@ -10,7 +10,7 @@ import { useLocation } from "react-router";
  * @returns {import("@tanstack/react-query").UseInfiniteQueryResult<import("@tanstack/react-query").InfiniteData<import("./scanningRequests.js").CandidateSearchResponse, unknown>, Error>}
  */
 export const useSearchCandidates = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   /** @type {any} */
   const { state } = useLocation();
   /** @type {string} */
@@ -92,7 +92,7 @@ export const useScanningProfiles = (userInfo) => {
  * @returns {{annotationsInfo: import("./scanningRequests.js").AnnotationsInfo | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined }}
  */
 export const useAnnotationsInfo = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const {
     data: annotationsInfo,
     status,

@@ -12,13 +12,13 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import moment from "moment-timezone";
-import { useUserInfo } from "../../../common/hooks.js";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { useHistory, useLocation } from "react-router";
 import { exitOutline, linkOutline, mailOutline } from "ionicons/icons";
+import { UserContext } from "../../../common/context.js";
 
 export const ScanningRecap = () => {
-  const { userInfo } = useUserInfo();
+  const { userInfo } = useContext(UserContext);
   const location = useLocation();
   const history = useHistory();
   /**

@@ -12,7 +12,6 @@ import {
 } from "../../../common/hooks.js";
 import { useHistory, useParams } from "react-router";
 import { useMutation } from "@tanstack/react-query";
-import { UserContext } from "../../../common/context.js";
 import { searchCandidates } from "../../scanningRequests.js";
 import {
   computeSavedStatus,
@@ -21,13 +20,14 @@ import {
   getStartDate,
 } from "../../scanningLib.js";
 import { ScanningOptionsPinnedAnnotations } from "../ScanningOptionsPinnedAnnotations/ScanningOptionsPinnedAnnotations.jsx";
+import { UserContext } from "../../../common/context.js";
 
 export const ScanningOptionsForm = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
 
   /** @type {any} */
   const { /** @type {string|undefined} */ profile: profileName } = useParams();
-  const { userProfile } = useUserProfile(userInfo);
+  const { userProfile } = useUserProfile();
   /** @type {import("../../../onboarding/auth.js").ScanningProfile|undefined}*/
   const scanningProfile = userProfile?.preferences?.scanningProfiles?.find(
     (profile) => profile.name === profileName,

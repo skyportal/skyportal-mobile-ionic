@@ -34,6 +34,7 @@ import { CapacitorHttp } from "@capacitor/core";
  * @property {string} last_name - The last name of the user
  * @property {string|null} contact_email - The email of the user
  * @property {string|null} contact_phone - The phone number of the user
+ * @property {string} gravatar_url - The url for the gravatar profile of the user
  * @property {UserPreferences} preferences - The preferences of the user
  */
 

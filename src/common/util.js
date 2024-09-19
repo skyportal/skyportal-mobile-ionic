@@ -17,3 +17,36 @@ export const navigateWithParams = (
     state,
   );
 };
+
+/**
+ * @typedef {"auto"|"light"|"dark"} DarkMode
+ */
+
+/**
+ * @param {DarkMode} darkModePreference
+ * @param {boolean} [systemIsDark]
+ * @returns {boolean}
+ */
+export const isActuallyDarkMode = (
+  darkModePreference,
+  systemIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches,
+) => {
+  return (
+    darkModePreference === "dark" ||
+    (systemIsDark && darkModePreference === "auto")
+  );
+};
+
+/**
+ * @param {DarkMode} darkModePreference
+ * @param {boolean} [systemIsDark]
+ */
+export const setDarkModeInDocument = (
+  darkModePreference,
+  systemIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches,
+) => {
+  document.documentElement.classList.toggle(
+    "ion-palette-dark",
+    isActuallyDarkMode(darkModePreference, systemIsDark),
+  );
+};
