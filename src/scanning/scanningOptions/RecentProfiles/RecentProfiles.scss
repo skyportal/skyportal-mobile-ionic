@@ -2,7 +2,7 @@
   display: grid;
   grid-template-rows: auto 1fr auto;
   height: 100%;
-  padding-bottom: calc(55px + #{var(--ion-safe-area-bottom)} + 1rem);
+  padding-bottom: 1rem;
 
   .sp-header {
     display: flex;

@@ -58,18 +58,24 @@ export const RecentProfiles = () => {
       <div className="sp-content">
         {profiles && userAccessibleGroups && (
           <>
-            {profiles.length > 0 && defaultProfileIndex && (
+            {profiles.length > 0 && (
               <IonList color="light" inset>
-                <ProfileListItem
-                  key={profiles[defaultProfileIndex].name}
-                  profile={profiles[defaultProfileIndex]}
-                  userAccessibleGroups={userAccessibleGroups}
-                  onClick={() =>
-                    handleScanWithProfile(profiles[defaultProfileIndex])
-                  }
-                />
-                {profiles
-                  .toSpliced(defaultProfileIndex, 1)
+                {defaultProfileIndex !== undefined &&
+                  defaultProfileIndex !== -1 && (
+                    <ProfileListItem
+                      key={profiles[defaultProfileIndex].name}
+                      profile={profiles[defaultProfileIndex]}
+                      userAccessibleGroups={userAccessibleGroups}
+                      onClick={() =>
+                        handleScanWithProfile(profiles[defaultProfileIndex])
+                      }
+                    />
+                  )}
+                {(defaultProfileIndex !== undefined &&
+                defaultProfileIndex !== -1
+                  ? profiles.toSpliced(defaultProfileIndex, 1)
+                  : profiles
+                )
                   .toSpliced(2)
                   .map((profile) => (
                     <ProfileListItem

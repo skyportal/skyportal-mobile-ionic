@@ -1,4 +1,3 @@
-import "./SourceListScreen.scss";
 import { IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
 import { Suspense } from "react";
 import { SourceList } from "../SourceList/SourceList.jsx";

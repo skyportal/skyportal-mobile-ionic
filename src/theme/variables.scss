@@ -219,3 +219,7 @@ form {
     --padding-bottom: 1rem;
   }
 }
+
+ion-router-outlet {
+  padding-bottom: calc(2.6rem + var(--ion-safe-area-top));
+}
