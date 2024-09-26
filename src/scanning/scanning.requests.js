@@ -1,5 +1,5 @@
 import { CapacitorHttp } from "@capacitor/core";
-import { fetchUserProfile } from "../onboarding/common.onboarding.js";
+import { fetchUserProfile } from "../onboarding/onboarding.lib.js";
 import { CANDIDATES_PER_PAGE } from "../common/common.lib.js";
 
 /**
@@ -21,7 +21,7 @@ import { CANDIDATES_PER_PAGE } from "../common/common.lib.js";
 /**
  * Returns the candidates from the API
  * @param {Object} params
- * @param {import("../onboarding/common.onboarding.js").UserInfo} params.userInfo - The user info
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo - The user info
  * @param {string} params.startDate - The start date of the candidates
  * @param {string|null} [params.endDate=null] - The end date of the candidates
  * @param {import("../common/common.lib.js").SavedStatus} params.savedStatus - The saved status of the candidates
@@ -67,7 +67,7 @@ export async function searchCandidates({
 }
 
 /**
- * @param {import("../onboarding/common.onboarding.js").UserInfo} userInfo
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
  * @returns {Promise<import("./scanning.lib.js").GroupsResponse>}
  */
 export async function fetchGroups(userInfo) {
@@ -84,7 +84,7 @@ export async function fetchGroups(userInfo) {
  * Fetch the photometry of a source
  * @param {Object} params
  * @param {string} params.sourceId - The source ID
- * @param {import("../onboarding/common.onboarding.js").UserInfo} params.userInfo - The user info
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo - The user info
  * @param {string} [params.includeOwnerInfo="true"] - Include owner info
  * @param {string} [params.includeStreamInfo="true"] - Include stream info
  * @param {string} [params.includeValidationInfo="true"] - Include validation info
@@ -113,7 +113,7 @@ export const fetchSourcePhotometry = async ({
 
 /**
  * @param {Object} params
- * @param {import("../onboarding/common.onboarding.js").UserInfo} params.userInfo
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @param {string} params.sourceId
  * @param {number[]} params.groupIds
  * @returns {Promise<any>}
@@ -135,8 +135,8 @@ export const addSourceToGroups = async ({ userInfo, sourceId, groupIds }) => {
 
 /**
  * @param {Object} params
- * @param {import("../onboarding/common.onboarding.js").UserInfo} params.userInfo
- * @param {import("../onboarding/common.onboarding.js").ScanningProfile} params.profile
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
+ * @param {import("../onboarding/onboarding.lib.js").ScanningProfile} params.profile
  * @returns {Promise<*>}
  */
 export const createNewProfile = async ({ userInfo, profile }) => {
@@ -164,7 +164,7 @@ export const createNewProfile = async ({ userInfo, profile }) => {
 
 /**
  * @param {Object} params
- * @param {import("../onboarding/common.onboarding.js").UserInfo} params.userInfo
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @returns {Promise<AnnotationsInfo>}
  */
 export const fetchAnnotationInfo = async ({ userInfo }) => {

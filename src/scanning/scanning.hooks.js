@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { fetchAnnotationInfo, searchCandidates } from "./scanning.requests.js";
-import { fetchUserProfile } from "../onboarding/common.onboarding.js";
+import { fetchUserProfile } from "../onboarding/onboarding.lib.js";
 import { useContext } from "react";
 import { UserContext } from "../common/common.context.js";
 import { useLocation } from "react-router";
@@ -66,7 +66,7 @@ export const useSearchCandidates = () => {
 };
 
 /**
- * @returns {{profiles: import("../onboarding/common.onboarding.js").ScanningProfile[] | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined}}
+ * @returns {{profiles: import("../onboarding/onboarding.lib.js").ScanningProfile[] | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined}}
  */
 export const useScanningProfiles = () => {
   const userInfo = useContext(UserContext);

@@ -141,19 +141,19 @@ This directory contains documentation and images related to the project.
 
 ### Components
 
-The React components are all located inside modules. If a component is being used in multiple modules, it should be in
+The React components are all located inside modules, in a `components` directory. If a component is being used in
+multiple modules, it should be in
 the `common/` directory.
-The only naming convention for the components of this repository is to use Pascal-case. However, to create a new
-component, one should first create
-a directory with the name and the component and put the actual component file inside of this directory. They can also
-add a sass style file
-with the same name as the component in this directory like so:
+The only naming convention for the components of this repository is to use Pascal-case. To create a new
+component, one should first create a directory with the name and the component and put the actual component file inside
+of this directory. They can also add a sass style file with the same name as the component in this directory like so:
 
 ```bash
 |- myModule
-  |- NewComponent
-    |- NewComponent.jsx
-    |- NewComponent.scss
+  |- components
+    |- NewComponent
+      |- NewComponent.jsx
+      |- NewComponent.scss
 ```
 
 The components themselves are arrow function components with named exports.
@@ -248,6 +248,9 @@ The `<IonHeader>` can contain an `<IonToolbar>` with an `<IonTitle>` like this:
 
 And the `<IonContent>` contains the body of your page.
 
+The screen components are to be put in a `screens` directory inside a module and the naming convention is to suffix them
+with `Screen`.
+
 #### Skeleton components
 
 Ionic provides an easy way to create skeletons. This offers a better experience than a basic loader as users can have an
@@ -260,10 +263,11 @@ if you do, you should include the skeleton file in the same directory as your co
 
 ```bash
 |- myModule
-  |- NewComponent
-    |- NewComponent.jsx
-    |- NewComponent.scss
-    |- NewComponentSkeleton.jsx
+  | - components
+    |- NewComponent
+      |- NewComponent.jsx
+      |- NewComponent.scss
+      |- NewComponentSkeleton.jsx
 ```
 
 ### Modules
@@ -276,28 +280,33 @@ has the following structure:
 
 ```bash
 |- myModule
-  |- Component1
-  |- Component2
-  |- Component3
+  |- components
+    |- Component1
+    |- Component2
+    |- Component3
+  |- screens
+    |- Screen1
+    |- Screen2
   |- myModult.lib.js
-  |- myModule.common.hooks.js
-  |- myModule.common.requests.js
+  |- myModule.hooks.js
+  |- myModule.requests.js
 ```
 
 Other than the component directories, there are three files that can be added to the module.
 
 - `myModule.lib.js` contains all the business logic of the module. Here you can put functions, constants and types that
   are being used by the components of this module.
-- `myModule.common.hooks.js` contains all the hooks being used in this module. Every TanStack queries should be defined
+- `myModule.hooks.js` contains all the hooks being used in this module. Every TanStack queries should be defined
   there
   as well as other needed hooks.
-- `myModule.common.requests.js` contains all the network requests of this module.
+- `myModule.requests.js` contains all the network requests of this module.
+- `components/` contains the components
 
 Normally, the dependencies between these 3 files should be in this order `myModult.lib.js` ->
-`myModule.common.hooks.js` ->
-`myModule.common.requests.js`. If you end up with a different order of dependencies make sure that all of your hooks are
+`myModule.hooks.js` ->
+`myModule.requests.js`. If you end up with a different order of dependencies make sure that all of your hooks are
 in
-the `myModule.common.hooks.js` and that all the logic is in `myModule.lib.js`.
+the `myModule.hooks.js` and that all the logic is in `myModule.lib.js`.
 
 ### State
 
@@ -308,7 +317,7 @@ component be made available through a TanStack query.
 #### Example
 
 Some components in the module need access to the user's accessible groups. A request `fetchGroups` has been created in
-the `common.common.requests.js` file:
+the `common.requests.js` file:
 
 ```js
 export async function fetchGroups(userInfo) {
@@ -322,7 +331,7 @@ export async function fetchGroups(userInfo) {
 }
 ```
 
-Then in the `common.common.hooks.js` file we have defined a `useUserAccessibleGroups` hook:
+Then in the `common.hooks.js` file we have defined a `useUserAccessibleGroups` hook:
 
 ```js
 export const useUserAccessibleGroups = () => {
@@ -352,9 +361,9 @@ export const RecentProfiles = () => {
   const { userAccessibleGroups } = useUserAccessibleGroups();
 
   return (
-    <div className="scanning-profiles">
+    <div className="recent-profiles">
       {/* ... */}
-      <div className="sp-content">
+      <div className="recent-profiles-content">
         {profiles && userAccessibleGroups && (<>{/* ... */}</>)}
         {(!profiles || !userAccessibleGroups) && <IonLoading/>}
       </div>

@@ -1,9 +1,9 @@
 import { createContext } from "react";
 
 export const UserContext = createContext({
-  /** @type {import("../onboarding/common.onboarding.js").UserInfo} */
+  /** @type {import("../onboarding/onboarding.lib.js").UserInfo} */
   userInfo: { instance: { name: "", url: "" }, token: "" },
-  /** @type {React.Dispatch<import("../onboarding/common.onboarding.js").UserInfo>} */
+  /** @type {React.Dispatch<import("../onboarding/onboarding.lib.js").UserInfo>} */
   updateUserInfo: (userInfo) => {},
 });
 

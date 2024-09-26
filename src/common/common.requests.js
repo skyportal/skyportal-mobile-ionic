@@ -15,7 +15,7 @@ import { CapacitorHttp } from "@capacitor/core";
 
 /**
  * Fetch the configuration from the server
- * @param {import("../onboarding/common.onboarding.js").UserInfo} userInfo - The user info
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo - The user info
  * @returns {Promise<SkyPortalConfig>}
  */
 export const fetchConfig = async (userInfo) => {

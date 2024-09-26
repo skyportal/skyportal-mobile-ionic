@@ -453,7 +453,7 @@ export const parseIntList = (intListString) => {
 
 /**
  *
- * @param {import("../onboarding/common.onboarding.js").ScanningProfile} scanningProfile
+ * @param {import("../onboarding/onboarding.lib.js").ScanningProfile} scanningProfile
  * @returns {string}
  */
 export const getStartDate = (scanningProfile) => {
@@ -467,7 +467,7 @@ export const getStartDate = (scanningProfile) => {
 };
 
 /**
- * @param {import("../onboarding/common.onboarding.js").ScanningProfile} scanningProfile
+ * @param {import("../onboarding/onboarding.lib.js").ScanningProfile} scanningProfile
  */
 export const getFiltering = (scanningProfile) => {
   switch (scanningProfile.savedStatus) {

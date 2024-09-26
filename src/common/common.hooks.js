@@ -1,17 +1,12 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchSources } from "../sources/sources.lib.js";
 import config from "../config.js";
-import { fetchUserProfile } from "../onboarding/common.onboarding.js";
+import { fetchUserProfile } from "../onboarding/onboarding.lib.js";
 import { fetchConfig } from "./common.requests.js";
 import { fetchGroups } from "../scanning/scanning.requests.js";
 import { useContext } from "react";
 import { UserContext } from "./common.context.js";
-import {
-  clearPreference,
-  getPreference,
-  QUERY_KEYS,
-  setPreference,
-} from "./common.lib.js";
+import { clearPreference, getPreference, QUERY_KEYS, setPreference } from "./common.lib.js";
 
 /**
  * @typedef {"success" | "error" | "pending"} QueryStatus
@@ -54,7 +49,7 @@ export const useFetchSources = ({ page, numPerPage }) => {
  */
 
 /**
- * @returns {{data: {userInfo: import("../onboarding/common.onboarding.js").UserInfo|null, userProfile: import("../onboarding/auth.js").UserProfile|null}, status: QueryStatus, error: any|undefined}}
+ * @returns {{data: {userInfo: import("../onboarding/onboarding.lib.js").UserInfo|null, userProfile: import("../onboarding/onboarding.lib.js").UserProfile|null}, status: QueryStatus, error: any|undefined}}
  */
 export const useAppStart = () => {
   const queryClient = useQueryClient();
@@ -154,7 +149,7 @@ export const useBandpassesColors = () => {
 };
 
 /**
- * @returns {{userProfile: import("../onboarding/common.onboarding.js").UserProfile|undefined, status: QueryStatus, error: any|undefined}}
+ * @returns {{userProfile: import("../onboarding/onboarding.lib.js").UserProfile|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useUserProfile = () => {
   const { userInfo } = useContext(UserContext);
