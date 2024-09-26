@@ -1,21 +1,21 @@
 import "./CandidateScanner.scss";
 import { IonModal, useIonAlert, useIonToast } from "@ionic/react";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { useUserAccessibleGroups } from "../../../common/hooks.js";
+import { useUserAccessibleGroups } from "../../../common/common.hooks.js";
 import { checkmarkCircleOutline, warningOutline } from "ionicons/icons";
 import useEmblaCarousel from "embla-carousel-react";
 import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
 import { ScanningCardSkeleton } from "../ScanningCard/ScanningCardSkeleton.jsx";
-import { useSearchCandidates } from "../../scanningHooks.js";
-import { addSourceToGroups } from "../../scanningRequests.js";
+import { useSearchCandidates } from "../../scanning.hooks.js";
+import { addSourceToGroups } from "../../scanning.requests.js";
 import { useMutation } from "@tanstack/react-query";
-import { parseIntList, SCANNING_TOOLBAR_ACTION } from "../../scanningLib.js";
+import { parseIntList, SCANNING_TOOLBAR_ACTION } from "../../scanning.lib.js";
 import { ScanningEnd } from "../ScanningEnd/ScanningEnd.jsx";
 import { ScanningToolbar } from "../ScanningToolbar/ScanningToolbar.jsx";
 import { useLocation } from "react-router";
-import { CANDIDATES_PER_PAGE } from "../../../common/constants.js";
-import { UserContext } from "../../../common/context.js";
+import { UserContext } from "../../../common/common.context.js";
+import { CANDIDATES_PER_PAGE } from "../../../common/common.lib.js";
 
 export const CandidateScanner = () => {
   const { userInfo } = useContext(UserContext);
@@ -24,12 +24,12 @@ export const CandidateScanner = () => {
   /** @type {{state: any}} */
   const { state } = useLocation();
 
-  /** @type {import("../../scanningLib.js").ScanningConfig|undefined} */
+  /** @type {import("../../scanning.lib.js").ScanningConfig|undefined} */
   let scanningConfig = undefined;
   if (state) {
     scanningConfig = {
       ...state,
-      /** @type {import("../../scanningLib").Group[]} **/
+      /** @type {import("../../scanning.lib.js").Group[]} **/
       saveGroups: userAccessibleGroups
         ? state.saveGroupIds
             .map((/** @type {number} */ id) =>
@@ -37,11 +37,11 @@ export const CandidateScanner = () => {
             )
             .filter(
               (
-                /** @type {import("../../scanningLib.js").Group | undefined} */ g,
+                /** @type {import("../../scanning.lib.js").Group | undefined} */ g,
               ) => g !== undefined,
             )
         : [],
-      /** @type {import("../../scanningLib").Group[]} **/
+      /** @type {import("../../scanning.lib.js").Group[]} **/
       // @ts-ignore
       junkGroups: userAccessibleGroups
         ? parseIntList(state.junkGroupIDs)
@@ -65,7 +65,7 @@ export const CandidateScanner = () => {
 
   const [isLastBatch, setIsLastBatch] = useState(false);
 
-  /** @type {React.MutableRefObject<import("../../scanningLib").ScanningRecap>} */
+  /** @type {React.MutableRefObject<import("../../scanning.lib.js").ScanningRecap>} */
   // @ts-ignore
   const scanningRecap = useRef({
     queryId: "",
@@ -75,7 +75,7 @@ export const CandidateScanner = () => {
   });
   const { data, fetchNextPage, isFetchingNextPage } = useSearchCandidates();
   const totalMatches = data?.pages[0].totalMatches;
-  /** @type {import("../../scanningLib.js").Candidate[]|undefined} */
+  /** @type {import("../../scanning.lib.js").Candidate[]|undefined} */
   const candidates = data?.pages.map((page) => page.candidates).flat(1);
   const currentCandidate = candidates?.at(currentIndex);
 
@@ -326,7 +326,7 @@ export const CandidateScanner = () => {
   };
 
   /**
-   * @param {import("../../scanningLib.js").ScanningToolbarAction} action
+   * @param {import("../../scanning.lib.js").ScanningToolbarAction} action
    */
   const handleToolbarAction = async (action) => {
     switch (action) {

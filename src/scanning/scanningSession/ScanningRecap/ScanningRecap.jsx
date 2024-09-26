@@ -15,21 +15,21 @@ import moment from "moment-timezone";
 import { useCallback, useContext } from "react";
 import { useHistory, useLocation } from "react-router";
 import { exitOutline, linkOutline, mailOutline } from "ionicons/icons";
-import { UserContext } from "../../../common/context.js";
+import { UserContext } from "../../../common/common.context.js";
 
 export const ScanningRecap = () => {
   const { userInfo } = useContext(UserContext);
   const location = useLocation();
   const history = useHistory();
   /**
-   * @type {import("../../scanningLib").ScanningRecap|undefined}
+   * @type {import("../../scanning.lib.js").ScanningRecap|undefined}
    */
   // @ts-ignore
   const recap = location.state?.recap;
 
   const getLink = useCallback(
     /**
-     * @param {import("../../scanningLib").Candidate} source
+     * @param {import("../../scanning.lib.js").Candidate} source
      * @returns {string}
      */
     (source) => {

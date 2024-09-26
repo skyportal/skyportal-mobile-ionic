@@ -14,11 +14,11 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useCallback, useState } from "react";
-import { getAnnotationId } from "../../scanningLib.js";
+import { getAnnotationId } from "../../scanning.lib.js";
 
 /**
  * @param {Object} props
- * @param {import("../../scanningRequests").AnnotationsInfo} props.annotationsInfo
+ * @param {import("../../scanning.requests.js").AnnotationsInfo} props.annotationsInfo
  * @param {string[]} props.selectedAnnotationKeys
  * @param {React.MutableRefObject<any>} props.modal
  * @param {number} [props.limit=3]

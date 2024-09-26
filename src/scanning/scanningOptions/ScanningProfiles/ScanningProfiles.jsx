@@ -9,13 +9,13 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useUserAccessibleGroups } from "../../../common/hooks.js";
-import { UserContext } from "../../../common/context.js";
+import { useUserAccessibleGroups } from "../../../common/common.hooks.js";
+import { UserContext } from "../../../common/common.context.js";
 import { useCallback, useContext } from "react";
-import { useScanningProfiles } from "../../scanningHooks.js";
+import { useScanningProfiles } from "../../scanning.hooks.js";
 import { ProfileListItem } from "../ProfileListItem/ProfileListItem.jsx";
 import { useHistory } from "react-router";
-import { navigateWithParams } from "../../../common/util.js";
+import { navigateWithParams } from "../../../common/common.lib.js";
 
 export const ScanningProfiles = () => {
   const history = useHistory();
@@ -26,7 +26,7 @@ export const ScanningProfiles = () => {
 
   const handleOnProfileClick = useCallback(
     /**
-     * @param {import("../../../onboarding/auth").ScanningProfile} profile
+     * @param {import("../../../onboarding/common.onboarding.js").ScanningProfile} profile
      */
     (profile) => {
       navigateWithParams(history, "/scanning", {

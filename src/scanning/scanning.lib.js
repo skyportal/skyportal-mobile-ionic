@@ -71,7 +71,7 @@
  * @typedef {Object} ScanningConfig
  * @property {string} startDate
  * @property {string} endDate
- * @property {import("../common/constants").SavedStatus} savedStatus
+ * @property {import("../common/common.lib.js").SavedStatus} savedStatus
  * @property {DiscardBehavior} discardBehavior
  * @property {number[]} saveGroupIds
  * @property {Group[]} saveGroups
@@ -94,7 +94,8 @@ import { Clipboard } from "@capacitor/clipboard";
 import { useIonToast } from "@ionic/react";
 import { useCallback } from "react";
 import moment from "moment-timezone";
-import { SAVED_STATUS } from "../common/constants.js";
+
+import { SAVED_STATUS } from "../common/common.lib.js";
 
 /**
  * @type {Object<ThumbnailType, ThumbnailType>}
@@ -186,7 +187,7 @@ export function getThumbnailImageUrl(candidate, type) {
  * @param {Photometry[]} params.photometry
  * @param {number} params.titleFontSize
  * @param {number} params.labelFontSize
- * @param {import("../common/requests").BandpassesColors} params.bandpassesColors
+ * @param {import("../common/common.requests.js").BandpassesColors} params.bandpassesColors
  * @returns {import("vega-embed").VisualizationSpec}
  */
 export const getVegaPlotSpec = ({
@@ -452,7 +453,7 @@ export const parseIntList = (intListString) => {
 
 /**
  *
- * @param {import("../onboarding/auth").ScanningProfile} scanningProfile
+ * @param {import("../onboarding/common.onboarding.js").ScanningProfile} scanningProfile
  * @returns {string}
  */
 export const getStartDate = (scanningProfile) => {
@@ -466,7 +467,7 @@ export const getStartDate = (scanningProfile) => {
 };
 
 /**
- * @param {import("../onboarding/auth").ScanningProfile} scanningProfile
+ * @param {import("../onboarding/common.onboarding.js").ScanningProfile} scanningProfile
  */
 export const getFiltering = (scanningProfile) => {
   switch (scanningProfile.savedStatus) {
@@ -510,7 +511,7 @@ export const getFiltering = (scanningProfile) => {
  * @param {boolean} data.filterCandidates
  * @param {string} data.filteringType
  * @param {string} data.filteringAnyOrAll
- * @returns {import("../common/constants.js").SavedStatus}
+ * @returns {import("../common/common.lib.js").SavedStatus}
  */
 export const computeSavedStatus = ({
   filterCandidates,

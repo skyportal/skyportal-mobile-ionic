@@ -4,7 +4,7 @@ import { starOutline } from "ionicons/icons";
 
 /**
  * @param {Object} props
- * @param {import("../sources").Source} props.source
+ * @param {import("../sources.lib.js").Source} props.source
  * @returns {JSX.Element}
  */
 export const SourceListItem = ({ source }) => {

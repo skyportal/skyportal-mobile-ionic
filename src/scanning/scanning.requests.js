@@ -1,10 +1,10 @@
 import { CapacitorHttp } from "@capacitor/core";
-import { CANDIDATES_PER_PAGE } from "../common/constants.js";
-import { fetchUserProfile } from "../onboarding/auth.js";
+import { fetchUserProfile } from "../onboarding/common.onboarding.js";
+import { CANDIDATES_PER_PAGE } from "../common/common.lib.js";
 
 /**
  * @typedef {Object} CandidateSearchResponse
- * @property {import("./scanningLib.js").Candidate[]} candidates - The candidates
+ * @property {import("./scanning.lib.js").Candidate[]} candidates - The candidates
  * @property {number} totalMatches - The total matches
  * @property {string} queryID - The query ID
  * @property {string} pageNumber - The page number
@@ -21,10 +21,10 @@ import { fetchUserProfile } from "../onboarding/auth.js";
 /**
  * Returns the candidates from the API
  * @param {Object} params
- * @param {import("../onboarding/auth.js").UserInfo} params.userInfo - The user info
+ * @param {import("../onboarding/common.onboarding.js").UserInfo} params.userInfo - The user info
  * @param {string} params.startDate - The start date of the candidates
  * @param {string|null} [params.endDate=null] - The end date of the candidates
- * @param {import("../common/constants").SavedStatus} params.savedStatus - The saved status of the candidates
+ * @param {import("../common/common.lib.js").SavedStatus} params.savedStatus - The saved status of the candidates
  * @param {number[]} params.groupIDs - The group IDs to search for
  * @param {string|null} [params.queryID=null] - The query ID
  * @param {number} params.pageNumber - The page number
@@ -67,8 +67,8 @@ export async function searchCandidates({
 }
 
 /**
- * @param {import("../onboarding/auth.js").UserInfo} userInfo
- * @returns {Promise<import("./scanningLib.js").GroupsResponse>}
+ * @param {import("../onboarding/common.onboarding.js").UserInfo} userInfo
+ * @returns {Promise<import("./scanning.lib.js").GroupsResponse>}
  */
 export async function fetchGroups(userInfo) {
   let response = await CapacitorHttp.get({
@@ -84,11 +84,11 @@ export async function fetchGroups(userInfo) {
  * Fetch the photometry of a source
  * @param {Object} params
  * @param {string} params.sourceId - The source ID
- * @param {import("../onboarding/auth.js").UserInfo} params.userInfo - The user info
+ * @param {import("../onboarding/common.onboarding.js").UserInfo} params.userInfo - The user info
  * @param {string} [params.includeOwnerInfo="true"] - Include owner info
  * @param {string} [params.includeStreamInfo="true"] - Include stream info
  * @param {string} [params.includeValidationInfo="true"] - Include validation info
- * @returns {Promise<import("./scanningLib.js").Photometry[]>}
+ * @returns {Promise<import("./scanning.lib.js").Photometry[]>}
  */
 export const fetchSourcePhotometry = async ({
   sourceId,
@@ -113,7 +113,7 @@ export const fetchSourcePhotometry = async ({
 
 /**
  * @param {Object} params
- * @param {import("../onboarding/auth.js").UserInfo} params.userInfo
+ * @param {import("../onboarding/common.onboarding.js").UserInfo} params.userInfo
  * @param {string} params.sourceId
  * @param {number[]} params.groupIds
  * @returns {Promise<any>}
@@ -135,8 +135,8 @@ export const addSourceToGroups = async ({ userInfo, sourceId, groupIds }) => {
 
 /**
  * @param {Object} params
- * @param {import("../onboarding/auth.js").UserInfo} params.userInfo
- * @param {import("../onboarding/auth.js").ScanningProfile} params.profile
+ * @param {import("../onboarding/common.onboarding.js").UserInfo} params.userInfo
+ * @param {import("../onboarding/common.onboarding.js").ScanningProfile} params.profile
  * @returns {Promise<*>}
  */
 export const createNewProfile = async ({ userInfo, profile }) => {
@@ -164,7 +164,7 @@ export const createNewProfile = async ({ userInfo, profile }) => {
 
 /**
  * @param {Object} params
- * @param {import("../onboarding/auth.js").UserInfo} params.userInfo
+ * @param {import("../onboarding/common.onboarding.js").UserInfo} params.userInfo
  * @returns {Promise<AnnotationsInfo>}
  */
 export const fetchAnnotationInfo = async ({ userInfo }) => {

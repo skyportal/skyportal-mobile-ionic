@@ -9,18 +9,18 @@ import { useContext, useRef } from "react";
 import {
   useUserAccessibleGroups,
   useUserProfile,
-} from "../../../common/hooks.js";
+} from "../../../common/common.hooks.js";
 import { useHistory, useParams } from "react-router";
 import { useMutation } from "@tanstack/react-query";
-import { searchCandidates } from "../../scanningRequests.js";
+import { searchCandidates } from "../../scanning.requests.js";
 import {
   computeSavedStatus,
   getDefaultValues,
   getFiltering,
   getStartDate,
-} from "../../scanningLib.js";
+} from "../../scanning.lib.js";
 import { ScanningOptionsPinnedAnnotations } from "../ScanningOptionsPinnedAnnotations/ScanningOptionsPinnedAnnotations.jsx";
-import { UserContext } from "../../../common/context.js";
+import { UserContext } from "../../../common/common.context.js";
 
 export const ScanningOptionsForm = () => {
   const { userInfo } = useContext(UserContext);
@@ -28,7 +28,7 @@ export const ScanningOptionsForm = () => {
   /** @type {any} */
   const { /** @type {string|undefined} */ profile: profileName } = useParams();
   const { userProfile } = useUserProfile();
-  /** @type {import("../../../onboarding/auth.js").ScanningProfile|undefined}*/
+  /** @type {import("../../../onboarding/common.onboarding.js").ScanningProfile|undefined}*/
   const scanningProfile = userProfile?.preferences?.scanningProfiles?.find(
     (profile) => profile.name === profileName,
   );
@@ -60,7 +60,7 @@ export const ScanningOptionsForm = () => {
     /**
      * @param {Object} params
      * @param {number[]} params.saveGroupIds
-     * @param {import("../../../common/constants.js").SavedStatus} params.savedStatus
+     * @param {import("../../../common/common.lib.js").SavedStatus} params.savedStatus
      * @param {string} params.startDate
      * @param {string} params.endDate
      * @returns {Promise<any>}

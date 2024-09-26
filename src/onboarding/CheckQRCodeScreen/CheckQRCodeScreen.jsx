@@ -2,11 +2,14 @@ import { IonContent, IonPage, IonSpinner } from "@ionic/react";
 import "./CheckQRCodeScreen.scss";
 import { useHistory, useLocation } from "react-router";
 import { useContext, useEffect, useState } from "react";
-import { fetchUserProfile } from "../auth.js";
-import { QUERY_KEYS, QUERY_PARAMS } from "../../common/constants.js";
-import { setPreference } from "../../common/preferences.js";
+import { fetchUserProfile } from "../common.onboarding.js";
 import { useMutation } from "@tanstack/react-query";
-import { UserContext } from "../../common/context.js";
+import { UserContext } from "../../common/common.context.js";
+import {
+  QUERY_KEYS,
+  QUERY_PARAMS,
+  setPreference,
+} from "../../common/common.lib.js";
 
 export const CheckQRCodeScreen = () => {
   const history = useHistory();

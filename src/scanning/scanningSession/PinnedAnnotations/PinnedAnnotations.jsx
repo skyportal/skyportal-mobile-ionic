@@ -4,13 +4,13 @@ import {
   extractAnnotationOriginAndKey,
   getAnnotationId,
   useCopyAnnotationLineOnClick,
-} from "../../scanningLib.js";
+} from "../../scanning.lib.js";
 import { copyOutline } from "ionicons/icons";
 import { useState } from "react";
 
 /**
  * @param {Object} props
- * @param {import("../../scanningLib.js").Candidate} props.candidate
+ * @param {import("../../scanning.lib.js").Candidate} props.candidate
  * @param {() => void} props.onButtonClick
  * @param {string[]} [props.pinnedAnnotationIds]
  * @returns {JSX.Element}

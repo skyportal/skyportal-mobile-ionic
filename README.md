@@ -280,21 +280,21 @@ has the following structure:
   |- Component2
   |- Component3
   |- myModult.lib.js
-  |- myModule.hooks.js
-  |- myModule.requests.js
+  |- myModule.common.hooks.js
+  |- myModule.common.requests.js
 ```
 
 Other than the component directories, there are three files that can be added to the module.
 
 - `myModule.lib.js` contains all the business logic of the module. Here you can put functions, constants and types that
   are being used by the components of this module.
-- `myModule.hooks.js` contains all the hooks being used in this module. Every TanStack queries should be defined there
+- `myModule.common.hooks.js` contains all the hooks being used in this module. Every TanStack queries should be defined there
   as well as other needed hooks.
-- `myModule.requests.js` contains all the network requests of this module.
+- `myModule.common.requests.js` contains all the network requests of this module.
 
-Normally, the dependencies between these 3 files should be in this order `myModult.lib.js` -> `myModule.hooks.js` ->
-`myModule.requests.js`. If you end up with a different order of dependencies make sure that all of your hooks are in
-the `myModule.hooks.js` and that all the logic is in `myModule.lib.js`.
+Normally, the dependencies between these 3 files should be in this order `myModult.lib.js` -> `myModule.common.hooks.js` ->
+`myModule.common.requests.js`. If you end up with a different order of dependencies make sure that all of your hooks are in
+the `myModule.common.hooks.js` and that all the logic is in `myModule.lib.js`.
 
 ### State
 
@@ -305,7 +305,7 @@ component be made available through a TanStack query.
 #### Example
 
 Some components in the module need access to the user's accessible groups. A request `fetchGroups` has been created in
-the `common.requests.js` file:
+the `common.common.requests.js` file:
 
 ```js
 export async function fetchGroups(userInfo) {
@@ -319,7 +319,7 @@ export async function fetchGroups(userInfo) {
 }
 ```
 
-Then in the `common.hooks.js` file we have defined a `useUserAccessibleGroups` hook:
+Then in the `common.common.hooks.js` file we have defined a `useUserAccessibleGroups` hook:
 
 ```js
 export const useUserAccessibleGroups = () => {

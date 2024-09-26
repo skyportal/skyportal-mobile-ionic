@@ -1,17 +1,17 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEYS } from "./constants.js";
-import { fetchSources } from "../sources/sources.js";
+import { fetchSources } from "../sources/sources.lib.js";
+import config from "../config.js";
+import { fetchUserProfile } from "../onboarding/common.onboarding.js";
+import { fetchConfig } from "./common.requests.js";
+import { fetchGroups } from "../scanning/scanning.requests.js";
+import { useContext } from "react";
+import { UserContext } from "./common.context.js";
 import {
   clearPreference,
   getPreference,
+  QUERY_KEYS,
   setPreference,
-} from "./preferences.js";
-import config from "../config.js";
-import { fetchUserProfile } from "../onboarding/auth.js";
-import { fetchConfig } from "./requests.js";
-import { fetchGroups } from "../scanning/scanningRequests.js";
-import { useContext } from "react";
-import { UserContext } from "./context.js";
+} from "./common.lib.js";
 
 /**
  * @typedef {"success" | "error" | "pending"} QueryStatus
@@ -21,13 +21,13 @@ import { UserContext } from "./context.js";
  * @param {Object} props
  * @param {number} props.page
  * @param {number} props.numPerPage
- * @returns {{sources: import("../sources/sources.js").Source[]|undefined, status: QueryStatus, error: any|undefined}}
+ * @returns {{sources: import("../sources/sources.lib.js").Source[]|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useFetchSources = ({ page, numPerPage }) => {
   const { userInfo } = useContext(UserContext);
 
   const {
-    /** @type {import("../sources/sources.js").Source[]} */ data: sources,
+    /** @type {import("../sources/sources.lib.js").Source[]} */ data: sources,
     status,
     error,
   } = useQuery({
@@ -54,7 +54,7 @@ export const useFetchSources = ({ page, numPerPage }) => {
  */
 
 /**
- * @returns {{data: {userInfo: import("../onboarding/auth.js").UserInfo|null, userProfile: import("../onboarding/auth.js").UserProfile|null}, status: QueryStatus, error: any|undefined}}
+ * @returns {{data: {userInfo: import("../onboarding/common.onboarding.js").UserInfo|null, userProfile: import("../onboarding/auth.js").UserProfile|null}, status: QueryStatus, error: any|undefined}}
  */
 export const useAppStart = () => {
   const queryClient = useQueryClient();
@@ -117,12 +117,12 @@ export const useAppStart = () => {
 };
 
 /**
- * @returns {{userAccessibleGroups: import("../scanning/scanningLib.js").Group[]|undefined, status: QueryStatus, error: any|undefined}}
+ * @returns {{userAccessibleGroups: import("../scanning/scanning.lib.js").Group[]|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useUserAccessibleGroups = () => {
   const { userInfo } = useContext(UserContext);
   const {
-    /** @type {import("../scanning/scanningLib.js").GroupsResponse} */ data: groups,
+    /** @type {import("../scanning/scanning.lib.js").GroupsResponse} */ data: groups,
     status,
     error,
   } = useQuery({
@@ -138,7 +138,7 @@ export const useUserAccessibleGroups = () => {
 
 /**
  *
- * @returns {{bandpassesColors: import("./requests.js").BandpassesColors|undefined,status: QueryStatus, error: any|undefined}}
+ * @returns {{bandpassesColors: import("./common.requests.js").BandpassesColors|undefined,status: QueryStatus, error: any|undefined}}
  */
 export const useBandpassesColors = () => {
   const { userInfo } = useContext(UserContext);
@@ -154,7 +154,7 @@ export const useBandpassesColors = () => {
 };
 
 /**
- * @returns {{userProfile: import("../onboarding/auth.js").UserProfile|undefined, status: QueryStatus, error: any|undefined}}
+ * @returns {{userProfile: import("../onboarding/common.onboarding.js").UserProfile|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useUserProfile = () => {
   const { userInfo } = useContext(UserContext);

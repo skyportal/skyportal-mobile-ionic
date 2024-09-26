@@ -14,7 +14,7 @@ import { CapacitorHttp } from "@capacitor/core";
  * @property {number[]} groupIDs - The IDs of the groups that the profile is associated with
  * @property {string} timeRange - The time range of the profile
  * @property {string} [sortingKey] - The key to use to sort the profile
- * @property {import("../common/constants.js").SavedStatus} savedStatus - The status of the profile
+ * @property {import("../common/common.lib.js").SavedStatus} savedStatus - The status of the profile
  * @property {string} [sortingOrder] - The order to use to sort the profile
  * @property {string} [sortingOrigin] - The origin of the sorting
  * @property {string} rejectedStatus - The status of the rejected
@@ -41,7 +41,7 @@ import { CapacitorHttp } from "@capacitor/core";
 /**
  * @typedef {Object} UserInfo
  * @property {string} token - The token of the user
- * @property {import("../common/constants.js").SkyPortalInstance} instance - The instance of the user
+ * @property {import("../common/common.lib.js").SkyPortalInstance} instance - The instance of the user
  */
 
 /**

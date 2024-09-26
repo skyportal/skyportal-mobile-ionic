@@ -14,14 +14,17 @@ import {
   IonToolbar,
   useIonAlert,
 } from "@ionic/react";
-import { useUserProfile } from "../../common/hooks.js";
+import { useUserProfile } from "../../common/common.hooks.js";
 import { useContext } from "react";
-import { AppContext, UserContext } from "../../common/context.js";
+import { AppContext, UserContext } from "../../common/common.context.js";
 import { swapHorizontal } from "ionicons/icons";
 import { useMutation } from "@tanstack/react-query";
-import { clearPreference, setPreference } from "../../common/preferences.js";
-import { QUERY_KEYS } from "../../common/constants.js";
-import { setDarkModeInDocument } from "../../common/util.js";
+import {
+  clearPreference,
+  QUERY_KEYS,
+  setDarkModeInDocument,
+  setPreference,
+} from "../../common/common.lib.js";
 
 export const UserProfileScreen = () => {
   const { darkMode, updateDarkMode } = useContext(AppContext);

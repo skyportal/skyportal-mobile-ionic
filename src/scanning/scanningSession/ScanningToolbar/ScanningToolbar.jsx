@@ -18,12 +18,12 @@ import {
   telescopeOutline,
   trashBinOutline,
 } from "ionicons/icons";
-import { SCANNING_TOOLBAR_ACTION } from "../../scanningLib.js";
+import { SCANNING_TOOLBAR_ACTION } from "../../scanning.lib.js";
 import { useState } from "react";
 
 /**
  * @param {Object} props
- * @param {(action: import("../../scanningLib").ScanningToolbarAction) => void} props.onAction
+ * @param {(action: import("../../scanning.lib.js").ScanningToolbarAction) => void} props.onAction
  * @param {boolean} props.isDiscardingEnabled
  * @returns {JSX.Element}
  */

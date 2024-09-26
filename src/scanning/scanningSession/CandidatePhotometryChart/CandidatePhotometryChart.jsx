@@ -1,12 +1,12 @@
 import "./CandidatePhotometryChart.scss";
 import { memo, useContext, useEffect, useRef, useState } from "react";
 import embed from "vega-embed";
-import { getVegaPlotSpec } from "../../scanningLib.js";
-import { useBandpassesColors } from "../../../common/hooks.js";
+import { getVegaPlotSpec } from "../../scanning.lib.js";
+import { useBandpassesColors } from "../../../common/common.hooks.js";
 import { IonSkeletonText } from "@ionic/react";
-import { fetchSourcePhotometry } from "../../scanningRequests.js";
+import { fetchSourcePhotometry } from "../../scanning.requests.js";
 import { useMutation } from "@tanstack/react-query";
-import { UserContext } from "../../../common/context.js";
+import { UserContext } from "../../../common/common.context.js";
 
 /**
  * @param {Object} props

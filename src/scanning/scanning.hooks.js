@@ -1,13 +1,13 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { CANDIDATES_PER_PAGE, QUERY_KEYS } from "../common/constants.js";
-import { fetchAnnotationInfo, searchCandidates } from "./scanningRequests.js";
-import { fetchUserProfile } from "../onboarding/auth.js";
+import { fetchAnnotationInfo, searchCandidates } from "./scanning.requests.js";
+import { fetchUserProfile } from "../onboarding/common.onboarding.js";
 import { useContext } from "react";
-import { UserContext } from "../common/context.js";
+import { UserContext } from "../common/common.context.js";
 import { useLocation } from "react-router";
+import { CANDIDATES_PER_PAGE, QUERY_KEYS } from "../common/common.lib.js";
 
 /**
- * @returns {import("@tanstack/react-query").UseInfiniteQueryResult<import("@tanstack/react-query").InfiniteData<import("./scanningRequests.js").CandidateSearchResponse, unknown>, Error>}
+ * @returns {import("@tanstack/react-query").UseInfiniteQueryResult<import("@tanstack/react-query").InfiniteData<import("./scanning.requests.js").CandidateSearchResponse, unknown>, Error>}
  */
 export const useSearchCandidates = () => {
   const { userInfo } = useContext(UserContext);
@@ -17,7 +17,7 @@ export const useSearchCandidates = () => {
   let startDate = "";
   /** @type {string} */
   let endDate = "";
-  /** @type {import("../common/constants.js").SavedStatus} */
+  /** @type {import("../common/common.lib.js").SavedStatus} */
   let savedStatus = "all";
   /** @type {number[]} */
   let groupIDs = [];
@@ -66,7 +66,7 @@ export const useSearchCandidates = () => {
 };
 
 /**
- * @returns {{profiles: import("../onboarding/auth.js").ScanningProfile[] | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined}}
+ * @returns {{profiles: import("../onboarding/common.onboarding.js").ScanningProfile[] | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined}}
  */
 export const useScanningProfiles = () => {
   const userInfo = useContext(UserContext);
@@ -89,7 +89,7 @@ export const useScanningProfiles = () => {
 };
 
 /**
- * @returns {{annotationsInfo: import("./scanningRequests.js").AnnotationsInfo | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined }}
+ * @returns {{annotationsInfo: import("./scanning.requests.js").AnnotationsInfo | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined }}
  */
 export const useAnnotationsInfo = () => {
   const { userInfo } = useContext(UserContext);

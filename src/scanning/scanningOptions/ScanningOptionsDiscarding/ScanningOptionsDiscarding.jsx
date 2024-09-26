@@ -21,7 +21,7 @@ import { ErrorMessageContainer } from "../../../common/ErrorMessageContainer/Err
  * @param {Partial<import("react-hook-form").FieldErrorsImpl<import("react-hook-form").DeepRequired<import("react-hook-form").FieldValues>>> & {root?: Record<string, import("react-hook-form").GlobalError> & import("react-hook-form").GlobalError}} props.errors
  * @param {import("react-hook-form").Control<any,any>} props.control
  * @param {import("react-hook-form").UseFormWatch<any>} props.watch
- * @param {import("../../scanningLib.js").Group[]} props.userAccessibleGroups
+ * @param {import("../../scanning.lib.js").Group[]} props.userAccessibleGroups
  * @param {React.MutableRefObject<any>} props.modal
  * @returns {JSX.Element}
  */
@@ -33,7 +33,7 @@ export const ScanningOptionsDiscarding = ({
   userAccessibleGroups,
   modal,
 }) => {
-  /** @type {import("../../scanningLib.js").Group[]} */
+  /** @type {import("../../scanning.lib.js").Group[]} */
   const junkGroups = watch("junkGroups").map(
     (/** @type {string[]} */ groupId) =>
       userAccessibleGroups.find((group) => group.id === +groupId),
@@ -56,7 +56,7 @@ export const ScanningOptionsDiscarding = ({
         {junkGroups.length > 0 && (
           <IonItem>
             {junkGroups.map(
-              (/** @type {import("../../scanningLib.js").Group} */ group) => (
+              (/** @type {import("../../scanning.lib.js").Group} */ group) => (
                 <IonChip key={group.id}>{group.name}</IonChip>
               ),
             )}
@@ -99,7 +99,7 @@ export const ScanningOptionsDiscarding = ({
                   >
                     {junkGroups.map(
                       (
-                        /** @type {import("../../scanningLib.js").Group} */ group,
+                        /** @type {import("../../scanning.lib.js").Group} */ group,
                       ) => (
                         <IonSelectOption key={group.id} value={group.id}>
                           {group.name}

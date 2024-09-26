@@ -2,13 +2,13 @@ import "./ScanningProfileCreator.scss";
 import { ScanningOptionsProgram } from "../ScanningOptionsProgram/ScanningOptionsProgram.jsx";
 import { IonButton, IonItem, IonList, useIonAlert } from "@ionic/react";
 import { useForm } from "react-hook-form";
-import { computeSavedStatus, getDefaultValues } from "../../scanningLib.js";
-import { useUserAccessibleGroups } from "../../../common/hooks.js";
+import { computeSavedStatus, getDefaultValues } from "../../scanning.lib.js";
+import { useUserAccessibleGroups } from "../../../common/common.hooks.js";
 import { useContext, useRef } from "react";
-import { UserContext } from "../../../common/context.js";
+import { UserContext } from "../../../common/common.context.js";
 import { ErrorMessageContainer } from "../../../common/ErrorMessageContainer/ErrorMessageContainer.jsx";
 import { ControlledInput } from "../../../common/ControlledInput/ControlledInput.jsx";
-import { createNewProfile } from "../../scanningRequests.js";
+import { createNewProfile } from "../../scanning.requests.js";
 import { useHistory } from "react-router";
 
 export const ScanningProfileCreator = () => {
@@ -41,7 +41,7 @@ export const ScanningProfileCreator = () => {
       });
       return;
     }
-    /** @type {import("../../../onboarding/auth").ScanningProfile} */
+    /** @type {import("../../../onboarding/common.onboarding.js").ScanningProfile} */
     const profile = {
       name: data.profileName,
       default: true,

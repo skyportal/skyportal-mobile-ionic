@@ -6,11 +6,11 @@ import {
   IonList,
   IonModal,
 } from "@ionic/react";
-import { useAnnotationsInfo } from "../../scanningHooks.js";
+import { useAnnotationsInfo } from "../../scanning.hooks.js";
 import { pencil } from "ionicons/icons";
 import { PinnedAnnotationsPicker } from "../PinnedAnnotationsPicker/PinnedAnnotationsPicker.jsx";
 import { Controller } from "react-hook-form";
-import { extractAnnotationOriginAndKey } from "../../scanningLib.js";
+import { extractAnnotationOriginAndKey } from "../../scanning.lib.js";
 
 /**
  * @param {Object} props

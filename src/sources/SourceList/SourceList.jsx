@@ -1,7 +1,7 @@
 import "./SourceList.scss";
 import { SourceListItem } from "../SourceListItem/SourceListItem.jsx";
 import { useState } from "react";
-import { useFetchSources } from "../../common/hooks.js";
+import { useFetchSources } from "../../common/common.hooks.js";
 
 export const SourceList = () => {
   const [page, setPage] = useState(1);

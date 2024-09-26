@@ -4,7 +4,7 @@ import { useHistory } from "react-router";
 
 /**
  * @param {Object} props
- * @param {React.MutableRefObject<import("../../scanningLib").ScanningRecap>} props.recap
+ * @param {React.MutableRefObject<import("../../scanning.lib.js").ScanningRecap>} props.recap
  * @returns {JSX.Element}
  */
 export const ScanningEnd = ({ recap }) => {

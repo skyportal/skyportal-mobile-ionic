@@ -3,7 +3,7 @@ import { CandidateAnnotationItem } from "../CandidateAnnotationItem/CandidateAnn
 
 /**
  * @param {Object} props
- * @param {import("../../scanningLib.js").Candidate} props.candidate
+ * @param {import("../../scanning.lib.js").Candidate} props.candidate
  * @returns {JSX.Element}
  */
 export const CandidateAnnotations = ({ candidate }) => {

@@ -1,11 +1,11 @@
 import "./OnboardingUpper.scss";
 import { useContext } from "react";
-import { AppContext } from "../../common/context.js";
-import { isActuallyDarkMode } from "../../common/util.js";
+import { AppContext } from "../../common/common.context.js";
+import { isActuallyDarkMode } from "../../common/common.lib.js";
 
 /**
  * @param {Object} props
- * @param {import("../auth").OnboardingPage} props.page
+ * @param {import("../common.onboarding.js").OnboardingPage} props.page
  * @returns {JSX.Element}
  */
 const OnboardingUpper = ({ page }) => {

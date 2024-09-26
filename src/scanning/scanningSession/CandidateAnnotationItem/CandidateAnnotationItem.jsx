@@ -7,12 +7,12 @@ import {
   IonListHeader,
   IonText,
 } from "@ionic/react";
-import { useCopyAnnotationLineOnClick } from "../../scanningLib.js";
+import { useCopyAnnotationLineOnClick } from "../../scanning.lib.js";
 import { copyOutline } from "ionicons/icons";
 
 /**
  * @param {Object} props
- * @param {import("../../scanningLib.js").CandidateAnnotation} props.annotation
+ * @param {import("../../scanning.lib.js").CandidateAnnotation} props.annotation
  * @returns {JSX.Element}
  */
 export const CandidateAnnotationItem = ({ annotation }) => {

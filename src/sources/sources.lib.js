@@ -12,10 +12,10 @@ import { CapacitorHttp } from "@capacitor/core";
 /**
  * Fetch sources from the API
  * @param {Object} props
- * @param {import("../onboarding/auth.js").UserInfo} props.userInfo - User info
+ * @param {import("../onboarding/common.onboarding.js").UserInfo} props.userInfo - User info
  * @param {number} props.page - page number
  * @param {number} props.numPerPage - number of sources per page
- * @returns {Promise<import("../sources/sources.js").Source[]>}
+ * @returns {Promise<import("./sources.lib.js").Source[]>}
  */
 export async function fetchSources({ userInfo, page, numPerPage }) {
   let response = await CapacitorHttp.get({

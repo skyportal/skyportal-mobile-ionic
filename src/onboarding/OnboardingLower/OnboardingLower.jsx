@@ -6,18 +6,21 @@ import {
   IonSelectOption,
 } from "@ionic/react";
 import "./OnboardingLower.scss";
-import { INSTANCES, QUERY_PARAMS } from "../../common/constants.js";
 import { useCallback, useState } from "react";
 import { qrCode } from "ionicons/icons";
 import { CapacitorBarcodeScanner } from "@capacitor/barcode-scanner";
 import { Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useHistory } from "react-router";
-import { navigateWithParams } from "../../common/util.js";
+import {
+  INSTANCES,
+  navigateWithParams,
+  QUERY_PARAMS,
+} from "../../common/common.lib.js";
 
 /**
  * The lower part of the onboarding screen
  * @param {Object} props
- * @param {import("../auth").OnboardingPage} props.page - The current page of the onboarding screen
+ * @param {import("../common.onboarding.js").OnboardingPage} props.page - The current page of the onboarding screen
  * @param {Function} props.setPage - The function to set the current page of the onboarding screen
  * @returns {JSX.Element}
  */

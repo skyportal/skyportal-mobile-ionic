@@ -1,10 +1,10 @@
 import "./RecentProfiles.scss";
 import { IonButton, IonIcon, IonList, IonLoading, IonText } from "@ionic/react";
-import { useUserAccessibleGroups } from "../../../common/hooks.js";
+import { useUserAccessibleGroups } from "../../../common/common.hooks.js";
 import { useCallback } from "react";
-import { navigateWithParams } from "../../../common/util.js";
+import { navigateWithParams } from "../../../common/common.lib.js";
 import { useHistory } from "react-router";
-import { useScanningProfiles } from "../../scanningHooks.js";
+import { useScanningProfiles } from "../../scanning.hooks.js";
 import { ProfileListItem } from "../ProfileListItem/ProfileListItem.jsx";
 import { chevronForwardOutline } from "ionicons/icons";
 
@@ -17,7 +17,7 @@ export const RecentProfiles = () => {
 
   const handleScanWithProfile = useCallback(
     /**
-     * @param {import("../../../onboarding/auth").ScanningProfile} profile
+     * @param {import("../../../onboarding/common.onboarding.js").ScanningProfile} profile
      */
     (profile) => {
       navigateWithParams(history, "/scanning", {

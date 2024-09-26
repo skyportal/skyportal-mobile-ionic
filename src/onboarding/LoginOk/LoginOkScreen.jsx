@@ -3,7 +3,7 @@ import "./LoginOkScreen.scss";
 import { checkmarkCircleSharp } from "ionicons/icons";
 import { useEffect } from "react";
 import { useHistory } from "react-router";
-import { useUserProfile } from "../../common/hooks.js";
+import { useUserProfile } from "../../common/common.hooks.js";
 
 export const LoginOkScreen = () => {
   const history = useHistory();

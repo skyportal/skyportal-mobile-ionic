@@ -1,6 +1,6 @@
 import "./ScanningCard.scss";
 import { IonSkeletonText } from "@ionic/react";
-import { THUMBNAIL_TYPES } from "../../scanningLib.js";
+import { THUMBNAIL_TYPES } from "../../scanning.lib.js";
 import { ThumbnailSkeleton } from "../ThumnailSkeleton/ThumbnailSkeleton.jsx";
 import { PinnedAnnotationsSkeleton } from "../PinnedAnnotationsSkeleton/PinnedAnnotationsSkeleton.jsx";
 
