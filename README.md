@@ -288,12 +288,15 @@ Other than the component directories, there are three files that can be added to
 
 - `myModule.lib.js` contains all the business logic of the module. Here you can put functions, constants and types that
   are being used by the components of this module.
-- `myModule.common.hooks.js` contains all the hooks being used in this module. Every TanStack queries should be defined there
+- `myModule.common.hooks.js` contains all the hooks being used in this module. Every TanStack queries should be defined
+  there
   as well as other needed hooks.
 - `myModule.common.requests.js` contains all the network requests of this module.
 
-Normally, the dependencies between these 3 files should be in this order `myModult.lib.js` -> `myModule.common.hooks.js` ->
-`myModule.common.requests.js`. If you end up with a different order of dependencies make sure that all of your hooks are in
+Normally, the dependencies between these 3 files should be in this order `myModult.lib.js` ->
+`myModule.common.hooks.js` ->
+`myModule.common.requests.js`. If you end up with a different order of dependencies make sure that all of your hooks are
+in
 the `myModule.common.hooks.js` and that all the logic is in `myModule.lib.js`.
 
 ### State
@@ -367,7 +370,11 @@ This approach eliminates the need for a state management library. TanStack Query
 automatically invalidates this cache after some time or after an action has been taken. You can read more about TanStack
 Query on its [official website](https://tanstack.com/query/latest/docs/framework/react/overview).
 
-The only exception to this pattern in the application is the `userInfo`. `userInfo` stores the token and instance of the user. The user provides them when they log in, and it is then stored in the application's preferences for the next app launches. At every app launch, the `userInfo` is fetched from the preferences and propagated through the whole application using the React Context API. As you can see in App.jsx:
+The only exception to this pattern in the application is the `userInfo`. `userInfo` stores the token and instance of the
+user. The user provides them when they log in, and it is then stored in the application's preferences for the next app
+launches. At every app launch, the `userInfo` is fetched from the preferences and propagated through the whole
+application using the React Context API. As you can see in App.jsx:
+
 ```jsx
 const { data } = useAppStart();
 return (
@@ -385,3 +392,9 @@ return (
   </UserContext.Provider>
 );
 ```
+
+### Typings
+
+The project does not use TypeScript which is the default for Ionic React applications. Instead, it uses JavaScript, just
+like in the web version and it relies on jsdoc when types are needed. The jsdoc types are located close to the code that
+uses them. You can check types in the whole repository by running `tsc --noEmit`.
