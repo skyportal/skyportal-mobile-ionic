@@ -35,40 +35,41 @@ import "@ionic/react/css/display.css";
 import "@ionic/react/css/palettes/dark.class.css";
 // import "@ionic/react/css/palettes/dark.system.css";
 /* Theme variables */
+import "./global.scss";
 import "./theme/variables.scss";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router";
-import OnboardingScreen from "./onboarding/OnboardingScreen/OnboardingScreen.jsx";
+import OnboardingScreen from "./onboarding/screens/OnboardingScreen/OnboardingScreen.jsx";
 import React, { useEffect, useState } from "react";
-import CheckQRCodeScreen from "./onboarding/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
-import { LoginOkScreen } from "./onboarding/LoginOk/LoginOkScreen.jsx";
-import { useAppStart } from "./common/hooks.js";
-import { ScanningOptionsScreen } from "./scanning/scanningOptions/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
-import { MainScanningScreen } from "./scanning/scanningSession/MainScanningScreen/MainScanningScreen.jsx";
-import { SourceListScreen } from "./sources/SourceListScreen/SourceListScreen.jsx";
+import CheckQRCodeScreen from "./onboarding/screens/CheckQRCodeScreen/CheckQRCodeScreen.jsx";
+import { LoginOkScreen } from "./onboarding/screens/LoginOkScreen/LoginOkScreen.jsx";
+import { useAppStart } from "./common/common.hooks.js";
+import { ScanningOptionsScreen } from "./scanning/scanningOptions/screens/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
+import { MainScanningScreen } from "./scanning/scanningSession/screens/MainScanningScreen/MainScanningScreen.jsx";
+import { SourceListTab } from "./sources/screens/SourceListTab/SourceListTab.jsx";
 import {
   compassOutline,
   listOutline,
   personCircleOutline,
 } from "ionicons/icons";
-import { ScanningRecap } from "./scanning/scanningSession/ScanningRecap/ScanningRecap.jsx";
-import { AppContext, UserContext } from "./common/context.js";
-import { ScanningHome } from "./scanning/scanningOptions/ScanningHome/ScanningHome.jsx";
-import { ScanningNewProfileScreen } from "./scanning/scanningOptions/ScanningNewProfileScreen/ScanningNewProfileScreen.jsx";
-import { ScanningProfiles } from "./scanning/scanningOptions/ScanningProfiles/ScanningProfiles.jsx";
-import { UserProfileScreen } from "./userProfile/UserProfileScreen/UserProfileScreen.jsx";
-import { setDarkModeInDocument } from "./common/util.js";
+import { ScanningRecapScreen } from "./scanning/scanningSession/screens/ScanningRecapScreen/ScanningRecapScreen.jsx";
+import { AppContext, UserContext } from "./common/common.context.js";
+import { ScanningHomeTab } from "./scanning/scanningOptions/screens/ScanningHomeTab/ScanningHomeTab.jsx";
+import { ScanningNewProfileScreen } from "./scanning/scanningOptions/screens/ScanningNewProfileScreen/ScanningNewProfileScreen.jsx";
+import { ScanningProfilesScreen } from "./scanning/scanningOptions/screens/ScanningProfilesScreen/ScanningProfilesScreen.jsx";
+import { UserProfileTab } from "./userProfile/screens/UserProfileScreen/UserProfileTab.jsx";
+import { setDarkModeInDocument } from "./common/common.lib.js";
 
 setupIonicReact();
 
 /**
  * @param {Object} props
- * @param {import("./common/util").DarkMode} props.darkMode
+ * @param {import("./common/common.lib.js").DarkMode} props.darkMode
  * @returns {React.JSX.Element}
  */
 const App = ({ darkMode: initialDarkMode }) => {
   const { data } = useAppStart();
-  /** @type {[import("./common/util").DarkMode, React.Dispatch<import("./common/util").DarkMode>]} */
+  /** @type {[import("./common/common.lib.js").DarkMode, React.Dispatch<import("./common/common.lib.js").DarkMode>]} */
   const [darkMode, setDarkMode] = useState(initialDarkMode);
   const [userInfo, setUserInfo] = useState({
     instance: { name: "", url: "" },
@@ -126,7 +127,7 @@ const App = ({ darkMode: initialDarkMode }) => {
                 ) : (
                   <>
                     <Route path="/scanning/profiles">
-                      <ScanningProfiles />
+                      <ScanningProfilesScreen />
                     </Route>
                     <Route path="/scanning/new-profile">
                       <ScanningNewProfileScreen />
@@ -138,7 +139,7 @@ const App = ({ darkMode: initialDarkMode }) => {
                       <MainScanningScreen />
                     </Route>
                     <Route path="/scanning/recap">
-                      <ScanningRecap />
+                      <ScanningRecapScreen />
                     </Route>
                     <Route exact path="/scanning">
                       <ScanningOptionsScreen />
@@ -159,13 +160,13 @@ const App = ({ darkMode: initialDarkMode }) => {
                     <IonRouterOutlet>
                       <Redirect exact path="/app" to="/app/source-list" />
                       <Route path="/app/source-list">
-                        <SourceListScreen />
+                        <SourceListTab />
                       </Route>
                       <Route path="/app/scanning">
-                        <ScanningHome />
+                        <ScanningHomeTab />
                       </Route>
                       <Route path="/app/profile">
-                        <UserProfileScreen />
+                        <UserProfileTab />
                       </Route>
                     </IonRouterOutlet>
 
