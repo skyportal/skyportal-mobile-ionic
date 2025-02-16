@@ -49,6 +49,12 @@ install them with the following command:
 npm install -g @ionic/cli native-run cordova-res
 ```
 
+Additionally, install cocoapods as it is required by Ionic for iOS devices:
+
+```bash
+sudo gem install cocoapods
+```
+
 ## Running the app
 
 You're all set! To run the app locally, you can use the following commands:
