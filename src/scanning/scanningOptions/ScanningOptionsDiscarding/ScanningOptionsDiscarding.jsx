@@ -65,15 +65,6 @@ export const ScanningOptionsDiscarding = ({
         {watch("junkGroups").length > 0 && (
           <>
             <IonItem>
-              <IonLabel>
-                Junk groups
-                <p>
-                  {junkGroups.length ?? 0} program
-                  {junkGroups.length > 1 && "s"} selected
-                </p>
-              </IonLabel>
-            </IonItem>
-            <IonItem>
               <IonSelect
                 {...register("discardBehavior")}
                 aria-label="discard behavior"
