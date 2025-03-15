@@ -95,6 +95,7 @@ export const RecentProfiles = () => {
         <IonButton
           shape="round"
           expand="block"
+          fill={(profiles?.length ?? 0) === 0 ? "outline" : "solid"}
           disabled={(profiles?.length ?? 0) === 0}
           onClick={handleScanWithDefault}
         >
