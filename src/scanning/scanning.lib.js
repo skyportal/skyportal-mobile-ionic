@@ -182,6 +182,9 @@ export function getThumbnailImageUrl(instanceUrl, candidate, type) {
   if (type === "new" || type === "ref" || type === "sub") {
     res = instanceUrl + res;
   }
+  if (res.startsWith("http:")) {  // force https
+    res = res.replace(/^http:/, "https:");
+  }
   return res;
 }
 
