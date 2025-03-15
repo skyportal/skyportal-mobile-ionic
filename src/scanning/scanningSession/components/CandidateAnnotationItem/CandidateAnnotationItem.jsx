@@ -1,6 +1,6 @@
 import "./CandidateAnnotationItem.scss";
 import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonText } from "@ionic/react";
-import { useCopyAnnotationLineOnClick } from "../../../scanning.lib.js";
+import { sanitizeAnnotationData, useCopyAnnotationLineOnClick } from "../../../scanning.lib.js";
 import { copyOutline } from "ionicons/icons";
 
 /**
@@ -24,13 +24,13 @@ export const CandidateAnnotationItem = ({ annotation }) => {
           .map(([key, value]) => (
             <IonItem
               key={key}
-              onClick={() => handleTextCopied(key, value)}
+              onClick={() => handleTextCopied(key, sanitizeAnnotationData(value))}
               detail={false}
               button
             >
               <IonText color="secondary">{key}:</IonText>
               {"\u00A0"}
-              <IonText>{value}</IonText>
+              <IonText>{sanitizeAnnotationData(value)}</IonText>
               {"\u00A0"}
               {"\u00A0"}
               {"\u00A0"}

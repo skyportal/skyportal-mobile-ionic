@@ -1,5 +1,5 @@
 PODS:
-  - Capacitor (6.0.0):
+  - Capacitor (6.2.0):
     - CapacitorCordova
   - CapacitorApp (6.0.0):
     - Capacitor
@@ -8,7 +8,7 @@ PODS:
     - OSBarcodeLib (~> 1.1.0)
   - CapacitorClipboard (6.0.0):
     - Capacitor
-  - CapacitorCordova (6.0.0)
+  - CapacitorCordova (6.2.0)
   - CapacitorHaptics (6.0.0):
     - Capacitor
   - CapacitorKeyboard (6.0.0):
@@ -55,11 +55,11 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/status-bar"
 
 SPEC CHECKSUMS:
-  Capacitor: c527d208447590a004f0a4a2c42a5f361848fa8a
+  Capacitor: 05d35014f4425b0740fc8776481f6a369ad071bf
   CapacitorApp: 30145f2ea2311e4f3744472119ec87d2ddf4c0a7
   CapacitorBarcodeScanner: 7ba4bfeeab9038feffa24638073eaab8cc39f6ed
   CapacitorClipboard: c1cb27fea166aab5c99bda605d3bc768cf00eabe
-  CapacitorCordova: 8c4bfdf69368512e85b1d8b724dd7546abeb30af
+  CapacitorCordova: b33e7f4aa4ed105dd43283acdd940964374a87d9
   CapacitorHaptics: 0cea833e6a8bf489dd6acaaebf6d953b90086c59
   CapacitorKeyboard: dc97fe50dcfdcbe12af56c49bbed150077d08043
   CapacitorPreferences: 97d529423bb7c1196455e9a1b6dd1074625c78bd

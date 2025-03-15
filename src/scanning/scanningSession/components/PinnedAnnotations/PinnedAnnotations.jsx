@@ -1,6 +1,12 @@
 import "./PinnedAnnotations.scss";
 import { IonButton, IonIcon, IonItem, IonText } from "@ionic/react";
-import { extractAnnotationOriginAndKey, getAnnotationId, useCopyAnnotationLineOnClick } from "../../../scanning.lib.js";
+import {
+  extractAnnotationOriginAndKey,
+  getAnnotationId,
+  useCopyAnnotationLineOnClick,
+  sanitizeAnnotationData,
+  concat,
+} from "../../../scanning.lib.js";
 import { copyOutline } from "ionicons/icons";
 import { useState } from "react";
 
@@ -32,7 +38,7 @@ export const PinnedAnnotations = ({
   );
 
   if (pinnedAnnotations.length < 3) {
-    /** @type {{id: string, value: string|number}[]} */
+    /** @type {{id: string, value: string|number|Array<any>}[]} */
     let otherAnnotationIds = [];
     outerLoop: for (let annotation of candidate.annotations) {
       for (let [key, value] of Object.entries(annotation.data)) {
@@ -68,7 +74,7 @@ export const PinnedAnnotations = ({
             className="annotation-line"
             lines="none"
             onClick={() =>
-              handleTextCopied(annotationLine.id, annotationLine.value)
+              handleTextCopied(annotationLine.id, sanitizeAnnotationData(annotationLine.value))
             }
             detail={false}
             button
@@ -79,7 +85,9 @@ export const PinnedAnnotations = ({
             {"\u00A0"}
             {annotationLine.value ? (
               <div className="annotation-line-content">
-                <span className="annotation-value">{annotationLine.value}</span>
+                <span className="annotation-value">
+                  {concat(sanitizeAnnotationData(annotationLine.value), 20)}
+                </span>
                 <IonIcon icon={copyOutline} size="small" color="secondary" />
               </div>
             ) : (

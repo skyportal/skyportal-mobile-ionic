@@ -2,6 +2,7 @@ import {
   IonApp,
   IonIcon,
   IonLabel,
+  IonPage,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
@@ -94,6 +95,19 @@ const App = ({ darkMode: initialDarkMode }) => {
     };
   }, [darkMode]);
 
+  /**
+   * @param {React.PropsWithChildren<import("react-router").RouteProps>} props
+   * @returns {JSX.Element}
+   */
+  const PrivateRoute = ({ children, ...rest }) => {
+    /* If the user is not logged in, redirect to the onboarding screen */
+    return(
+      <Route {...rest}>
+        {userInfo.token === "" ? <Redirect to="/onboarding" /> : children}
+      </Route>
+    )
+  }
+
   return (
     <AppContext.Provider
       value={{ darkMode: darkMode ?? "auto", updateDarkMode: setDarkMode }}
@@ -102,91 +116,54 @@ const App = ({ darkMode: initialDarkMode }) => {
         <IonApp>
           <IonReactRouter>
             <IonRouterOutlet>
-              <Route exact path="/onboarding">
-                {
-                  /* If the user is logged in, redirect them to the app */
-                  userInfo.token !== "" ? (
-                    <Redirect to="/app" />
-                  ) : (
-                    <OnboardingScreen />
-                  )
-                }
-              </Route>
-              <Route path="/check-creds">
-                <CheckQRCodeScreen />
-              </Route>
-              <Route path="/login-ok">
-                <LoginOkScreen />
-              </Route>
+              <Route path="/onboarding" render={() =>
+                userInfo.token === "" ? <OnboardingScreen /> : <Redirect to="/app" />
+              } />
+              <Redirect exact from="/" to="/onboarding" />
 
-              <Route path="/scanning">
-                {userInfo.token === "" ? (
-                  <Redirect to="/onboarding" />
-                ) : (
-                  <>
-                    <Route path="/scanning/profiles">
-                      <ScanningProfilesScreen />
-                    </Route>
-                    <Route path="/scanning/new-profile">
-                      <ScanningNewProfileScreen />
-                    </Route>
-                    <Route path="/scanning/options">
-                      <ScanningOptionsScreen />
-                    </Route>
-                    <Route path="/scanning/main">
-                      <MainScanningScreen />
-                    </Route>
-                    <Route path="/scanning/recap">
-                      <ScanningRecapScreen />
-                    </Route>
-                    <Route exact path="/scanning">
-                      <ScanningOptionsScreen />
-                    </Route>
-                  </>
-                )}
-              </Route>
+              <Route path="/check-creds" component={CheckQRCodeScreen} />
+              <Route path="/login-ok" component={LoginOkScreen} />
 
-              <Route exact path="/">
-                <Redirect to="/onboarding" />
-              </Route>
+              <PrivateRoute path="/scanning">
+                <IonPage>
+                  <IonRouterOutlet>
+                    <Route path="/scanning/profiles" component={ScanningProfilesScreen} />
+                    <Route path="/scanning/new-profile" component={ScanningNewProfileScreen} />
+                    <Route path="/scanning/options" component={ScanningOptionsScreen} />
+                    <Route path="/scanning/main" component={MainScanningScreen} />
+                    <Route path="/scanning/recap" component={ScanningRecapScreen} />
+                    <Route exact path="/scanning" component={ScanningOptionsScreen} />
+                  </IonRouterOutlet>
+                </IonPage>
+              </PrivateRoute>
 
-              <Route path="/app">
-                {userInfo.token === "" ? (
-                  <Redirect to="/onboarding" />
-                ) : (
-                  <IonTabs>
-                    <IonRouterOutlet>
-                      <Redirect exact path="/app" to="/app/source-list" />
-                      <Route path="/app/source-list">
-                        <SourceListTab />
-                      </Route>
-                      <Route path="/app/scanning">
-                        <ScanningHomeTab />
-                      </Route>
-                      <Route path="/app/profile">
-                        <UserProfileTab />
-                      </Route>
-                    </IonRouterOutlet>
+              <PrivateRoute path="/app">
+                <IonTabs>
+                  <IonRouterOutlet>
+                    <Redirect exact from="/app" to="/app/source-list" />
+                    <Route path="/app/source-list" component={SourceListTab} />
+                    <Route path="/app/scanning" component={ScanningHomeTab} />
+                    <Route path="/app/profile" component={UserProfileTab} />
+                  </IonRouterOutlet>
 
-                    <IonTabBar slot="bottom">
-                      <IonTabButton tab="source-list" href="/app/source-list">
-                        <IonIcon icon={listOutline} />
-                        <IonLabel>Source</IonLabel>
-                      </IonTabButton>
+                  <IonTabBar slot="bottom">
+                    <IonTabButton tab="source-list" href="/app/source-list">
+                      <IonIcon icon={listOutline} />
+                      <IonLabel>Source</IonLabel>
+                    </IonTabButton>
 
-                      <IonTabButton tab="scanning" href="/app/scanning">
-                        <IonIcon icon={compassOutline} />
-                        <IonLabel>Candidates</IonLabel>
-                      </IonTabButton>
+                    <IonTabButton tab="scanning" href="/app/scanning">
+                      <IonIcon icon={compassOutline} />
+                      <IonLabel>Candidates</IonLabel>
+                    </IonTabButton>
 
-                      <IonTabButton tab="profile" href="/app/profile">
-                        <IonIcon icon={personCircleOutline} />
-                        <IonLabel>Profile</IonLabel>
-                      </IonTabButton>
-                    </IonTabBar>
-                  </IonTabs>
-                )}
-              </Route>
+                    <IonTabButton tab="profile" href="/app/profile">
+                      <IonIcon icon={personCircleOutline} />
+                      <IonLabel>Profile</IonLabel>
+                    </IonTabButton>
+                  </IonTabBar>
+                </IonTabs>
+              </PrivateRoute>
             </IonRouterOutlet>
           </IonReactRouter>
         </IonApp>

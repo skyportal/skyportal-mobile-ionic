@@ -19,7 +19,7 @@
  * @property {number} id - Annotation ID
  * @property {string} origin - Annotation origin
  * @property {string} obj_id - Object ID
- * @property {{[key: string]: string|number|undefined}} data - Annotation data
+ * @property {{[key: string]: string|number|Array<any>|undefined}} data - Annotation data
  * @property {number} author_id - Author ID
  * @property {Group[]} groups - Groups the annotation belongs to
  */
@@ -460,10 +460,6 @@ export const parseIntList = (intListString) => {
  * @returns {string}
  */
 export const getStartDate = (scanningProfile) => {
-  if (import.meta.env.MODE === "development") {
-    return moment("2022-07-26T16:43:00-07:00").format();
-  }
-
   return moment()
     .subtract(parseInt(scanningProfile.timeRange), "hours")
     .format();
@@ -589,3 +585,27 @@ export const extractAnnotationOriginAndKey = (annotationId) => {
   const key = annotationId.slice(lastIndexOfSlash + 1);
   return { origin, key };
 };
+
+
+/**
+ * @param {string|number|undefined} value
+ * @param {number} length
+ * @returns {string|number|undefined}
+ */
+export const concat = (value, length) => {
+  if (typeof value === "string" && value.length > length) {
+    value = value.slice(0, length) + "..."
+  }
+  return value;
+}
+
+/**
+ * @param {string|number|Array<any>|undefined} data
+ * @returns {string|number|undefined}
+ */
+export const sanitizeAnnotationData = (data) => {
+  if (Array.isArray(data)) {
+    data = JSON.stringify(data, null, 2)
+  }
+  return data;
+}
