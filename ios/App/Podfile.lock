@@ -1,19 +1,19 @@
 PODS:
   - Capacitor (6.2.0):
     - CapacitorCordova
-  - CapacitorApp (6.0.2):
+  - CapacitorApp (6.0.0):
     - Capacitor
-  - CapacitorBarcodeScanner (1.0.4):
+  - CapacitorBarcodeScanner (1.0.1):
     - Capacitor
     - OSBarcodeLib (~> 1.1.0)
-  - CapacitorClipboard (6.0.2):
+  - CapacitorClipboard (6.0.0):
     - Capacitor
   - CapacitorCordova (6.2.0)
   - CapacitorHaptics (6.0.0):
     - Capacitor
   - CapacitorKeyboard (6.0.0):
     - Capacitor
-  - CapacitorPreferences (6.0.3):
+  - CapacitorPreferences (6.0.1):
     - Capacitor
   - CapacitorStatusBar (6.0.0):
     - Capacitor
@@ -56,13 +56,13 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Capacitor: 05d35014f4425b0740fc8776481f6a369ad071bf
-  CapacitorApp: e1e6b7d05e444d593ca16fd6d76f2b7c48b5aea7
-  CapacitorBarcodeScanner: a99d79bf511b2fb4e0e3338e7a171ae36b62a837
-  CapacitorClipboard: 4443c3cdb7c77b1533dfe3ff0f9f7756aa8579df
+  CapacitorApp: 30145f2ea2311e4f3744472119ec87d2ddf4c0a7
+  CapacitorBarcodeScanner: 7ba4bfeeab9038feffa24638073eaab8cc39f6ed
+  CapacitorClipboard: c1cb27fea166aab5c99bda605d3bc768cf00eabe
   CapacitorCordova: b33e7f4aa4ed105dd43283acdd940964374a87d9
   CapacitorHaptics: 0cea833e6a8bf489dd6acaaebf6d953b90086c59
   CapacitorKeyboard: dc97fe50dcfdcbe12af56c49bbed150077d08043
-  CapacitorPreferences: f3eadae2369ac3ab8e21743a2959145b0d1286a3
+  CapacitorPreferences: 97d529423bb7c1196455e9a1b6dd1074625c78bd
   CapacitorStatusBar: 129c68650d3f950e080e8e7e03d69c3b361dbe52
   OSBarcodeLib: ced133bc1ec073636e18c6a0553d0a5c4b90cf17
 
