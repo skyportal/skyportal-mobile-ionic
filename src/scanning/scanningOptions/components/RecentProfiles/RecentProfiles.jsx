@@ -89,7 +89,7 @@ export const RecentProfiles = () => {
               </IonText>
             </div>
           )
-        ) : <IonLoading />}
+        ) : <IonLoading isOpen={true} />}
       </div>
       <div className="buttons-container">
         <IonButton

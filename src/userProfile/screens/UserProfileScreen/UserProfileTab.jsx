@@ -87,7 +87,7 @@ export const UserProfileTab = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        {userProfile && (
+        {userProfile ? (
           <form className="ion-padding-top">
             <div className="form-section">
               <IonList inset>
@@ -136,8 +136,7 @@ export const UserProfileTab = () => {
               </IonList>
             </div>
           </form>
-        )}
-        {!userProfile && <IonLoading />}
+        ) : <IonLoading isOpen={true} />}
       </IonContent>
     </>
   );

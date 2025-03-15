@@ -76,7 +76,7 @@ export const ScanningProfilesScreen = () => {
                 </IonText>
               </div>
         ) : (
-          <IonLoading />
+          <IonLoading isOpen={true} />
         )}
       </IonContent>
     </IonPage>

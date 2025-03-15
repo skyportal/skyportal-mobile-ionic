@@ -382,8 +382,7 @@ export const RecentProfiles = () => {
     <div className="recent-profiles">
       {/* ... */}
       <div className="recent-profiles-content">
-        {profiles && userAccessibleGroups && (<>{/* ... */}</>)}
-        {(!profiles || !userAccessibleGroups) && <IonLoading/>}
+        {profiles && userAccessibleGroups ? (<>{/* ... */}</>) : <IonLoading isOpen={true} />}
       </div>
       {/* ... */}
     </div>
