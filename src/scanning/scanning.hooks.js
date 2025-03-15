@@ -78,7 +78,7 @@ export const useScanningProfiles = () => {
     queryKey: [QUERY_KEYS.SCANNING_PROFILES],
     queryFn: () =>
       fetchUserProfile(userInfo).then(
-        (userProfile) => userProfile.preferences.scanningProfiles,
+        (userProfile) => userProfile.preferences.scanningProfiles || []
       ),
   });
   return {
