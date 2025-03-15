@@ -1,3 +1,4 @@
+import "./ScanningProfilesScreen.scss";
 import {
   IonBackButton,
   IonButtons,
@@ -6,6 +7,7 @@ import {
   IonList,
   IonLoading,
   IonPage,
+  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -48,25 +50,31 @@ export const ScanningProfilesScreen = () => {
       </IonHeader>
       <IonContent>
         {profiles && defaultProfileIndex && userAccessibleGroups ? (
-          <IonList>
-            <ProfileListItem
-              profile={profiles[defaultProfileIndex]}
-              userAccessibleGroups={userAccessibleGroups}
-              itemSliding={true}
-              onClick={() =>
-                handleOnProfileClick(profiles[defaultProfileIndex])
-              }
-            />
-            {profiles.toSpliced(defaultProfileIndex, 1).map((profile) => (
+          profiles.length > 0 ? (
+            <IonList>
               <ProfileListItem
-                key={profile.name}
-                profile={profile}
+                profile={profiles[defaultProfileIndex]}
                 userAccessibleGroups={userAccessibleGroups}
                 itemSliding={true}
-                onClick={() => handleOnProfileClick(profile)}
+                onClick={() =>
+                  handleOnProfileClick(profiles[defaultProfileIndex])
+                }
               />
-            ))}
-          </IonList>
+              {profiles.toSpliced(defaultProfileIndex, 1).map((profile) => (
+                <ProfileListItem
+                  key={profile.name}
+                  profile={profile}
+                  userAccessibleGroups={userAccessibleGroups}
+                  itemSliding={true}
+                  onClick={() => handleOnProfileClick(profile)}
+                />
+              ))}
+            </IonList>
+          ) : <div className="hint-container">
+                <IonText color="secondary" className="hint">
+                  You don’t have any profiles yet.
+                </IonText>
+              </div>
         ) : (
           <IonLoading />
         )}
