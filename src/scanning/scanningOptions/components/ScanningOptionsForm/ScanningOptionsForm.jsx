@@ -2,10 +2,10 @@ import "./ScanningOptionsForm.scss";
 import { ScanningOptionsDate } from "../ScanningOptionsDate/ScanningOptionsDate.jsx";
 import { ScanningOptionsProgram } from "../ScanningOptionsProgram/ScanningOptionsProgram.jsx";
 import { ScanningOptionsDiscarding } from "../ScanningOptionsDiscarding/ScanningOptionsDiscarding.jsx";
-import { IonButton, useIonAlert } from "@ionic/react";
+import { IonButton, IonLoading, useIonAlert } from "@ionic/react";
 import { useForm } from "react-hook-form";
 import moment from "moment-timezone";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import {
   useUserAccessibleGroups,
   useUserProfile,
@@ -34,6 +34,7 @@ export const ScanningOptionsForm = () => {
   );
   const history = useHistory();
   const [presentAlert] = useIonAlert();
+  const [loading, setLoading] = useState(false);
   let defaultValues = getDefaultValues();
 
   if (scanningProfile) {
@@ -116,6 +117,7 @@ export const ScanningOptionsForm = () => {
       });
       return;
     }
+    setLoading(true);
     const saveGroupIds = data.selectedGroups;
     const savedStatus = computeSavedStatus({ ...data });
     const startDate = moment(data.startDate).format();
@@ -130,6 +132,7 @@ export const ScanningOptionsForm = () => {
       endDate,
     });
 
+    setLoading(false);
     history.push("/scanning/main", {
       ...response,
       junkGroupIDs,
@@ -188,6 +191,7 @@ export const ScanningOptionsForm = () => {
           Scan
         </IonButton>
       </div>
+      <IonLoading isOpen={loading} message="Scanning..." />
     </>
   );
 };

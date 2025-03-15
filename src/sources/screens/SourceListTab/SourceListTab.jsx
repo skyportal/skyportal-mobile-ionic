@@ -1,5 +1,11 @@
 import "./SourceListTab.scss";
-import { IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
+import {
+  IonContent,
+  IonHeader,
+  IonLoading,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import { Suspense } from "react";
 import { SourceList } from "../../components/SourceList/SourceList.jsx";
 
@@ -12,7 +18,7 @@ export const SourceListTab = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<IonLoading isOpen={true} />}>
           <SourceList />
         </Suspense>
       </IonContent>
