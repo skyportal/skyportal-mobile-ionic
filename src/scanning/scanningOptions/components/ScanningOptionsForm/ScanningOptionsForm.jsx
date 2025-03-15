@@ -88,6 +88,7 @@ export const ScanningOptionsForm = () => {
       };
     },
     onError: (error) => {
+      setLoading(false);
       if (error.message === "No candidates found") {
         presentAlert({
           header: "No candidates found",
