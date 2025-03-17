@@ -13,6 +13,10 @@ export const Thumbnail = ({ candidate, type }) => {
   const { userInfo } = useContext(UserContext);
   const instanceUrl = userInfo?.instance.url;
   const [src, setSrc] = useState(getThumbnailImageUrl(instanceUrl, candidate, type));
+  if (src === null) {
+    return null;
+  }
+
   const { alt } = getThumbnailAltAndSurveyLink(
     instanceUrl,
     type,
