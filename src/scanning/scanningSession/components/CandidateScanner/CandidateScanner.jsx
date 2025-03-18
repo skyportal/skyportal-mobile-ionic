@@ -359,7 +359,7 @@ export const CandidateScanner = () => {
         <div className="embla__container">
           {scanningConfig && candidates ? (
             <>
-              {scanningConfig && candidates?.map((candidate, index) => (
+              {scanningConfig && candidates.map((candidate, index) => (
                 <div key={candidate.id} className="embla__slide">
                   <ScanningCard
                     candidate={candidate}
