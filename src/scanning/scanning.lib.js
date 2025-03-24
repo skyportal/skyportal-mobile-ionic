@@ -32,6 +32,7 @@
  * @property {CandidateThumbnail[]} thumbnails - Thumbnails of the candidate
  * @property {CandidateAnnotation[]} annotations - Annotations of the candidate
  * @property {boolean} is_source - Is the candidate has been saved
+ * @property {Group[]} saved_groups - Groups the candidate has been saved to
  */
 
 /**
