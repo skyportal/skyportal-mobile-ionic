@@ -187,20 +187,20 @@ You can find more about this on the [Sass documentation](https://sass-lang.com/d
 Although you should strive to use Ionic components as much as you can.
 As they come with built-in styles that will integrate smoothly with the rest of the UI, you should try to write as little
 styling code as you can and rely more on Ionic components. If you do need some custom styles, a good practice is to
-always give a style class to your component's top-level element. For example in the CandidateScanner component:
+always give a style class to your component's top-level element. For example in the CandidateList component:
 
 ```jsx
 return (
-  <div className="candidate-scanner">
+  <div className="candidate-list">
     {/* ... */}
   </div>
 );
 ```
 
-And then in CandidateScanner.scss, we have:
+And then in CandidateList.scss, we have:
 
 ```scss
-.candidate-scanner {
+.candidate-list {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 90% 10%;
@@ -209,17 +209,13 @@ And then in CandidateScanner.scss, we have:
   .embla {
     // ...
   }
-
-  .action-buttons-container {
-    // ...
-  }
 }
 ```
 
 Do not forget to import the style file in your React component by adding:
 
 ```jsx
-import "./CandidateScanner.scss";
+import "./CandidateList.scss";
 ```
 
 If you need to define global styles, you can put them in the `global.scss` file.

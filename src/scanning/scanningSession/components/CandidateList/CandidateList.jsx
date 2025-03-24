@@ -1,15 +1,15 @@
-import "./CandidateScanner.scss";
-import { IonModal, useIonAlert, useIonToast } from "@ionic/react";
+import "./CandidateList.scss";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { useUserAccessibleGroups } from "../../../../common/common.hooks.js";
-import { checkmarkCircleOutline, warningOutline } from "ionicons/icons";
+import { IonModal, useIonAlert, useIonToast } from "@ionic/react";
+import { useMutation } from "@tanstack/react-query";
 import useEmblaCarousel from "embla-carousel-react";
+import { checkmarkCircleOutline, warningOutline } from "ionicons/icons";
+import { useUserAccessibleGroups } from "../../../../common/common.hooks.js";
 import { CandidateAnnotationsViewer } from "../CandidateAnnotationsViewer/CandidateAnnotationsViewer.jsx";
 import { ScanningCard } from "../ScanningCard/ScanningCard.jsx";
 import { ScanningCardSkeleton } from "../ScanningCard/ScanningCardSkeleton.jsx";
 import { useSearchCandidates } from "../../../scanning.hooks.js";
 import { addSourceToGroups } from "../../../scanning.requests.js";
-import { useMutation } from "@tanstack/react-query";
 import {
   parseIntList,
   SCANNING_TOOLBAR_ACTION,
@@ -20,7 +20,7 @@ import { useLocation } from "react-router";
 import { UserContext } from "../../../../common/common.context.js";
 import { CANDIDATES_PER_PAGE } from "../../../../common/common.lib.js";
 
-export const CandidateScanner = () => {
+export const CandidateList = () => {
   const { userInfo } = useContext(UserContext);
   const { userAccessibleGroups } = useUserAccessibleGroups();
 
@@ -227,24 +227,24 @@ export const CandidateScanner = () => {
           reject();
           return;
         }
-        // @ts-ignore
         presentAlert({
           header:
             action === "save" ? "Select a program" : "Select a junk group",
           buttons: [action === "save" ? "Save" : "Discard"],
+          /** @type {import("@ionic/react").AlertInput[]} */
           inputs: (action === "save"
             ? scanningConfig.saveGroups
             : scanningConfig.junkGroups
           ).map((group) => ({
             type: "checkbox",
             label: group.name,
-            value: group.id,
+            value: String(group.id),
           })),
           onDidDismiss: (/** @type {any} **/ e) => {
             const groupIds = e.detail.data.values;
             resolve(groupIds);
           },
-        });
+        }).then()
       }),
     [state, currentCandidate, presentAlert],
   );
@@ -279,7 +279,7 @@ export const CandidateScanner = () => {
           groupIds,
         });
       }else{
-        presentToast({
+        await presentToast({
           message: "No group selected, please select at least one group",
           duration: 2000,
           position: "top",
@@ -383,7 +383,7 @@ export const CandidateScanner = () => {
   };
 
   return (
-    <div className="candidate-scanner">
+    <div className="candidate-list">
       <div className="embla" ref={emblaRef}>
         <div className="embla__container">
           {scanningConfig && candidates ? (

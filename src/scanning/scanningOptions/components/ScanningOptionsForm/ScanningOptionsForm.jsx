@@ -140,7 +140,7 @@ export const ScanningOptionsForm = () => {
     });
 
     setLoading(false);
-    history.push("/scanning/main", {
+    history.push("/scanning/result", {
       ...response,
       junkGroupIDs,
       pinnedAnnotations,

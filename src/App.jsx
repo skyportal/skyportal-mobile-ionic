@@ -44,7 +44,7 @@ import CheckQRCodeScreen from "./onboarding/screens/CheckQRCodeScreen/CheckQRCod
 import { LoginOkScreen } from "./onboarding/screens/LoginOkScreen/LoginOkScreen.jsx";
 import { useAppStart } from "./common/common.hooks.js";
 import { ScanningOptionsScreen } from "./scanning/scanningOptions/screens/ScanningOptionsScreen/ScanningOptionsScreen.jsx";
-import { MainScanningScreen } from "./scanning/scanningSession/screens/MainScanningScreen/MainScanningScreen.jsx";
+import { CandidateListScreen } from "./scanning/scanningSession/screens/CandidateListScreen/CandidateListScreen.jsx";
 import { SourceListTab } from "./sources/screens/SourceListTab/SourceListTab.jsx";
 import {
   compassOutline,
@@ -130,7 +130,7 @@ const App = ({ darkMode: initialDarkMode }) => {
                     <Route path="/scanning/profiles" component={ScanningProfilesScreen} />
                     <Route path="/scanning/new-profile" component={ScanningNewProfileScreen} />
                     <Route path="/scanning/options" component={ScanningOptionsScreen} />
-                    <Route path="/scanning/main" component={MainScanningScreen} />
+                    <Route path="/scanning/result" component={CandidateListScreen} />
                     <Route path="/scanning/recap" component={ScanningRecapScreen} />
                     <Route exact path="/scanning" component={ScanningOptionsScreen} />
                   </IonRouterOutlet>
