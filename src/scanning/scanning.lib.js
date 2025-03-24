@@ -31,6 +31,7 @@
  * @property {string} id - Source id
  * @property {CandidateThumbnail[]} thumbnails - Thumbnails of the candidate
  * @property {CandidateAnnotation[]} annotations - Annotations of the candidate
+ * @property {boolean} is_source - Is the candidate has been saved
  */
 
 /**

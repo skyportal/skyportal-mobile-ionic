@@ -5,6 +5,7 @@ import { PinnedAnnotations } from "../PinnedAnnotations/PinnedAnnotations.jsx";
 import { CandidatePhotometryChart } from "../CandidatePhotometryChart/CandidatePhotometryChart.jsx";
 import { memo } from "react";
 import { ScanningCardSkeleton } from "./ScanningCardSkeleton.jsx";
+import { IonChip } from "@ionic/react";
 
 /**
  * Scanning card component
@@ -31,8 +32,11 @@ const ScanningCardBase = ({
         className="scanning-card"
         style={{ visibility: isInView ? "visible" : "hidden" }}
       >
-        <div className="candidate-name">
+        <div className="candidate-header">
           <h1>{candidate.id}</h1>
+          <IonChip className="is-saved" color={candidate.is_source ? "primary" : "secondary"}>
+            {candidate.is_source ? "Previously Saved" : "Not saved"}
+          </IonChip>
           <div className="pagination-indicator">
             {currentIndex + 1}/{nbCandidates}
           </div>
