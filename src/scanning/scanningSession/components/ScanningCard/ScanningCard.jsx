@@ -67,13 +67,13 @@ const ScanningCardBase = ({
           onButtonClick={() => modal.current?.present()}
           pinnedAnnotationIds={pinnedAnnotations}
         />
-        <Classification candidate={candidate} />
         <div className="plot-container">
           <CandidatePhotometryChart
             candidateId={candidate.id}
             isInView={isInView}
           />
         </div>
+        <Classification candidate={candidate} />
       </div>
       <ScanningCardSkeleton visible={!isInView} />
       {/* Saved groups modal */}

@@ -13,11 +13,13 @@ export const Classification = ({candidate}) => {
 
   return (
     <div className="classification">
-      Latest classification(s):
+      Latest classification
       {mostRecentHumanClassification && (
-        <IonChip color="primary">
-          {mostRecentHumanClassification}
-        </IonChip>
+        <div>
+          <IonChip color="primary">
+            {mostRecentHumanClassification}
+          </IonChip>
+        </div>
       )}
     </div>
   );
