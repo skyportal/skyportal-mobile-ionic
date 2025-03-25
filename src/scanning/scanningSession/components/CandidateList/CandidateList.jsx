@@ -34,8 +34,7 @@ export const CandidateList = () => {
       ...state,
       /** @type {import("../../../scanning.lib.js").Group[]} **/
       saveGroups: userAccessibleGroups
-        ? state.saveGroupIds
-            .map((/** @type {number} */ id) =>
+        ? state.saveGroupIds?.map((/** @type {number} */ id) =>
               userAccessibleGroups.find((g) => g.id === id),
             )
             .filter(
