@@ -14,6 +14,7 @@ import {
   IonTitle,
   IonToolbar
 } from "@ionic/react";
+import { Classification } from "../Classification/Classification.jsx";
 
 /**
  * Scanning card component
@@ -66,6 +67,7 @@ const ScanningCardBase = ({
           onButtonClick={() => modal.current?.present()}
           pinnedAnnotationIds={pinnedAnnotations}
         />
+        <Classification candidate={candidate} />
         <div className="plot-container">
           <CandidatePhotometryChart
             candidateId={candidate.id}

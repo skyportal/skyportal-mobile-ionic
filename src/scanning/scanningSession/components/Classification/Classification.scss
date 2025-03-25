@@ -1,0 +1,11 @@
+.classification {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  padding: 0.7rem;
+  border: 0.5px rgba(var(--ion-color-secondary-rgb), 0.3) solid;
+  align-self: center;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 3px rgba(var(--ion-color-medium-rgb), 0.2);
+}
