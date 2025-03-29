@@ -49,7 +49,7 @@ export const ScanningProfilesScreen = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        {profiles && defaultProfileIndex && userAccessibleGroups ? (
+        {profiles && defaultProfileIndex !== undefined && userAccessibleGroups && (
           profiles.length > 0 ? (
             <IonList>
               <ProfileListItem
@@ -75,9 +75,8 @@ export const ScanningProfilesScreen = () => {
                   You don’t have any profiles yet.
                 </IonText>
               </div>
-        ) : (
-          <IonLoading isOpen={true} />
         )}
+        <IonLoading isOpen={!profiles || defaultProfileIndex === undefined || !userAccessibleGroups} />
       </IonContent>
     </IonPage>
   );

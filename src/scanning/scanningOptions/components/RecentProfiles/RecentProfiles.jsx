@@ -54,7 +54,7 @@ export const RecentProfiles = () => {
         </IonButton>
       </div>
       <div className="recent-profiles-content">
-        {profiles && userAccessibleGroups ? (
+        {profiles && userAccessibleGroups && (
           profiles.length > 0 ? (
             <IonList color="light" inset>
               {defaultProfileIndex !== undefined && defaultProfileIndex !== -1 && (
@@ -89,7 +89,8 @@ export const RecentProfiles = () => {
               </IonText>
             </div>
           )
-        ) : <IonLoading isOpen={true} />}
+        )}
+        <IonLoading isOpen={!profiles || !userAccessibleGroups} />
       </div>
       <div className="buttons-container">
         <IonButton
