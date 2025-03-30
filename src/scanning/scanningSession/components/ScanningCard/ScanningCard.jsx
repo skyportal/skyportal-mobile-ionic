@@ -16,6 +16,7 @@ import {
 } from "@ionic/react";
 import { Classification } from "../Classification/Classification.jsx";
 import { FollowupRequests } from "../FollowupRequests/FollowupRequests.jsx";
+import { Comments } from "../Comments/Comments.jsx";
 
 /**
  * Scanning card component
@@ -75,6 +76,7 @@ const ScanningCardBase = ({
           />
         </div>
         <Classification candidate={candidate} />
+        <Comments comments={candidate.comments} />
         <FollowupRequests candidate={candidate} requestType={"triggered"} />
         <FollowupRequests candidate={candidate} requestType={"forced_photometry"}/>
       </div>

@@ -43,6 +43,7 @@
  * @property {Group[]} saved_groups - Groups the candidate has been saved to
  * @property {CandidateClassification[]} classifications - Classifications of the candidate
  * @property {FollowupRequest[]} followup_requests - Follow-up requests
+ * @property {Comment[]} comments - Comments on the follow-up request
  */
 
 /**
@@ -53,7 +54,6 @@
  * @property {Payload} payload - Payload of the follow-up request
  * @property {User} requester - Requester details
  * @property {string} status - Status of the follow-up request
- * @property {Comment[]} comments - Comments on the follow-up request
  */
 
 /**
@@ -61,6 +61,7 @@
  * @property {string} id - Comment ID
  * @property {string} text - Comment text
  * @property {User} author - Author of the comment
+ * @property {string} created_at - Created date
  */
 
 /**

@@ -1,0 +1,29 @@
+.comments {
+  .section-title {
+    padding: 0.5rem 1rem 0 1rem;
+  }
+
+  .comment{
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0;
+    gap: 0.3rem;
+    width: 100%;
+    .author {
+      font-size: 0.8rem;
+      .date{
+        color: var(--ion-color-secondary);
+      }
+    }
+    .text {
+      font-size: 0.9rem;
+      text-align: left;
+    }
+  }
+
+  .no-comments{
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 0.5rem 0 1rem 0;
+  }
+}
