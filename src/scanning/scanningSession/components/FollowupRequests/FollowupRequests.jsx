@@ -1,5 +1,5 @@
 import "./FollowupRequests.scss";
-import { IonItem, IonLabel, IonList, IonListHeader } from "@ionic/react";
+import { IonItem, IonLabel, IonList, IonListHeader, IonText } from "@ionic/react";
 import { formatDateTime } from "../../../../common/common.lib.js";
 
 /**
@@ -29,8 +29,10 @@ export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
 
   return (
     <div className="followup-requests">
-      <div className="section-title">Followup Requests</div>
-      {requestsByInstrument &&
+      <div className="section-title">
+        { requestType === "forced_photometry" ? "Forced Photometry": "Follow-up Requests"}
+      </div>
+      {requestsByInstrument && Object.keys(requestsByInstrument).length > 0 ?
         Object.entries(requestsByInstrument).map(
           ([instrumentName, followupRequests]) => (
             <IonList inset key={instrumentName}>
@@ -54,6 +56,12 @@ export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
               )}
             </IonList>
           ),
+        ) : (
+          <div className="no-followup-requests">
+            <IonText color="secondary">
+              no followup requests found...
+            </IonText>
+          </div>
         )}
     </div>
   );

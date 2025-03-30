@@ -75,7 +75,8 @@ const ScanningCardBase = ({
           />
         </div>
         <Classification candidate={candidate} />
-        <FollowupRequests candidate={candidate} />
+        <FollowupRequests candidate={candidate} requestType={"triggered"} />
+        <FollowupRequests candidate={candidate} requestType={"forced_photometry"}/>
       </div>
       <ScanningCardSkeleton visible={!isInView} />
       {/* Saved groups modal */}
