@@ -49,7 +49,7 @@ export const ProfileListItem = ({
     >
       <IonItem color="light" onClick={onClick} button>
         <IonLabel>
-          {profile.name}
+          <h2>{profile.name}</h2>
           <p>
             {profile.groupIDs
               .map(
