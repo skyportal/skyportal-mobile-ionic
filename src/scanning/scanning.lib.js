@@ -42,6 +42,40 @@
  * @property {boolean} is_source - Is the candidate has been saved
  * @property {Group[]} saved_groups - Groups the candidate has been saved to
  * @property {CandidateClassification[]} classifications - Classifications of the candidate
+ * @property {FollowupRequest[]} followup_requests - Follow-up requests
+ */
+
+/**
+ * @typedef {Object} FollowupRequest
+ * @property {string} id - Follow-up request ID
+ * @property {string} created_at - Created date
+ * @property {Allocation} allocation - Allocation details
+ * @property {Payload} payload - Payload of the follow-up request
+ * @property {Requester} requester - Requester details
+ */
+
+/**
+ * @typedef {Object} Requester
+ * @property {string} id - Requester ID
+ * @property {string} username - Requester username
+ */
+
+/**
+ * @typedef {Object} Payload
+ * @property {string} request_type - Type of the request
+ */
+
+/**
+ * @typedef {Object} Allocation
+ * @property {string} id - Allocation ID
+ * @property {string[]} types - Types of the allocation
+ * @property {Instrument} instrument - Instrument details
+ */
+
+/**
+ * @typedef {Object} Instrument
+ * @property {string} id - Instrument ID
+ * @property {string} name - Instrument name
  */
 
 /**

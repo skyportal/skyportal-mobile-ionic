@@ -1,0 +1,21 @@
+.followup-requests {
+  border: 0.5px rgba(var(--ion-color-secondary-rgb), 0.3) solid;
+  align-self: center;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 3px rgba(var(--ion-color-medium-rgb), 0.2);
+
+  .section-title{
+    padding: 0.5rem 1rem 0 1rem;
+  }
+
+  .followup-request {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    width: 100%;
+    .username {
+      color: var(--ion-color-secondary);
+    }
+  }
+}

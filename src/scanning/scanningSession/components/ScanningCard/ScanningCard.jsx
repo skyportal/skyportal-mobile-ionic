@@ -15,6 +15,7 @@ import {
   IonToolbar
 } from "@ionic/react";
 import { Classification } from "../Classification/Classification.jsx";
+import { FollowupRequests } from "../FollowupRequests/FollowupRequests.jsx";
 
 /**
  * Scanning card component
@@ -74,6 +75,7 @@ const ScanningCardBase = ({
           />
         </div>
         <Classification candidate={candidate} />
+        <FollowupRequests candidate={candidate} />
       </div>
       <ScanningCardSkeleton visible={!isInView} />
       {/* Saved groups modal */}
