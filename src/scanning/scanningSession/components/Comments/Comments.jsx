@@ -1,5 +1,5 @@
 import "./Comments.scss"
-import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonList, IonText } from "@ionic/react";
+import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonText } from "@ionic/react";
 
 /**
  * @param {Object} props
