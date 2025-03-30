@@ -66,7 +66,7 @@ export const PinnedAnnotations = ({
   }, [candidate.annotations]);
 
   return (
-    <div className="pinned-annotations">
+    <div className="pinned-annotations section">
       <div className="annotations">
         {pinnedAnnotations.map((annotationLine) => (
           <IonItem

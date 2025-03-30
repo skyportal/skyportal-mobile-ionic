@@ -20,11 +20,17 @@ ion-skeleton-text {
   height: 100vh;
   background-color: var(--ion-background-color);
 }
-
-.section-title {
-  font-size: 0.9rem;
-  color: var(--ion-color-secondary);
+.section{
+  border: 0.5px rgba(var(--ion-color-secondary-rgb), 0.3) solid;
+  align-self: center;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 3px rgba(var(--ion-color-medium-rgb), 0.2);
+  .section-title {
+    font-size: 0.9rem;
+    color: var(--ion-color-secondary);
+  }
 }
+
 
 form {
   .form-section {

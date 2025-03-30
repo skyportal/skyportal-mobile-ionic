@@ -22,6 +22,7 @@ import { useState } from "react";
  */
 export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
   /** @type {[FollowupRequest | null, React.Dispatch<React.SetStateAction<FollowupRequest | null>>]} */
+  // @ts-ignore
   const [openFollowupRequest, setOpenFollowupRequest] = useState(null);
 
   const requestsByInstrument = candidate.followup_requests?.reduce((
@@ -47,7 +48,7 @@ export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
 
 
   return (
-    <div className="followup-requests">
+    <div className="followup-requests section">
       <div className="section-title">
         { requestType === "forced_photometry" ? "Forced Photometry": "Follow-up Requests"}
       </div>

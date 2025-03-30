@@ -16,7 +16,7 @@ export const Classification = ({candidate}) => {
   }
 
   return (
-    <div className="classification">
+    <div className="classification section">
       <div className="section-title">
         Latest classification
       </div>
