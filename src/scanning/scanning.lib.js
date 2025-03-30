@@ -51,14 +51,22 @@
  * @property {string} created_at - Created date
  * @property {Allocation} allocation - Allocation details
  * @property {Payload} payload - Payload of the follow-up request
- * @property {Requester} requester - Requester details
+ * @property {User} requester - Requester details
  * @property {string} status - Status of the follow-up request
+ * @property {Comment[]} comments - Comments on the follow-up request
  */
 
 /**
- * @typedef {Object} Requester
- * @property {string} id - Requester ID
- * @property {string} username - Requester username
+ * @typedef {Object} Comment
+ * @property {string} id - Comment ID
+ * @property {string} text - Comment text
+ * @property {User} author - Author of the comment
+ */
+
+/**
+ * @typedef {Object} User
+ * @property {string} id - User ID
+ * @property {string} username - Username
  */
 
 /**
