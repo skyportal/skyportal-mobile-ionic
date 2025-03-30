@@ -1,3 +1,4 @@
+import { formatDateTime } from "../../../common/common.lib.js";
 import "./SourceListItem.scss";
 import { IonIcon } from "@ionic/react";
 import { starOutline } from "ionicons/icons";
@@ -20,14 +21,7 @@ export const SourceListItem = ({ source }) => {
       <div className="created">
         <div className="label">Created:</div>
         <div className="value">
-          {new Date(source.created_at).toLocaleString("en-US", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            timeZoneName: "short",
-          })}
+          {formatDateTime(source.created_at)}
         </div>
       </div>
       <div className="coords">
