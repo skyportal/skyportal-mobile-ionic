@@ -51,41 +51,39 @@ export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
       <div className="section-title">
         { requestType === "forced_photometry" ? "Forced Photometry": "Follow-up Requests"}
       </div>
-      {requestsByInstrument && Object.keys(requestsByInstrument).length > 0 ?
-        Object.entries(requestsByInstrument).map(
-          ([instrumentName, followupRequests]) => (
-            <IonAccordionGroup key={instrumentName} multiple>
-              <IonAccordion value="first">
-                <IonItem slot="header" color="light">
-                  <h6>
-                    <IonLabel>{instrumentName}</IonLabel>
-                  </h6>
-                </IonItem>
-                {followupRequests.map((/** @type {import("../../../scanning.lib.js").FollowupRequest} */ followupRequest) => (
-                    <IonItem key={followupRequest.id}
-                             onClick={() => handleFollowupRequestClick(followupRequest)}
-                         slot="content">
-                      <div className="followup-request">
-                        <div className="created">
-                          {formatDateTime(followupRequest.created_at)}
-                        </div>
-                        <div className="username">
-                          {followupRequests[0]?.requester?.username}
-                        </div>
+      <IonAccordionGroup multiple>
+        {requestsByInstrument && Object.keys(requestsByInstrument).length > 0 ?
+          Object.entries(requestsByInstrument).map(([instrumentName, followupRequests]) => (
+            <IonAccordion key={instrumentName} value={instrumentName}>
+              <IonItem slot="header" color="light">
+                <h6>
+                  <IonLabel>{instrumentName}</IonLabel>
+                </h6>
+              </IonItem>
+              {followupRequests.map((/** @type {import("../../../scanning.lib.js").FollowupRequest} */ followupRequest) => (
+                  <IonItem key={followupRequest.id}
+                           onClick={() => handleFollowupRequestClick(followupRequest)}
+                       slot="content">
+                    <div className="followup-request">
+                      <div className="created">
+                        {formatDateTime(followupRequest.created_at)}
                       </div>
-                    </IonItem>
-                  ),
-                )}
-              </IonAccordion>
-            </IonAccordionGroup>
-          ),
-        ) : (
-          <div className="no-followup-requests">
-            <IonText color="secondary">
-              no followup requests found...
-            </IonText>
-          </div>
-        )}
+                      <div className="username">
+                        {followupRequests[0]?.requester?.username}
+                      </div>
+                    </div>
+                  </IonItem>
+                ),
+              )}
+            </IonAccordion>
+          )) : (
+            <div className="no-followup-requests">
+              <IonText color="secondary">
+                no followup requests found...
+              </IonText>
+            </div>
+          )}
+      </IonAccordionGroup>
       <FollowupRequestModal followupRequest={openFollowupRequest} setOpenFollowupRequest={setOpenFollowupRequest} />
     </div>
   );
