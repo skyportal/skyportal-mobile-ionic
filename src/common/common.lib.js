@@ -97,6 +97,22 @@ export async function clearPreference(key) {
 }
 
 /**
+ * Formats a date and time string into a more readable format.
+ * @param {string} dateTime - The date and time string to format.
+ * @returns {string} The formatted date and time string.
+ */
+export const formatDateTime = (dateTime) => {
+  return new Date(dateTime).toLocaleString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    timeZoneName: "short",
+  });
+};
+
+/**
  * The instances that are available for login
  * @type {SkyPortalInstance[]}
  */
