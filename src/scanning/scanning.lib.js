@@ -52,6 +52,7 @@
  * @property {Allocation} allocation - Allocation details
  * @property {Payload} payload - Payload of the follow-up request
  * @property {Requester} requester - Requester details
+ * @property {string} status - Status of the follow-up request
  */
 
 /**
@@ -63,11 +64,17 @@
 /**
  * @typedef {Object} Payload
  * @property {string} request_type - Type of the request
+ * @property {string} start_date - Start date of the request
+ * @property {string} end_date - End date of the request
+ * @property {string[]} filters - Filters of the request
+ * @property {string} priority - Priority of the request
  */
 
 /**
  * @typedef {Object} Allocation
  * @property {string} id - Allocation ID
+ * @property {string} pi - Principal investigator
+ * @property {Group} group - Group details
  * @property {string[]} types - Types of the allocation
  * @property {Instrument} instrument - Instrument details
  */

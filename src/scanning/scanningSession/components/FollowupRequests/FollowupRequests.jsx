@@ -1,14 +1,29 @@
 import "./FollowupRequests.scss";
-import { IonItem, IonLabel, IonList, IonListHeader, IonText } from "@ionic/react";
+import {
+  IonAccordion,
+  IonAccordionGroup,
+  IonItem,
+  IonLabel,
+  IonText
+} from "@ionic/react";
 import { formatDateTime } from "../../../../common/common.lib.js";
+import { FollowupRequestModal } from "./FollowupRequestModal.jsx";
+import { useState } from "react";
+
+/** @typedef {import("../../../scanning.lib.js").FollowupRequest} FollowupRequest */
+/** @typedef {import("../../../scanning.lib.js").Candidate} Candidate */
+
 
 /**
  * @param {Object} props
- * @param {import("../../../scanning.lib.js").Candidate} props.candidate
+ * @param {Candidate} props.candidate
  * @param {string} [props.requestType="triggered"]
  * @returns {JSX.Element | null}
  */
 export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
+  /** @type {[FollowupRequest | null, React.Dispatch<React.SetStateAction<FollowupRequest | null>>]} */
+  const [openFollowupRequest, setOpenFollowupRequest] = useState(null);
+
   const requestsByInstrument = candidate.followup_requests?.reduce((
     /** @type {Record<string, import("../../../scanning.lib.js").FollowupRequest[]>} */ acc,
     followupRequest) => {
@@ -26,6 +41,10 @@ export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
     return acc;
   }, {});
 
+  const handleFollowupRequestClick = (/** @type {import("../../../scanning.lib.js").FollowupRequest} */ followupRequest) => {
+    setOpenFollowupRequest(followupRequest);
+  }
+
 
   return (
     <div className="followup-requests">
@@ -35,26 +54,30 @@ export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
       {requestsByInstrument && Object.keys(requestsByInstrument).length > 0 ?
         Object.entries(requestsByInstrument).map(
           ([instrumentName, followupRequests]) => (
-            <IonList inset key={instrumentName}>
-              <IonListHeader>
-                <h6>
-                  <IonLabel>{instrumentName}</IonLabel>
-                </h6>
-              </IonListHeader>
-              {followupRequests.map((/** @type {import("../../../scanning.lib.js").FollowupRequest} */ followupRequest) => (
-                  <IonItem key={followupRequest.id}>
-                    <div className="followup-request">
-                      <div className="created">
-                        {formatDateTime(followupRequest.created_at)}
+            <IonAccordionGroup key={instrumentName} multiple>
+              <IonAccordion value="first">
+                <IonItem slot="header" color="light">
+                  <h6>
+                    <IonLabel>{instrumentName}</IonLabel>
+                  </h6>
+                </IonItem>
+                {followupRequests.map((/** @type {import("../../../scanning.lib.js").FollowupRequest} */ followupRequest) => (
+                    <IonItem key={followupRequest.id}
+                             onClick={() => handleFollowupRequestClick(followupRequest)}
+                         slot="content">
+                      <div className="followup-request">
+                        <div className="created">
+                          {formatDateTime(followupRequest.created_at)}
+                        </div>
+                        <div className="username">
+                          {followupRequests[0]?.requester?.username}
+                        </div>
                       </div>
-                      <div className="username">
-                        {followupRequests[0]?.requester?.username}
-                      </div>
-                    </div>
-                  </IonItem>
-                ),
-              )}
-            </IonList>
+                    </IonItem>
+                  ),
+                )}
+              </IonAccordion>
+            </IonAccordionGroup>
           ),
         ) : (
           <div className="no-followup-requests">
@@ -63,6 +86,7 @@ export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
             </IonText>
           </div>
         )}
+      <FollowupRequestModal followupRequest={openFollowupRequest} setOpenFollowupRequest={setOpenFollowupRequest} />
     </div>
   );
 };
