@@ -44,6 +44,7 @@
  * @property {CandidateClassification[]} classifications - Classifications of the candidate
  * @property {FollowupRequest[]} followup_requests - Follow-up requests
  * @property {Comment[]} comments - Comments on the follow-up request
+ * @property {string} tns_name - TNS name
  */
 
 /**

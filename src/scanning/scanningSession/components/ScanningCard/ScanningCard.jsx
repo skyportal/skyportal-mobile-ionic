@@ -75,6 +75,21 @@ const ScanningCardBase = ({
             isInView={isInView}
           />
         </div>
+        {candidate.tns_name && (
+          <div className="section section-padding">
+            <div className="section-title">
+              TNS Name
+            </div>
+            <div>
+              {/* Use the last part of the TNS name */}
+              <IonChip
+                href={`https://www.wis-tns.org/object/${candidate.tns_name.split(" ").pop()}`}
+                target="_blank">
+                {candidate.tns_name}
+              </IonChip>
+            </div>
+          </div>
+        )}
         <Classification candidate={candidate} />
         <Comments comments={candidate.comments} />
         <FollowupRequests candidate={candidate} requestType={"triggered"} />
