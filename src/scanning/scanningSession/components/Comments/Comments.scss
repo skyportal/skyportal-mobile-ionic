@@ -9,14 +9,11 @@
     padding: 0.5rem 0;
     gap: 0.3rem;
     width: 100%;
-    .author {
-      font-size: 0.8rem;
-      .date{
-        color: var(--ion-color-secondary);
-      }
+    font-size: 0.8rem;
+    .date{
+      color: var(--ion-color-secondary);
     }
     .text {
-      font-size: 0.9rem;
       text-align: left;
     }
   }

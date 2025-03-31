@@ -58,7 +58,7 @@ export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
             <IonAccordion key={instrumentName} value={instrumentName}>
               <IonItem slot="header" color="light">
                 <h6>
-                  <IonLabel>{instrumentName}</IonLabel>
+                  <IonLabel className="instrument-name">{instrumentName}</IonLabel>
                 </h6>
               </IonItem>
               {followupRequests.map((/** @type {import("../../../scanning.lib.js").FollowupRequest} */ followupRequest) => (
