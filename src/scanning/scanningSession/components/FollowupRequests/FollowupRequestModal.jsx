@@ -63,7 +63,7 @@ export const FollowupRequestModal = ({followupRequest, setOpenFollowupRequest}) 
             <IonItem color="light">
               <IonLabel className="field">Filters:</IonLabel>
               <IonLabel>
-                {followupRequest.payload.filters?.map((filter) =>
+                {followupRequest.payload?.filters?.map((filter) =>
                     <IonChip key={filter} color="primary">
                       {filter}
                     </IonChip>
@@ -72,7 +72,7 @@ export const FollowupRequestModal = ({followupRequest, setOpenFollowupRequest}) 
             </IonItem>
             <IonItem color="light">
               <IonLabel className="field">Priority:</IonLabel>
-              <IonLabel>{followupRequest.payload.priority}</IonLabel>
+              <IonLabel>{followupRequest.payload?.priority}</IonLabel>
             </IonItem>
             <IonItem color="light">
               <IonLabel className="field">Status:</IonLabel>
