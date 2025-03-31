@@ -33,7 +33,7 @@ export const Comments = ({comments}) => {
 
   return (
     <div className="comments section">
-      <div className="section-title">
+      <div className="section-title section-padding">
         Comments
       </div>
       <IonAccordionGroup>

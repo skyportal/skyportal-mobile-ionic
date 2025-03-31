@@ -49,7 +49,7 @@ export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
 
   return (
     <div className="followup-requests section">
-      <div className="section-title">
+      <div className="section-title section-padding">
         { requestType === "forced_photometry" ? "Forced Photometry": "Follow-up Requests"}
       </div>
       <IonAccordionGroup multiple>

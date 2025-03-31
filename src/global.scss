@@ -20,17 +20,25 @@ ion-skeleton-text {
   height: 100vh;
   background-color: var(--ion-background-color);
 }
+
+
+.section-padding {
+  padding-top: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
 .section{
   border: 0.5px rgba(var(--ion-color-secondary-rgb), 0.3) solid;
   align-self: center;
   border-radius: 0.5rem;
   box-shadow: 0 0 3px rgba(var(--ion-color-medium-rgb), 0.2);
+  padding-bottom: 0.5rem;
   .section-title {
+    margin-bottom: 0.3rem;
     font-size: 0.9rem;
     color: var(--ion-color-secondary);
   }
 }
-
 
 form {
   .form-section {

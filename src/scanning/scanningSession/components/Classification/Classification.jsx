@@ -1,4 +1,3 @@
-import "./Classification.scss";
 import { IonChip } from "@ionic/react";
 
 /**
@@ -16,12 +15,12 @@ export const Classification = ({candidate}) => {
   }
 
   return (
-    <div className="classification section">
+    <div className="section section-padding">
       <div className="section-title">
         Latest classification
       </div>
       <div>
-        <IonChip color="primary">
+        <IonChip>
           {mostRecentHumanClassification}
         </IonChip>
       </div>
