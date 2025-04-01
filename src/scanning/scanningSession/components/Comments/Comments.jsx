@@ -43,7 +43,7 @@ export const Comments = ({comments}) => {
               <IonItem key={comment.id} color="light" slot={index > 0 ? "content" : "header"}>
               <div className="comment">
                   <IonLabel color="primary">
-                    {comment.author.username}
+                    {comment.author?.username}
                     <span className="date">{" - " + getDateDiff(comment.created_at)}</span>
                   </IonLabel>
                   <div className="text">
