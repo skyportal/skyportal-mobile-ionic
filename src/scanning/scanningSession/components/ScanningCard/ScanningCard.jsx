@@ -17,6 +17,7 @@ import {
 import { FollowupRequests } from "../FollowupRequests/FollowupRequests.jsx";
 import { Comments } from "../Comments/Comments.jsx";
 import { CandidateSourceInfo } from "../CandidateSourceInfo/CandidateSourceInfo.jsx";
+import { Spectras } from "../Spectra/Spectras.jsx";
 
 /**
  * Scanning card component
@@ -77,6 +78,7 @@ const ScanningCardBase = ({
         </div>
         <CandidateSourceInfo candidate={candidate} />
         <Comments comments={candidate.comments} />
+        <Spectras candidate={candidate} />
         <FollowupRequests candidate={candidate} requestType={"triggered"} />
         <FollowupRequests candidate={candidate} requestType={"forced_photometry"}/>
       </div>

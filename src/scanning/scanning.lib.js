@@ -45,6 +45,14 @@
  * @property {FollowupRequest[]} followup_requests - Follow-up requests
  * @property {Comment[]} comments - Comments on the follow-up request
  * @property {string} tns_name - TNS name
+ * @property {Spectra[]} spectra - Spectra of the candidate
+ */
+
+/**
+ * @typedef {Object} Spectra
+ * @property {string} id - Spectra ID
+ * @property {string} observed_at - Observed date
+ * @property {Instrument} instrument - Instrument details
  */
 
 /**
