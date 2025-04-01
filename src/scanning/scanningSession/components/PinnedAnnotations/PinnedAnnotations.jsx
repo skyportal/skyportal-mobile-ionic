@@ -1,5 +1,5 @@
 import "./PinnedAnnotations.scss";
-import { IonButton, IonIcon, IonItem, IonText } from "@ionic/react";
+import { IonButton, IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import {
   extractAnnotationOriginAndKey,
   getAnnotationId,
@@ -68,45 +68,43 @@ export const PinnedAnnotations = ({
   return (
     <div className="pinned-annotations section">
       <div className="annotations">
-        {pinnedAnnotations.map((annotationLine) => (
-          <IonItem
-            key={getAnnotationId(annotationLine.origin, annotationLine.id)}
-            className="annotation-line"
-            lines="none"
-            onClick={() =>
-              handleTextCopied(annotationLine.id, sanitizeAnnotationData(annotationLine.value))
-            }
-            detail={false}
-            button
-          >
-            <IonText className="name" color="secondary">
-              {annotationLine.id}
-            </IonText>
-            {"\u00A0"}
-            {annotationLine.value ? (
-              <div className="annotation-line-content">
-                <span className="annotation-value">
-                  {concat(sanitizeAnnotationData(annotationLine.value), 20)}
-                </span>
-                <IonIcon icon={copyOutline} size="small" color="secondary" />
-              </div>
-            ) : (
-              <>
-                <IonText color="warning" className="no-value">
-                  No value
-                </IonText>
-              </>
-            )}
-          </IonItem>
-        ))}
+        <IonList>
+          {pinnedAnnotations.map((annotationLine) => (
+            <IonItem
+              key={getAnnotationId(annotationLine.origin, annotationLine.id)}
+              onClick={() =>
+                handleTextCopied(
+                  annotationLine.id,
+                  sanitizeAnnotationData(annotationLine.value, true)
+                )
+              }
+              color="light"
+              lines="none"
+            >
+              <IonLabel color="secondary" className="annotation-id">
+                {annotationLine.id}:
+              </IonLabel>
+              {annotationLine.value ? (
+                <IonLabel className="annotation-value">
+                  {concat(sanitizeAnnotationData(annotationLine.value,false), 15)}
+                  <IonIcon icon={copyOutline} size="small" color="secondary"></IonIcon>
+                </IonLabel>
+              ) : (
+                <IonLabel color="warning" className="no-value">
+                  no value
+                </IonLabel>
+              )}
+            </IonItem>
+          ))}
+        </IonList>
       </div>
       <div className="button-container">
         <IonButton
           onClick={onButtonClick}
           color="secondary"
-          expand="block"
           size="small"
           fill="clear"
+          className="ion-text-nowrap"
         >
           Show all
         </IonButton>

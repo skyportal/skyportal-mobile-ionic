@@ -24,13 +24,13 @@ export const CandidateAnnotationItem = ({ annotation }) => {
           .map(([key, value]) => (
             <IonItem
               key={key}
-              onClick={() => handleTextCopied(key, sanitizeAnnotationData(value))}
+              onClick={() => handleTextCopied(key, sanitizeAnnotationData(value, true))}
               detail={false}
               button
             >
               <IonText color="secondary">{key}:</IonText>
               {"\u00A0"}
-              <IonText>{sanitizeAnnotationData(value)}</IonText>
+              <IonText>{sanitizeAnnotationData(value,false)}</IonText>
               {"\u00A0"}
               {"\u00A0"}
               {"\u00A0"}

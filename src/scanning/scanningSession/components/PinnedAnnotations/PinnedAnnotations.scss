@@ -2,48 +2,34 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem;
-  height: 100%;
-
-  .annotations {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    flex: 1;
+  .annotations{
+    width: 70vw;
+    overflow: scroll;
 
     ion-item {
-      --background: none;
-      --inner-padding-bottom: 0.2rem;
-      --inner-padding-top: 0.1rem;
-      --padding-start: 0.2rem;
+      --inner-padding-end: 0px;
+      --inner-padding-top: 0px;
+      --inner-padding-bottom: 0px;
       --min-height: 0;
     }
-
-    &.skeleton {
-      gap: 0.3rem;
-    }
-
-    .annotation-line {
-      display: flex;
-      gap: 0.5rem;
+    .annotation-id,
+    .annotation-value,
+    .no-value {
+      margin-top: 0.2rem;
+      margin-bottom: 0.2rem;
       font-size: 0.9rem;
 
-      .annotation-line-content {
-        display: flex;
-        gap: 0.5rem;
-
-        .annotation-value {
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          max-lines: 1;
-        }
-      }
+    }
+    .annotation-value {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
   }
 
+
   .button-container {
     display: flex;
-    width: 5rem;
+    text-wrap: nowrap;
   }
 }
