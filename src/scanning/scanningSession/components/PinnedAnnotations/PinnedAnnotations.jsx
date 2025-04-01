@@ -30,7 +30,7 @@ export const PinnedAnnotations = ({
   const [pinnedAnnotations, setPinnedAnnotations] = useState([]);
 
   useEffect(() => {
-    const pinnedAnnotations = pinnedAnnotationIds
+    const annotations = pinnedAnnotationIds
       .map((id) => {
         const { key, origin } = extractAnnotationOriginAndKey(id);
         return {
@@ -43,18 +43,18 @@ export const PinnedAnnotations = ({
       })
       .filter((annotation) => annotation.value);
 
-    if (pinnedAnnotations.length >= 3) {
-      setPinnedAnnotations(pinnedAnnotations);
+    if (annotations.length >= 3) {
+      setPinnedAnnotations(annotations);
       return;
     }
 
     for (const annotation of candidate.annotations) {
       for (const [key, value] of Object.entries(annotation.data)) {
-        if (pinnedAnnotations.length >= 3) {
+        if (annotations.length >= 3) {
           break;
         }
-        if ( value && !pinnedAnnotations.some((item) => item.id === key && item.origin === annotation.origin)) {
-          pinnedAnnotations.push({
+        if ( value && !annotations.some((item) => item.id === key && item.origin === annotation.origin)) {
+          annotations.push({
             id: key,
             origin: annotation.origin,
             value,
@@ -62,7 +62,7 @@ export const PinnedAnnotations = ({
         }
       }
     }
-    setPinnedAnnotations([...pinnedAnnotations].slice(0, 3));
+    setPinnedAnnotations([...annotations].slice(0, 3));
   }, [candidate.annotations]);
 
   return (
