@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { fetchAnnotationInfo, searchCandidates } from "./scanning.requests.js";
+import { fetchAnnotationInfo, fetchSourceSpectra, searchCandidates } from "./scanning.requests.js";
 import { fetchUserProfile } from "../onboarding/onboarding.lib.js";
 import { useContext } from "react";
 import { UserContext } from "../common/common.context.js";
@@ -107,3 +107,30 @@ export const useAnnotationsInfo = () => {
     error,
   };
 };
+
+/**
+ * @param {string} sourceId
+ * @returns {{spectraList: import("./scanning.lib.js").Spectra[] | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined }}
+ */
+export const useSourceSpectra = (sourceId) => {
+  const { userInfo } = useContext(UserContext);
+  const {
+    data: spectraList,
+    status,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.SOURCE_SPECTRA, sourceId],
+    queryFn: async () => {
+      if (!sourceId) {
+        throw new Error("Missing sourceId");
+      }
+      return await fetchSourceSpectra({ userInfo, sourceId });
+    },
+    enabled: !!sourceId,
+  });
+  return {
+    spectraList,
+    status,
+    error,
+  };
+}

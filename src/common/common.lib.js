@@ -138,6 +138,7 @@ export const QUERY_KEYS = {
   SCANNING_PROFILES: "scanningProfiles",
   ANNOTATIONS_INFO: "annotationsInfo",
   APP_PREFERENCES: "appPreferences",
+  SOURCE_SPECTRA: "sourceSpectra",
 };
 /**
  * @type {Object.<SavedStatus, string>}

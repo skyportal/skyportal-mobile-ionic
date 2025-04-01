@@ -3,6 +3,7 @@ import { formatDateTime } from "../../../../common/common.lib.js";
 import {
   IonButton,
   IonButtons,
+  IonChip,
   IonContent,
   IonHeader,
   IonItem,
@@ -31,7 +32,7 @@ export const SpectraModal = ({spectra, setOpenSpectra}) => {
     >
       <IonHeader>
         <IonToolbar>
-          <IonTitle slot="start">Spectra from {spectra?.instrument?.name}</IonTitle>
+          <IonTitle slot="start">Spectra from {spectra?.instrument_name}</IonTitle>
           <IonButtons slot="end">
             <IonButton onClick={() => setOpenSpectra(null)}>Close</IonButton>
           </IonButtons>
@@ -47,6 +48,54 @@ export const SpectraModal = ({spectra, setOpenSpectra}) => {
             <IonItem color="light">
               <IonLabel className="field">Observed at:</IonLabel>
               <IonLabel>{formatDateTime(spectra.observed_at)}</IonLabel>
+            </IonItem>
+            <IonItem color="light">
+              <IonLabel className="field">Currently visible to:</IonLabel>
+              <IonLabel>
+                {spectra.groups && spectra.groups.map((group) =>
+                  <IonChip key={group.id} color="primary">
+                    {group.name}
+                  </IonChip>
+                )}
+              </IonLabel>
+            </IonItem>
+            <IonItem color="light">
+              <IonLabel className="field">Uploaded by:</IonLabel>
+              <IonLabel>{spectra.owner?.username}</IonLabel>
+            </IonItem>
+            <IonItem color="light">
+              <IonLabel className="field">PI(s):</IonLabel>
+              <IonLabel>
+                {spectra.pis && spectra.pis.map((pi) =>
+                  <IonChip key={pi.id} color="secondary">
+                    {pi.username}
+                  </IonChip>
+                )}
+              </IonLabel>
+            </IonItem>
+            <IonItem color="light">
+              <IonLabel className="field">Reduced by:</IonLabel>
+              <IonLabel>
+                {spectra.reducers && spectra.reducers.map((reducer) =>
+                  <IonChip key={reducer.id} color="primary">
+                    {reducer.username}
+                  </IonChip>
+                )}
+              </IonLabel>
+            </IonItem>
+            <IonItem color="light">
+              <IonLabel className="field">Observed by:</IonLabel>
+              <IonLabel>
+                {spectra.observers && spectra.observers.map((observer) =>
+                  <IonChip key={observer.id} color="secondary">
+                    {observer.username}
+                  </IonChip>
+                )}
+              </IonLabel>
+            </IonItem>
+            <IonItem color="light">
+              <IonLabel className="field">Type:</IonLabel>
+              <IonLabel>{spectra.type}</IonLabel>
             </IonItem>
           </IonList>
         )}

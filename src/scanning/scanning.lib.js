@@ -53,6 +53,13 @@
  * @property {string} id - Spectra ID
  * @property {string} observed_at - Observed date
  * @property {Instrument} instrument - Instrument details
+ * @property {Group[]} groups - Groups the spectra belongs to
+ * @property {string} instrument_name - Instrument name
+ * @property {User} owner - Owner details
+ * @property {User[]} pis - Principal investigators
+ * @property {User[]} reducers - Reducers
+ * @property {User[]} observers - Observers
+ * @property {string} type - Type of the spectra
  */
 
 /**

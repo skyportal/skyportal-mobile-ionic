@@ -1,4 +1,4 @@
-import "./Spectras.scss";
+import "./SpectraList.scss";
 import {
   IonItem, IonList,
   IonText
@@ -6,6 +6,7 @@ import {
 import { formatDateTime } from "../../../../common/common.lib.js";
 import { SpectraModal } from "./SpectraModal.jsx";
 import { useState } from "react";
+import { useSourceSpectra } from "../../../scanning.hooks.js";
 
 /** @typedef {import("../../../scanning.lib.js").Spectra} Spectra */
 /** @typedef {import("../../../scanning.lib.js").Candidate} Candidate */
@@ -16,25 +17,27 @@ import { useState } from "react";
  * @param {Candidate} props.candidate
  * @returns {JSX.Element | null}
  */
-export const Spectras = ({candidate}) => {
+export const SpectraList = ({candidate}) => {
+  const { spectraList } = useSourceSpectra(candidate.id);
   /** @type {[Spectra | null, React.Dispatch<React.SetStateAction<Spectra | null>>]} */
   // @ts-ignore
   const [openSpectra, setOpenSpectra] = useState(null);
 
-  const handleSpectraClick = (/** @type {import("../../../scanning.lib.js").Spectra} */ spectra) => {
-    setOpenSpectra(spectra);
+  const handleSpectraClick = (/** @type {string} */ spectraId) => {
+    if (!spectraList) return;
+    setOpenSpectra(spectraList.find((/** @type {Spectra} */ spectra) => spectra.id === spectraId) || null);
   }
 
 
   return (
-    <div className="spectras section">
+    <div className="spectra-list section">
       <div className="section-title section-padding">
         Spectra
       </div>
       <IonList lines="full" color="light">
         {candidate.spectra ? candidate.spectra.map((/** @type {import("../../../scanning.lib.js").Spectra} */ spectra) => (
           <IonItem key={spectra.id}
-                   onClick={() => handleSpectraClick(spectra)}
+                   onClick={() => handleSpectraClick(spectra.id)}
                    color="light">
             <div className="spectra">
               <div className="instrument-name">

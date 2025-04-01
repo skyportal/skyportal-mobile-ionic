@@ -179,3 +179,21 @@ export const fetchAnnotationInfo = async ({ userInfo }) => {
   });
   return response.data.data;
 };
+
+/**
+ * Fetch all spectra for a source
+ * @param {Object} params
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
+ * @param {string} params.sourceId - The source ID
+ * @returns {Promise<import("./scanning.lib.js").Spectra[]>}
+ */
+export const fetchSourceSpectra = async ({ userInfo, sourceId }) => {
+  let response = await CapacitorHttp.get({
+    url: `${userInfo.instance.url}/api/sources/${sourceId}/spectra`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+      "Content-Type": "application/json",
+    },
+  });
+  return response.data.data?.spectra;
+}
