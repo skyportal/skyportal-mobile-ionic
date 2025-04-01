@@ -17,7 +17,6 @@ import { useState } from "react";
  * @returns {JSX.Element | null}
  */
 export const Spectras = ({candidate}) => {
-  console.log(candidate);
   /** @type {[Spectra | null, React.Dispatch<React.SetStateAction<Spectra | null>>]} */
   // @ts-ignore
   const [openSpectra, setOpenSpectra] = useState(null);
