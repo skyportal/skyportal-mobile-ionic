@@ -1,4 +1,3 @@
-import "./SourceListTab.scss";
 import {
   IonContent,
   IonHeader,
