@@ -34,28 +34,30 @@ export const SpectraList = ({candidate}) => {
       <div className="section-title section-padding">
         Spectra
       </div>
-      <IonList lines="full" color="light">
-        {candidate.spectra ? candidate.spectra.map((/** @type {import("../../../scanning.lib.js").Spectra} */ spectra) => (
-          <IonItem key={spectra.id}
-                   onClick={() => handleSpectraClick(spectra.id)}
-                   color="light">
-            <div className="spectra">
-              <div className="instrument-name">
-                {spectra.instrument?.name}
+      {candidate.spectra && candidate.spectra.length > 0 ? (
+        <IonList lines="full" color="light">
+          {candidate.spectra.map((/** @type {import("../../../scanning.lib.js").Spectra} */ spectra) => (
+            <IonItem key={spectra.id}
+                     onClick={() => handleSpectraClick(spectra.id)}
+                     color="light">
+              <div className="spectra">
+                <div className="instrument-name">
+                  {spectra.instrument?.name}
+                </div>
+                <div className="observed-at">
+                  {formatDateTime(spectra.observed_at)}
+                </div>
               </div>
-              <div className="observed-at">
-                {formatDateTime(spectra.observed_at)}
-              </div>
-            </div>
-          </IonItem>
-          )) : (
-            <div className="no-spectra">
-              <IonText color="secondary">
-                no spectra found...
-              </IonText>
-            </div>
-          )}
-      </IonList>
+            </IonItem>
+          ))}
+        </IonList>
+      ) : (
+        <div className="no-spectra">
+          <IonText color="secondary">
+            no spectra found...
+          </IonText>
+        </div>
+      )}
       <SpectraModal spectra={openSpectra} setOpenSpectra={setOpenSpectra} />
     </div>
   );
