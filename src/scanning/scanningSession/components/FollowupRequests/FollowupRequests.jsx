@@ -70,7 +70,7 @@ export const FollowupRequests = ({candidate, requestType = "triggered"}) => {
                         {formatDateTime(followupRequest.created_at)}
                       </div>
                       <div className="username">
-                        {followupRequests[0]?.requester?.username}
+                        {followupRequest.requester?.username}
                       </div>
                     </div>
                   </IonItem>
