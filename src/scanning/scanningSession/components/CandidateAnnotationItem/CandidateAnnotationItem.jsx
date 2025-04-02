@@ -20,7 +20,6 @@ export const CandidateAnnotationItem = ({ annotation }) => {
           </h6>
         </IonListHeader>
         {Object.entries(annotation.data)
-          .slice(0, 3)
           .map(([key, value]) => (
             <IonItem
               key={key}
