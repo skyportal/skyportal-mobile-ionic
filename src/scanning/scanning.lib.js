@@ -693,3 +693,32 @@ export const sanitizeAnnotationData = (data, withIndentation) => {
   }
   return data;
 }
+
+/**
+ * @param {string} stringUTCDate
+ * @returns {string}
+ */
+export const getDateDiff = (/** @type {string} */stringUTCDate) => {
+  const date = new Date(stringUTCDate + "Z"); // Add 'Z' to indicate that the date is in UTC
+  if (isNaN(date.getTime())) {
+    return "...";
+  }
+  const diff = new Date().getTime() - date.getTime();
+  const diffInMinutes = Math.floor(diff / (1000 * 60));
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes} minute${diffInMinutes > 1 ? "s" : ""} ago`;
+  }
+
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) {
+    return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+  }
+
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 365) {
+    return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+  }
+
+  const diffInYears = Math.floor(diffInDays / 365);
+  return `${diffInYears} year${diffInYears > 1 ? "s" : ""} ago`;
+}
