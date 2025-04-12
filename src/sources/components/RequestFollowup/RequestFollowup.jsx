@@ -388,6 +388,12 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
           uiSchema={{
             ...uiSchema,
             "ui:submitButtonOptions": { norender: true },
+            "ui:order": [
+              "start_date",
+              "end_date",
+              ...Object.keys(schema?.properties || {}).sort()
+                .filter((key) => key !== "start_date" && key !== "end_date"),
+            ],
           }}
           customValidate={validate}
           onSubmit={handleSubmit}
