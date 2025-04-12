@@ -84,8 +84,8 @@ export const useSubmitFollowupRequest = () => {
     onSuccess: (response) => {
       if (response.status === 200) {
         presentToast({
-          message: response.message,
-          duration: 2000,
+          message: response.data?.data?.request_status || "Request submitted",
+          duration: 3000,
           position: "top",
           color: "success",
           icon: checkmarkCircleOutline
