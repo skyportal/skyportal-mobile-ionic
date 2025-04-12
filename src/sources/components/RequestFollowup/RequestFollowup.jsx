@@ -417,6 +417,15 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
             ErrorListTemplate: ErrorListTemplate,
           }}
           ref={formRef}
+          onError={() => {
+            presentToast({
+              message: "Error on form submission, please check the fields.",
+              duration: 3000,
+              position: "top",
+              color: "danger",
+              icon: warningOutline,
+            }).then();
+          }}
         />
       )}
       <IonLoading isOpen={loading} message={"Submitting..."} />
