@@ -98,6 +98,7 @@ export const DateWidget = ({ value, onChange, id, label }) => {
 /**
  * @param {object} props
  * @param {string} props.id - The id of the widget
+ * @param {string} props.label - The label of the widget
  * @param {{enumOptions: { label: string, value: string }[]}} props.options - The checkbox options
  * @param {string[]} props.value - The value of each checkbox
  * @param {boolean} props.disabled - Whether the widget is disabled
@@ -105,9 +106,12 @@ export const DateWidget = ({ value, onChange, id, label }) => {
  * @param {boolean} props.autofocus - Whether the widget is autofocus
  * @param {function} props.onChange - The function to call when the value changes
  */
-export const CheckboxesWidget = ({ id, options, value, disabled, readonly, autofocus, onChange }) => {
+export const CheckboxesWidget = ({ id, label, options, value, disabled, readonly, autofocus, onChange }) => {
   return (
     <IonList>
+      <IonLabel position="stacked">
+        {label}
+      </IonLabel>
       {options.enumOptions.map((option, index) =>
         <IonItem key={option.value} lines="none">
           <IonCheckbox
@@ -161,12 +165,10 @@ export const CheckboxWidget = ({ id, label, value, onChange }) => {
  * @param {object} props
  * @param {string} props.id - The id of the field
  * @param {string} props.classNames - The class names of the field
- * @param {string} props.label - The label of the field
  * @param {string} props.errors - The errors of the field
  * @param {React.ReactNode} props.children - The children of the field
  */
-export const FieldTemplate = ({ id, classNames, label, errors, children }) => {
-  const isArray = classNames.includes("field-array");
+export const FieldTemplate = ({ id, classNames, errors, children }) => {
   return id === "root" ? (
     <div className={classNames} id={id}>
       {children}
@@ -174,7 +176,6 @@ export const FieldTemplate = ({ id, classNames, label, errors, children }) => {
   ) : (
       <IonItem className={classNames} id={id} color="light">
         <div className="field-template-item">
-          {isArray && <IonLabel position="stacked">{label}</IonLabel>}
           {children}
           {errors && <IonNote color="danger">{errors}</IonNote>}
         </div>

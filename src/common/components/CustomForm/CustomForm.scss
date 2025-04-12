@@ -11,27 +11,16 @@
       align-items: start;
       margin: 0.5rem 0;
       width: 100%;
-    }
 
-    .checkbox{
-      input{
-        margin-right: 1rem;
+      ion-list{
+        background: var(--ion-color-light) !important;
       }
     }
+
 
     // Field Error Message
     ion-note {
       font-size: 0.8rem;
     }
-  }
-
-  // Custom Submit Button
-  .btn{
-    margin: 1rem;
-    padding: 0.5rem 1rem;
-    border-radius: 1rem;
-    font-weight: 500;
-    background: var(--ion-color-primary);
-    font-size: 1.1rem;
   }
 }
