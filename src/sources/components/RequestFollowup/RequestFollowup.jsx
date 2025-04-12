@@ -40,8 +40,9 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
   const defaultAllocationId = null;
 
   const [selectedRequestType, setSelectedRequestType] = useState("triggered");
-  const [selectedAllocationId, setSelectedAllocationId] =
-    useState(defaultAllocationId);
+  /** @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]} */
+  // @ts-ignore
+  const [selectedAllocationId, setSelectedAllocationId] = useState(defaultAllocationId);
   /** @type {[number[], React.Dispatch<React.SetStateAction<number[]>>]} */
   // @ts-ignore
   const [selectedGroupIds, setSelectedGroupIds] = useState([]);
@@ -51,6 +52,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
   // @ts-ignore
   const [filteredAllocations, setFilteredAllocations] = useState([]);
   const [settingFilteredList, setSettingFilteredList] = useState(false);
+  /** @type {React.MutableRefObject<any>} */
   const formRef = useRef(null);
   const submitFollowupRequestMutation = useSubmitFollowupRequest();
 
@@ -395,16 +397,20 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
                 .filter((key) => key !== "start_date" && key !== "end_date"),
             ],
           }}
+          // @ts-ignore
           customValidate={validate}
+          // @ts-ignore
           onSubmit={handleSubmit}
           disabled={loading}
           className="form"
           widgets={{
+            // @ts-ignore
             SelectWidget: SelectWidget,
             TextWidget: TextWidget,
             DateWidget: DateWidget,
           }}
           templates={{
+            // @ts-ignore
             FieldTemplate: FieldTemplate,
             ErrorListTemplate: ErrorListTemplate,
           }}
