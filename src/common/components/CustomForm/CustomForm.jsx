@@ -79,10 +79,10 @@ export const DateWidget = ({ value, onChange, id, label }) => {
   return (
     <>
       <IonLabel position="stacked">{label}</IonLabel>
-      <IonDatetimeButton datetime={id + "-datetime"}/>
-      <IonModal>
+      <IonDatetimeButton datetime={id + "_datetime"}/>
+      <IonModal keepContentsMounted={true}>
         <IonDatetime
-          id={id + "-datetime"}
+          id={id + "_datetime"}
           value={value || ""}
           onIonChange={(e) => onChange(e.detail.value)}
           presentation="date"

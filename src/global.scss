@@ -13,6 +13,17 @@ ion-skeleton-text {
   box-sizing: border-box;
 }
 
+// Display backdrop even when multiple modals stacked
+ion-modal.modal-default {
+  --backdrop-opacity: 0.4 !important;
+  --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+// Increase the opacity of the popover backdrop
+ion-popover {
+  --backdrop-opacity: 0.2;
+}
+
 .app-loading {
   display: flex;
   justify-content: center;
