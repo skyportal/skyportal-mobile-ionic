@@ -187,3 +187,23 @@ export const FieldTemplate = ({ id, classNames, label, errors, children }) => {
  * So only the error message under each field will be displayed
  */
 export const ErrorListTemplate = () => null;
+
+/**
+ * Returns an uiSchema order to regroup start_date and end_date and put dependent fields at the end
+ * @param {{dependencies: object, if: {properties: object}, properties: object}} schema
+ * @returns {string[]}
+ */
+export const getSchemaOrder = (schema) => {
+  const dependentFields = Object.keys(schema?.if?.properties || {}).concat(
+    Object.keys(schema?.dependencies || {})
+  );
+
+  return [
+    "start_date",
+    "end_date",
+    ...Object.keys(schema?.properties || {}).sort()
+      .filter((key) => key !== "start_date" && key !== "end_date" && !dependentFields.includes(key)),
+    ...dependentFields,
+    '*'
+  ];
+}

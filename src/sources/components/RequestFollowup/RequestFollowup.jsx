@@ -22,7 +22,11 @@ import {
   TextWidget,
   SelectWidget,
   FieldTemplate,
-  ErrorListTemplate, DateWidget
+  ErrorListTemplate,
+  DateWidget,
+  CheckboxesWidget,
+  CheckboxWidget,
+  getSchemaOrder,
 } from "../../../common/components/CustomForm/CustomForm.jsx";
 import { warningOutline } from "ionicons/icons";
 import { useSubmitFollowupRequest } from "../../sources.hooks.js";
@@ -390,12 +394,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
           uiSchema={{
             ...uiSchema,
             "ui:submitButtonOptions": { norender: true },
-            "ui:order": [
-              "start_date",
-              "end_date",
-              ...Object.keys(schema?.properties || {}).sort()
-                .filter((key) => key !== "start_date" && key !== "end_date"),
-            ],
+            "ui:order": getSchemaOrder(schema),
           }}
           // @ts-ignore
           customValidate={validate}
@@ -404,6 +403,9 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
           disabled={loading}
           className="form"
           widgets={{
+            // @ts-ignore
+            CheckboxesWidget: CheckboxesWidget,
+            CheckboxWidget: CheckboxWidget,
             // @ts-ignore
             SelectWidget: SelectWidget,
             TextWidget: TextWidget,
