@@ -1,10 +1,13 @@
 import "./CustomForm.scss"
 import {
+  IonCheckbox,
   IonDatetime,
   IonDatetimeButton,
   IonInput,
   IonItem,
-  IonLabel, IonModal,
+  IonLabel,
+  IonList,
+  IonModal,
   IonNote,
   IonSelect,
   IonSelectOption
@@ -94,6 +97,68 @@ export const DateWidget = ({ value, onChange, id, label }) => {
 
 /**
  * @param {object} props
+ * @param {string} props.id - The id of the widget
+ * @param {{enumOptions: { label: string, value: string }[]}} props.options - The checkbox options
+ * @param {string[]} props.value - The value of each checkbox
+ * @param {boolean} props.disabled - Whether the widget is disabled
+ * @param {boolean} props.readonly - Whether the widget is readonly
+ * @param {boolean} props.autofocus - Whether the widget is autofocus
+ * @param {function} props.onChange - The function to call when the value changes
+ */
+export const CheckboxesWidget = ({ id, options, value, disabled, readonly, autofocus, onChange }) => {
+  return (
+    <IonList>
+      {options.enumOptions.map((option, index) =>
+        <IonItem key={option.value} lines="none">
+          <IonCheckbox
+            id={id + "-" + index}
+            name={id}
+            checked={value.includes(option.value)}
+            disabled={disabled || readonly}
+            autoFocus={autofocus && index === 0}
+            onIonChange={(e) => {
+              let newVal;
+              if (e.detail.checked) {
+                newVal = [...value, option.value];
+              } else {
+                newVal = value.filter((val) => val !== option.value);
+              }
+              onChange(newVal);
+            }
+          }
+            labelPlacement="end"
+          >
+            {option.label}
+          </IonCheckbox>
+        </IonItem>
+      )}
+    </IonList>
+  );
+}
+
+/**
+ * @param {object} props
+ * @param {string} props.id - The id of the widget
+ * @param {string} props.label - The label of the widget
+ * @param {boolean} props.value - The value of the widget
+ * @param {function} props.onChange - The function to call when the value changes
+ */
+export const CheckboxWidget = ({ id, label, value, onChange }) => {
+  return (
+    <IonCheckbox
+      id={id}
+      checked={value}
+      onIonChange={(e) => onChange(e.detail.checked)}
+      labelPlacement="end"
+    >
+      {label}
+    </IonCheckbox>
+  );
+}
+
+/**
+ * Custom template for all form fields
+ * @param {object} props
  * @param {string} props.id - The id of the field
  * @param {string} props.classNames - The class names of the field
  * @param {string} props.label - The label of the field
@@ -117,4 +182,8 @@ export const FieldTemplate = ({ id, classNames, label, errors, children }) => {
   );
 };
 
+/**
+ * Custom the error list template to hide the error list on the top of the form
+ * So only the error message under each field will be displayed
+ */
 export const ErrorListTemplate = () => null;
