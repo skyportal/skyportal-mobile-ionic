@@ -5,12 +5,21 @@
     padding: 0;
     border: none;
 
+    // Add horizontal scroll when a field label is too long
+    ion-item{
+      overflow: scroll;
+      max-width: 100vw;
+      .label-text{
+        text-overflow: initial;
+      }
+    }
+
     .field-template-item{
       display: flex;
       flex-direction: column;
       align-items: start;
       margin: 0.5rem 0;
-      width: 100%;
+      width: 100vw;
 
       ion-list{
         background: var(--ion-color-light) !important;
