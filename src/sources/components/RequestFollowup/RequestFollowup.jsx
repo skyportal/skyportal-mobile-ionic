@@ -44,7 +44,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
   const defaultAllocationId = null;
 
   const [selectedRequestType, setSelectedRequestType] = useState("triggered");
-  /** @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]} */
+  /** @type {[number | null, React.Dispatch<React.SetStateAction<number | null>>]} */
   // @ts-ignore
   const [selectedAllocationId, setSelectedAllocationId] = useState(defaultAllocationId);
   /** @type {[number[], React.Dispatch<React.SetStateAction<number[]>>]} */
@@ -181,7 +181,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
     allocationLookUp[allocation.id] = allocation;
   });
 
-  /** @param {string} allocationId */
+  /** @param {number} allocationId */
   const handleSelectedAllocationChange = (allocationId) => {
     setSelectedAllocationId(allocationId);
     if (allocationLookUp[allocationId]?.default_share_group_ids?.length > 0) {
@@ -232,6 +232,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
     return errors;
   };
 
+  // Set the schema and uiSchema based on the selected allocation
   if (selectedAllocationId) {
     schema =
       selectedRequestType === "forced_photometry"
@@ -243,12 +244,12 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
       instrumentForms[allocationLookUp[selectedAllocationId].instrument_id]
         .uiSchema;
 
-    if (!schema) {
+    if (!schema || !schema.properties) {
       return (
         <IonList>
           <IonItem lines="none">
             <IonLabel color="secondary">
-              {`No schema found for the selected allocation...`}
+              {`No schema found for the selected allocation.`}
             </IonLabel>
           </IonItem>
         </IonList>
