@@ -32,13 +32,12 @@ export const SelectWidget = ({id, options, value, required, disabled, readonly, 
   return (
     <IonSelect
       id={id}
-      label={label}
+      label={label + (required ? " *" : "")}
       labelPlacement="stacked"
       value={value}
       onIonChange={(e) => onChange(e.detail.value)}
       disabled={disabled || readonly}
       interface="popover"
-      required={required}
     >
       {enumOptions.map((opt) => (
         <IonSelectOption key={opt.value} value={opt.value}>
@@ -56,11 +55,13 @@ export const SelectWidget = ({id, options, value, required, disabled, readonly, 
  * @param {{ title: string }} props.schema - The schema of the widget with the placeholder
  * @param {string} props.id - The id of the widget
  * @param {string} props.label - The label of the widget
+ * @param {boolean} props.required - Whether the widget is required
  */
-export const TextWidget = ({ value, onChange, schema, id, label }) => {
+export const TextWidget = ({ value, onChange, schema, id, label , required}) => {
   return (
     <IonInput
       label={label}
+      label={label + (required ? " *" : "")}
       labelPlacement="stacked"
       id={id}
       value={value || ''}
@@ -77,11 +78,12 @@ export const TextWidget = ({ value, onChange, schema, id, label }) => {
  * @param {function} props.onChange - The function to call when the value changes
  * @param {string} props.id - The id of the widget
  * @param {string} props.label - The label of the widget
+ * @param {boolean} props.required - Whether the widget is required
  */
-export const DateWidget = ({ value, onChange, id, label }) => {
+export const DateWidget = ({ value, onChange, id, label, required }) => {
   return (
     <>
-      <IonLabel position="stacked">{label}</IonLabel>
+      <IonLabel position="stacked">{label + (required ? " *" : "")}</IonLabel>
       <IonDatetimeButton datetime={id + "_datetime"}/>
       <IonModal keepContentsMounted={true}>
         <IonDatetime
@@ -105,12 +107,13 @@ export const DateWidget = ({ value, onChange, id, label }) => {
  * @param {boolean} props.readonly - Whether the widget is readonly
  * @param {boolean} props.autofocus - Whether the widget is autofocus
  * @param {function} props.onChange - The function to call when the value changes
+ * @param {boolean} props.required - Whether the widget is required
  */
-export const CheckboxesWidget = ({ id, label, options, value, disabled, readonly, autofocus, onChange }) => {
+export const CheckboxesWidget = ({ id, label, options, value, disabled, readonly, autofocus, onChange, required }) => {
   return (
     <IonList>
       <IonLabel position="stacked">
-        {label}
+        {label + (required ? " *" : "")}
       </IonLabel>
       {options.enumOptions.map((option, index) =>
         <IonItem key={option.value} lines="none">
@@ -146,8 +149,9 @@ export const CheckboxesWidget = ({ id, label, options, value, disabled, readonly
  * @param {string} props.label - The label of the widget
  * @param {boolean} props.value - The value of the widget
  * @param {function} props.onChange - The function to call when the value changes
+ * @param {boolean} props.required - Whether the widget is required
  */
-export const CheckboxWidget = ({ id, label, value, onChange }) => {
+export const CheckboxWidget = ({ id, label, value, onChange, required }) => {
   return (
     <IonCheckbox
       id={id}
@@ -155,7 +159,9 @@ export const CheckboxWidget = ({ id, label, value, onChange }) => {
       onIonChange={(e) => onChange(e.detail.checked)}
       labelPlacement="end"
     >
-      {label}
+      <span className="ion-text-wrap">
+        {label + (required ? " *" : "")}
+      </span>
     </IonCheckbox>
   );
 }
