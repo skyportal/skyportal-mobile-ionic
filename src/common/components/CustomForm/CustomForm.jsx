@@ -10,7 +10,8 @@ import {
   IonModal,
   IonNote,
   IonSelect,
-  IonSelectOption
+  IonSelectOption,
+  IonTextarea
 } from "@ionic/react";
 import React from "react";
 
@@ -52,15 +53,25 @@ export const SelectWidget = ({id, options, value, required, disabled, readonly, 
  * @param {object} props
  * @param {any} props.value - The value of the widget
  * @param {function} props.onChange - The function to call when the value changes
- * @param {{ title: string }} props.schema - The schema of the widget with the placeholder
+ * @param {{ title: string, type: string }} props.schema - The schema of the widget with the placeholder
  * @param {string} props.id - The id of the widget
  * @param {string} props.label - The label of the widget
  * @param {boolean} props.required - Whether the widget is required
  */
 export const TextWidget = ({ value, onChange, schema, id, label , required}) => {
-  return (
+  return value?.length > 40 ? (
+    <IonTextarea
+      label={label + (required ? " *" : "")}
+      labelPlacement="stacked"
+      id={id}
+      value={value || ''}
+      onIonChange={(e) => onChange(e.detail.value)}
+      placeholder={schema?.title || ''}
+      autoGrow={true}
+      rows={1}
+    />
+  ) : (
     <IonInput
-      label={label}
       label={label + (required ? " *" : "")}
       labelPlacement="stacked"
       id={id}
