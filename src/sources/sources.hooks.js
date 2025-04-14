@@ -74,7 +74,7 @@ export const useSubmitFollowupRequest = () => {
     /**
      * @param {Object} params
      * @param {string} params.sourceId
-     * @param {string} params.allocationId
+     * @param {number} params.allocationId
      * @param {number[]} params.groupIds
      * @param {Object} params.payload
      * @returns {Promise<*>}

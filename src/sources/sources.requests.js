@@ -102,7 +102,7 @@ export const fetchSourcePhotometry = async ({
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @param {string} params.sourceId
- * @param {string} params.allocationId
+ * @param {number} params.allocationId
  * @param {number[]} params.groupIds
  * @param {Object} params.payload
  * @returns {Promise<any>}

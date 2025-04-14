@@ -28,7 +28,7 @@ import {
   CheckboxesWidget,
   CheckboxWidget,
   getSchemaOrder,
-} from "../../../common/components/CustomForm/CustomForm.jsx";
+} from "../../../common/components/FormWidgets/FormWidgets.jsx";
 import { warningOutline } from "ionicons/icons";
 import { useSubmitFollowupRequest } from "../../sources.hooks.js";
 import { formatIsoDateString } from "../../../common/common.lib.js";
@@ -48,7 +48,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
 
 
   const [selectedRequestType, setSelectedRequestType] = useState("triggered");
-  /** @type {[number | null, React.Dispatch<React.SetStateAction<number | null>>]} */
+  /** @type {[number | undefined, React.Dispatch<React.SetStateAction<number | undefined>>]} */
   // @ts-ignore
   const [selectedAllocationId, setSelectedAllocationId] = useState(defaultAllocationId);
   /** @type {[number[], React.Dispatch<React.SetStateAction<number[]>>]} */
@@ -388,10 +388,13 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
           widgets={{
             // @ts-ignore
             CheckboxesWidget: CheckboxesWidget,
+            // @ts-ignore
             CheckboxWidget: CheckboxWidget,
             // @ts-ignore
             SelectWidget: SelectWidget,
+            // @ts-ignore
             TextWidget: TextWidget,
+            // @ts-ignore
             DateWidget: DateWidget,
           }}
           templates={{

@@ -1,4 +1,4 @@
-import "./CustomForm.scss"
+import "./FormWidgets.scss"
 import {
   IonCheckbox,
   IonDatetime,
