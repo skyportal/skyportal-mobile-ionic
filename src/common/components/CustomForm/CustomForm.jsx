@@ -183,9 +183,13 @@ export const CheckboxWidget = ({ id, label, value, onChange, required }) => {
  * @param {string} props.id - The id of the field
  * @param {string} props.classNames - The class names of the field
  * @param {string} props.errors - The errors of the field
- * @param {React.ReactNode} props.children - The children of the field
+ * @param {any} props.children - The children of the field
  */
 export const FieldTemplate = ({ id, classNames, errors, children }) => {
+  // Hide the field if the hidden widget is used
+  if (children?.props?.children[0]?.props?.uiSchema['ui:widget'] === "hidden") {
+    return null;
+  }
   return id === "root" ? (
     <div className={classNames} id={id}>
       {children}
