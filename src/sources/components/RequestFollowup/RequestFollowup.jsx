@@ -8,7 +8,8 @@ import validator from "@rjsf/validator-ajv8";
 import {
   useAllocationsApiClassname,
   useInstrumentForms,
-  useUserAccessibleGroups
+  useUserAccessibleGroups,
+  useUserProfile
 } from "../../../common/common.hooks.js";
 import {
   IonItem,
@@ -27,9 +28,10 @@ import {
   CheckboxesWidget,
   CheckboxWidget,
   getSchemaOrder,
-} from "../../../common/components/CustomForm/CustomForm.jsx";
+} from "../../../common/components/FormWidgets/FormWidgets.jsx";
 import { warningOutline } from "ionicons/icons";
 import { useSubmitFollowupRequest } from "../../sources.hooks.js";
+import { formatIsoDateString } from "../../../common/common.lib.js";
 
 /**
  * @param {object} props - The component props.
@@ -41,10 +43,12 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
   const { allocationsApiClassname } = useAllocationsApiClassname();
   const { userAccessibleGroups } = useUserAccessibleGroups();
   const { instrumentForms } = useInstrumentForms();
-  const defaultAllocationId = null;
+  const { userProfile } = useUserProfile();
+  const defaultAllocationId = userProfile?.preferences?.followupDefault;
+
 
   const [selectedRequestType, setSelectedRequestType] = useState("triggered");
-  /** @type {[number | null, React.Dispatch<React.SetStateAction<number | null>>]} */
+  /** @type {[number | undefined, React.Dispatch<React.SetStateAction<number | undefined>>]} */
   // @ts-ignore
   const [selectedAllocationId, setSelectedAllocationId] = useState(defaultAllocationId);
   /** @type {[number[], React.Dispatch<React.SetStateAction<number[]>>]} */
@@ -65,20 +69,20 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
 
   const [presentToast] = useIonToast();
 
-  useEffect(() => {
-    const displayError = async () => {
-      await presentToast({
-        message: "No allocation selected, please select one.",
-        duration: 2000,
-        position: "top",
-        color: "danger",
-        icon: warningOutline,
-      });
-    };
+  const noAllocationToast = async () => {
+    await presentToast({
+      message: "No allocation selected, please select one.",
+      duration: 2000,
+      position: "top",
+      color: "danger",
+      icon: warningOutline,
+    });
+  };
 
+  useEffect(() => {
     if (submitRequest) {
       if (selectedAllocationId === null) {
-        displayError().then();
+        noAllocationToast().then();
       } else {
         formRef.current?.submit();
       }
@@ -96,17 +100,9 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
         tempAllocationLookUp[allocation.id] = allocation;
       });
 
-      if (!selectedAllocationId) {
-        if (allocationsApiClassname[0]?.default_share_group_ids?.length > 0) {
-          setSelectedGroupIds(
-            allocationsApiClassname[0]?.default_share_group_ids,
-          );
-        } else {
-          setSelectedGroupIds([allocationsApiClassname[0]?.group_id]);
-        }
-      } else if (
-        tempAllocationLookUp[selectedAllocationId]?.default_share_group_ids
-          ?.length > 0
+      if (!selectedAllocationId) return;
+
+      if ( tempAllocationLookUp[selectedAllocationId]?.default_share_group_ids?.length > 0
       ) {
         setSelectedGroupIds(
           tempAllocationLookUp[selectedAllocationId]?.default_share_group_ids,
@@ -119,7 +115,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
     };
 
     getAllocations().then();
-  }, [setSelectedAllocationId, setSelectedGroupIds]);
+  }, [setSelectedAllocationId, setSelectedGroupIds, allocationsApiClassname]);
 
   // Filter allocations based on the selected request type
   useEffect(() => {
@@ -207,13 +203,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
         payload: formData,
       });
     } else {
-      await presentToast({
-        message: "No allocation selected, please select one.",
-        duration: 2000,
-        position: "top",
-        color: "danger",
-        icon: warningOutline,
-      });
+      noAllocationToast().then();
     }
     setLoading(false);
   };
@@ -244,62 +234,31 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
       instrumentForms[allocationLookUp[selectedAllocationId].instrument_id]
         .uiSchema;
 
-    if (!schema || !schema.properties) {
-      return (
-        <IonList>
-          <IonItem lines="none">
-            <IonLabel color="secondary">
-              {`No schema found for the selected allocation.`}
-            </IonLabel>
-          </IonItem>
-        </IonList>
-      );
-    } else {
+    if (schema && schema.properties) {
       if (selectedRequestType === "forced_photometry") {
         const endDate = new Date();
         const startDate = new Date(
           endDate.getTime() - 30 * 24 * 60 * 60 * 1000,
         );
         if (schema.properties.start_date) {
-          schema.properties.start_date.default = startDate
-            .toISOString()
-            .replace("Z", "")
-            .replace("T", " ")
-            .split(".")[0];
+          schema.properties.start_date.default = formatIsoDateString(startDate)
         }
         if (schema.properties.end_date) {
-          schema.properties.end_date.default = endDate
-            .toISOString()
-            .replace("Z", "")
-            .replace("T", " ")
-            .split(".")[0];
+          schema.properties.end_date.default = formatIsoDateString(endDate)
         }
       } else {
         const { start_date, end_date } = schema.properties;
         if (start_date) {
-          const newStartDate =
-            start_date.format === "date"
-              ? new Date().toISOString().split("T")[0]
-              : new Date().toISOString();
-          schema.properties.start_date.default = newStartDate
-            .replace("Z", "")
-            .replace("T", " ")
-            .split(".")[0];
+          schema.properties.start_date.default = formatIsoDateString(new Date(), start_date.format);
 
           if (end_date) {
             const range =
               new Date(end_date.default).getTime() -
               new Date(start_date.default).getTime();
-            const newEndDate =
-              end_date.format === "date"
-                ? new Date(new Date().getTime() + range)
-                    .toISOString()
-                    .split("T")[0]
-                : new Date(new Date().getTime() + range).toISOString();
-            schema.properties.end_date.default = newEndDate
-              .replace("Z", "")
-              .replace("T", " ")
-              .split(".")[0];
+            schema.properties.end_date.default = formatIsoDateString(
+              new Date(new Date().getTime() + range),
+              end_date.format
+            );
           }
         }
       }
@@ -327,68 +286,91 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
             </IonSelectOption>
           </IonSelect>
         </IonItem>
-        <IonItem color="light">
-          <IonSelect
-            label="Allocation"
-            labelPlacement="stacked"
-            placeholder="Select allocation"
-            interface="modal"
-            interfaceOptions={{
-              initialBreakpoint: 0.75,
-              breakpoints: [0, 0.25, 0.5, 0.75, 1],
-              expandToScroll: false,
-            }}
-            value={selectedAllocationId}
-            onIonChange={(e) => handleSelectedAllocationChange(e.target.value)}
-          >
-            {filteredAllocations?.map((allocation) => (
-              <IonSelectOption
-                value={allocation.id}
-                key={allocation.id}
-                className="allocation-option"
-              >
-                {allocation.instrument?.telescope?.name + " / \n"}
-                {allocation.instrument?.name} -{" "}
-                {
-                  userAccessibleGroups?.find(
-                    (group) => group.id === allocation.group_id,
-                  )?.name
-                }{" "}
-                (PI {allocation.pi})
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
-        <IonItem color="light">
-          <IonSelect
-            label="Share Data With"
-            multiple
-            labelPlacement="stacked"
-            interface="popover"
-            value={selectedGroupIds}
-            onIonChange={(e) => setSelectedGroupIds(e.detail.value)}
-            selectedText={
-              selectedGroupIds.length > 3
-                ? selectedGroupIds.length + " groups"
-                : selectedGroupIds.map((id) => groupLookUp[id]?.name).join(", ")
-            }
-          >
-            {userAccessibleGroups?.map((group) => (
-              <IonSelectOption value={group.id} key={group.id}>
-                {group.name}
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
-        {selectedAllocationId && (
-          <IonItem>
+        {filteredAllocations.length === 0 ? (
+          <IonItem lines="none">
             <IonLabel color="secondary">
-              {allocationLookUp[selectedAllocationId].instrument.name} instrument form
+              {`No allocations with an API class ${
+                selectedRequestType === "forced_photometry"
+                  ? "(forced photometry) "
+                  : ""
+              } where found..`}
+              .
             </IonLabel>
           </IonItem>
+        ) : (
+          <>
+            <IonItem color="light">
+              <IonSelect
+                label="Allocation"
+                labelPlacement="stacked"
+                placeholder="Select allocation"
+                interface="modal"
+                interfaceOptions={{
+                  initialBreakpoint: 0.75,
+                  breakpoints: [0, 0.25, 0.5, 0.75, 1],
+                  expandToScroll: false,
+                }}
+                value={selectedAllocationId}
+                onIonChange={(e) => handleSelectedAllocationChange(e.target.value)}
+              >
+                {filteredAllocations?.map((allocation) => (
+                  <IonSelectOption
+                    value={allocation.id}
+                    key={allocation.id}
+                    className="allocation-option"
+                  >
+                    {allocation.instrument?.telescope?.name + " / \n"}
+                    {allocation.instrument?.name} -{" "}
+                    {
+                      userAccessibleGroups?.find(
+                        (group) => group.id === allocation.group_id,
+                      )?.name
+                    }{" "}
+                    (PI {allocation.pi})
+                  </IonSelectOption>
+                ))}
+              </IonSelect>
+            </IonItem>
+            <IonItem color="light">
+              <IonSelect
+                label="Share Data With"
+                multiple
+                labelPlacement="stacked"
+                interface="popover"
+                value={selectedGroupIds}
+                onIonChange={(e) => setSelectedGroupIds(e.detail.value)}
+                selectedText={
+                  selectedGroupIds.length > 3
+                    ? selectedGroupIds.length + " groups"
+                    : selectedGroupIds.map((id) => groupLookUp[id]?.name).join(", ")
+                }
+              >
+                {userAccessibleGroups?.map((group) => (
+                  <IonSelectOption value={group.id} key={group.id}>
+                    {group.name}
+                  </IonSelectOption>
+                ))}
+              </IonSelect>
+            </IonItem>
+            {selectedAllocationId && (
+              <IonItem>
+                <IonLabel color="secondary">
+                  {allocationLookUp[selectedAllocationId].instrument.name} instrument form
+                </IonLabel>
+              </IonItem>
+            )}
+          </>
         )}
       </IonList>
-      {selectedAllocationId && (
+      { selectedAllocationId && (!schema || !schema.properties ? (
+        <IonList>
+          <IonItem lines="none">
+            <IonLabel color="secondary">
+              {`No schema found for the selected allocation.`}
+            </IonLabel>
+          </IonItem>
+        </IonList>
+      ) : (
         <Form
           schema={schema || {}}
           validator={validator}
@@ -406,10 +388,13 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
           widgets={{
             // @ts-ignore
             CheckboxesWidget: CheckboxesWidget,
+            // @ts-ignore
             CheckboxWidget: CheckboxWidget,
             // @ts-ignore
             SelectWidget: SelectWidget,
+            // @ts-ignore
             TextWidget: TextWidget,
+            // @ts-ignore
             DateWidget: DateWidget,
           }}
           templates={{
@@ -428,7 +413,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
             }).then();
           }}
         />
-      )}
+      ))}
       <IonLoading isOpen={loading} message={"Submitting..."} />
     </div>
   );

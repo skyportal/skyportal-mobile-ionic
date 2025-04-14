@@ -75,9 +75,9 @@ export const CandidateList = () => {
   /** @type {React.MutableRefObject<any>} */
   const annotationsModal = useRef(null);
   /** @type {React.MutableRefObject<any>} */
-  const RequestFollowupModal = useRef(null);
-  const [submitRequest, setSubmitRequest] = useState(false);
+  const requestFollowupModal = useRef(null);
 
+  const [submitRequest, setSubmitRequest] = useState(false);
   const [isLastBatch, setIsLastBatch] = useState(false);
 
   /** @type {React.MutableRefObject<import("../../../scanning.lib.js").ScanningRecap>} */
@@ -381,7 +381,7 @@ export const CandidateList = () => {
         await handleDiscard();
         break;
       case SCANNING_TOOLBAR_ACTION.REQUEST_FOLLOW_UP:
-        RequestFollowupModal.current?.present();
+        requestFollowupModal.current?.present();
         break;
       case SCANNING_TOOLBAR_ACTION.ADD_REDSHIFT:
         break;
@@ -445,11 +445,11 @@ export const CandidateList = () => {
           candidate={currentCandidate}
         />
       </IonModal>
-      <IonModal ref={RequestFollowupModal} isOpen={false} onDidDismiss={() => RequestFollowupModal.current?.dismiss()} keepContentsMounted={true}>
+      <IonModal ref={requestFollowupModal} isOpen={false} onDidDismiss={() => requestFollowupModal.current?.dismiss()} keepContentsMounted={true}>
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonButton color="secondary" onClick={() => RequestFollowupModal.current?.dismiss()}>Close</IonButton>
+              <IonButton color="secondary" onClick={() => requestFollowupModal.current?.dismiss()}>Close</IonButton>
             </IonButtons>
             <IonTitle slot="start">Request Follow-Up</IonTitle>
             <IonButtons slot="primary">
