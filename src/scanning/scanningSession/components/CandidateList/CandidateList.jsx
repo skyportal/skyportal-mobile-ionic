@@ -421,7 +421,9 @@ export const CandidateList = () => {
             </>
           ) : (
             <div className="embla__slide">
-              <ScanningCardSkeleton animated={true} />
+              <div className="scanning-card-container">
+                <ScanningCardSkeleton animated={true} />
+              </div>
             </div>
           )}
         </div>
