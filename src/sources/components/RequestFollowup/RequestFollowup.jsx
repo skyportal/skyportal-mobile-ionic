@@ -65,20 +65,20 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
 
   const [presentToast] = useIonToast();
 
-  useEffect(() => {
-    const displayError = async () => {
-      await presentToast({
-        message: "No allocation selected, please select one.",
-        duration: 2000,
-        position: "top",
-        color: "danger",
-        icon: warningOutline,
-      });
-    };
+  const noAllocationToast = async () => {
+    await presentToast({
+      message: "No allocation selected, please select one.",
+      duration: 2000,
+      position: "top",
+      color: "danger",
+      icon: warningOutline,
+    });
+  };
 
+  useEffect(() => {
     if (submitRequest) {
       if (selectedAllocationId === null) {
-        displayError().then();
+        noAllocationToast().then();
       } else {
         formRef.current?.submit();
       }
@@ -207,13 +207,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
         payload: formData,
       });
     } else {
-      await presentToast({
-        message: "No allocation selected, please select one.",
-        duration: 2000,
-        position: "top",
-        color: "danger",
-        icon: warningOutline,
-      });
+      noAllocationToast().then();
     }
     setLoading(false);
   };
