@@ -169,6 +169,21 @@ export const formatDateTime = (dateTime) => {
 };
 
 /**
+ * @param {Date} dateTime
+ * @param {"date"|"datetime"} format
+ */
+export const formatIsoDateString = (dateTime, format="datetime") => {
+  const date = dateTime.toISOString()
+  if (format === "date") {
+    return date.split("T")[0]
+
+  }
+  return date.replace("Z", "")
+    .replace("T", " ")
+    .split(".")[0];
+}
+
+/**
  * @param {string} stringUTCDate
  * @returns {string}
  */

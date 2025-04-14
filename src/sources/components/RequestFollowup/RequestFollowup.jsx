@@ -30,6 +30,7 @@ import {
 } from "../../../common/components/CustomForm/CustomForm.jsx";
 import { warningOutline } from "ionicons/icons";
 import { useSubmitFollowupRequest } from "../../sources.hooks.js";
+import { formatIsoDateString } from "../../../common/common.lib.js";
 
 /**
  * @param {object} props - The component props.
@@ -245,45 +246,24 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
           endDate.getTime() - 30 * 24 * 60 * 60 * 1000,
         );
         if (schema.properties.start_date) {
-          schema.properties.start_date.default = startDate
-            .toISOString()
-            .replace("Z", "")
-            .replace("T", " ")
-            .split(".")[0];
+          schema.properties.start_date.default = formatIsoDateString(startDate)
         }
         if (schema.properties.end_date) {
-          schema.properties.end_date.default = endDate
-            .toISOString()
-            .replace("Z", "")
-            .replace("T", " ")
-            .split(".")[0];
+          schema.properties.end_date.default = formatIsoDateString(endDate)
         }
       } else {
         const { start_date, end_date } = schema.properties;
         if (start_date) {
-          const newStartDate =
-            start_date.format === "date"
-              ? new Date().toISOString().split("T")[0]
-              : new Date().toISOString();
-          schema.properties.start_date.default = newStartDate
-            .replace("Z", "")
-            .replace("T", " ")
-            .split(".")[0];
+          schema.properties.start_date.default = formatIsoDateString(new Date(), start_date.format);
 
           if (end_date) {
             const range =
               new Date(end_date.default).getTime() -
               new Date(start_date.default).getTime();
-            const newEndDate =
-              end_date.format === "date"
-                ? new Date(new Date().getTime() + range)
-                    .toISOString()
-                    .split("T")[0]
-                : new Date(new Date().getTime() + range).toISOString();
-            schema.properties.end_date.default = newEndDate
-              .replace("Z", "")
-              .replace("T", " ")
-              .split(".")[0];
+            schema.properties.end_date.default = formatIsoDateString(
+              new Date(new Date().getTime() + range),
+              end_date.format
+            );
           }
         }
       }
