@@ -25,6 +25,7 @@ import { CapacitorHttp } from "@capacitor/core";
 /**
  * @typedef {Object} UserPreferences
  * @property {ScanningProfile[]} scanningProfiles - The scanning profiles of the user
+ * @property {number} followupDefault - The default allocation ID for follow-up
  */
 
 /**

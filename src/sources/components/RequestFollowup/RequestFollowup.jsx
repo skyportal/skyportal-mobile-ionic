@@ -8,7 +8,8 @@ import validator from "@rjsf/validator-ajv8";
 import {
   useAllocationsApiClassname,
   useInstrumentForms,
-  useUserAccessibleGroups
+  useUserAccessibleGroups,
+  useUserProfile
 } from "../../../common/common.hooks.js";
 import {
   IonItem,
@@ -42,7 +43,9 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
   const { allocationsApiClassname } = useAllocationsApiClassname();
   const { userAccessibleGroups } = useUserAccessibleGroups();
   const { instrumentForms } = useInstrumentForms();
-  const defaultAllocationId = null;
+  const { userProfile } = useUserProfile();
+  const defaultAllocationId = userProfile?.preferences?.followupDefault;
+
 
   const [selectedRequestType, setSelectedRequestType] = useState("triggered");
   /** @type {[number | null, React.Dispatch<React.SetStateAction<number | null>>]} */
@@ -97,17 +100,9 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
         tempAllocationLookUp[allocation.id] = allocation;
       });
 
-      if (!selectedAllocationId) {
-        if (allocationsApiClassname[0]?.default_share_group_ids?.length > 0) {
-          setSelectedGroupIds(
-            allocationsApiClassname[0]?.default_share_group_ids,
-          );
-        } else {
-          setSelectedGroupIds([allocationsApiClassname[0]?.group_id]);
-        }
-      } else if (
-        tempAllocationLookUp[selectedAllocationId]?.default_share_group_ids
-          ?.length > 0
+      if (!selectedAllocationId) return;
+
+      if ( tempAllocationLookUp[selectedAllocationId]?.default_share_group_ids?.length > 0
       ) {
         setSelectedGroupIds(
           tempAllocationLookUp[selectedAllocationId]?.default_share_group_ids,
@@ -120,7 +115,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
     };
 
     getAllocations().then();
-  }, [setSelectedAllocationId, setSelectedGroupIds]);
+  }, [setSelectedAllocationId, setSelectedGroupIds, allocationsApiClassname]);
 
   // Filter allocations based on the selected request type
   useEffect(() => {
