@@ -112,7 +112,7 @@ export const submitFollowupRequest = async ({ userInfo,
                                               allocationId,
                                               groupIds,
                                               payload }) => {
-  return await CapacitorHttp.post({
+  return CapacitorHttp.post({
     url: `${userInfo.instance.url}/api/followup_request`,
     headers: {
       Authorization: `token ${userInfo.token}`,
