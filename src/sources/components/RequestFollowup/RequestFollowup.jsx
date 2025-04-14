@@ -244,17 +244,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
       instrumentForms[allocationLookUp[selectedAllocationId].instrument_id]
         .uiSchema;
 
-    if (!schema || !schema.properties) {
-      return (
-        <IonList>
-          <IonItem lines="none">
-            <IonLabel color="secondary">
-              {`No schema found for the selected allocation.`}
-            </IonLabel>
-          </IonItem>
-        </IonList>
-      );
-    } else {
+    if (schema && schema.properties) {
       if (selectedRequestType === "forced_photometry") {
         const endDate = new Date();
         const startDate = new Date(
@@ -327,68 +317,91 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
             </IonSelectOption>
           </IonSelect>
         </IonItem>
-        <IonItem color="light">
-          <IonSelect
-            label="Allocation"
-            labelPlacement="stacked"
-            placeholder="Select allocation"
-            interface="modal"
-            interfaceOptions={{
-              initialBreakpoint: 0.75,
-              breakpoints: [0, 0.25, 0.5, 0.75, 1],
-              expandToScroll: false,
-            }}
-            value={selectedAllocationId}
-            onIonChange={(e) => handleSelectedAllocationChange(e.target.value)}
-          >
-            {filteredAllocations?.map((allocation) => (
-              <IonSelectOption
-                value={allocation.id}
-                key={allocation.id}
-                className="allocation-option"
-              >
-                {allocation.instrument?.telescope?.name + " / \n"}
-                {allocation.instrument?.name} -{" "}
-                {
-                  userAccessibleGroups?.find(
-                    (group) => group.id === allocation.group_id,
-                  )?.name
-                }{" "}
-                (PI {allocation.pi})
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
-        <IonItem color="light">
-          <IonSelect
-            label="Share Data With"
-            multiple
-            labelPlacement="stacked"
-            interface="popover"
-            value={selectedGroupIds}
-            onIonChange={(e) => setSelectedGroupIds(e.detail.value)}
-            selectedText={
-              selectedGroupIds.length > 3
-                ? selectedGroupIds.length + " groups"
-                : selectedGroupIds.map((id) => groupLookUp[id]?.name).join(", ")
-            }
-          >
-            {userAccessibleGroups?.map((group) => (
-              <IonSelectOption value={group.id} key={group.id}>
-                {group.name}
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
-        {selectedAllocationId && (
-          <IonItem>
+        {filteredAllocations.length === 0 ? (
+          <IonItem lines="none">
             <IonLabel color="secondary">
-              {allocationLookUp[selectedAllocationId].instrument.name} instrument form
+              {`No allocations with an API class ${
+                selectedRequestType === "forced_photometry"
+                  ? "(forced photometry) "
+                  : ""
+              } where found..`}
+              .
             </IonLabel>
           </IonItem>
+        ) : (
+          <>
+            <IonItem color="light">
+              <IonSelect
+                label="Allocation"
+                labelPlacement="stacked"
+                placeholder="Select allocation"
+                interface="modal"
+                interfaceOptions={{
+                  initialBreakpoint: 0.75,
+                  breakpoints: [0, 0.25, 0.5, 0.75, 1],
+                  expandToScroll: false,
+                }}
+                value={selectedAllocationId}
+                onIonChange={(e) => handleSelectedAllocationChange(e.target.value)}
+              >
+                {filteredAllocations?.map((allocation) => (
+                  <IonSelectOption
+                    value={allocation.id}
+                    key={allocation.id}
+                    className="allocation-option"
+                  >
+                    {allocation.instrument?.telescope?.name + " / \n"}
+                    {allocation.instrument?.name} -{" "}
+                    {
+                      userAccessibleGroups?.find(
+                        (group) => group.id === allocation.group_id,
+                      )?.name
+                    }{" "}
+                    (PI {allocation.pi})
+                  </IonSelectOption>
+                ))}
+              </IonSelect>
+            </IonItem>
+            <IonItem color="light">
+              <IonSelect
+                label="Share Data With"
+                multiple
+                labelPlacement="stacked"
+                interface="popover"
+                value={selectedGroupIds}
+                onIonChange={(e) => setSelectedGroupIds(e.detail.value)}
+                selectedText={
+                  selectedGroupIds.length > 3
+                    ? selectedGroupIds.length + " groups"
+                    : selectedGroupIds.map((id) => groupLookUp[id]?.name).join(", ")
+                }
+              >
+                {userAccessibleGroups?.map((group) => (
+                  <IonSelectOption value={group.id} key={group.id}>
+                    {group.name}
+                  </IonSelectOption>
+                ))}
+              </IonSelect>
+            </IonItem>
+            {selectedAllocationId && (
+              <IonItem>
+                <IonLabel color="secondary">
+                  {allocationLookUp[selectedAllocationId].instrument.name} instrument form
+                </IonLabel>
+              </IonItem>
+            )}
+          </>
         )}
       </IonList>
-      {selectedAllocationId && (
+      { selectedAllocationId && (!schema || !schema.properties ? (
+        <IonList>
+          <IonItem lines="none">
+            <IonLabel color="secondary">
+              {`No schema found for the selected allocation.`}
+            </IonLabel>
+          </IonItem>
+        </IonList>
+      ) : (
         <Form
           schema={schema || {}}
           validator={validator}
@@ -428,7 +441,7 @@ export const RequestFollowup = ({ obj_id, submitRequest, submitRequestCallback }
             }).then();
           }}
         />
-      )}
+      ))}
       <IonLoading isOpen={loading} message={"Submitting..."} />
     </div>
   );
