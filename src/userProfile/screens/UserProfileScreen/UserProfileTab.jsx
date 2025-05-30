@@ -7,12 +7,12 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonLoading,
+  IonLoading, IonPage,
   IonSelect,
   IonSelectOption,
   IonTitle,
   IonToolbar,
-  useIonAlert,
+  useIonAlert
 } from "@ionic/react";
 import { useUserProfile } from "../../../common/common.hooks.js";
 import { useContext } from "react";
@@ -80,7 +80,7 @@ export const UserProfileTab = () => {
   });
 
   return (
-    <>
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Profile</IonTitle>
@@ -138,6 +138,6 @@ export const UserProfileTab = () => {
           </form>
         ) : <IonLoading isOpen={true} />}
       </IonContent>
-    </>
+    </IonPage>
   );
 };
