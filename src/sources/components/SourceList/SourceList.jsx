@@ -18,13 +18,8 @@ export const SourceList = ({ filter, searchName }) => {
     numPerPage,
     params: {
       ...searchName.trim() !== "" ? { sourceID: searchName } : {},
-      ...filter === "favorites" ? { listName: "favorites" } : {},
-      includeColorMagnitude: "true",
-      includeThumbnails: "true",
-      includeDetectionStats: "true",
-      includeLabellers: "true",
-      includeHosts: "true",
-    },
+      ...filter === "favorites" ? { listName: "favorites" } : {}
+    }
   });
 
   return (
