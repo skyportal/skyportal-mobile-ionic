@@ -57,7 +57,6 @@ export async function searchCandidates({
       queryID: queryID || "",
       includeFollowupRequests: "true",
       includeComments: "true",
-      includeSpectra: "true",
     },
   });
   return {
