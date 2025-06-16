@@ -57,7 +57,7 @@ export const CandidateList = () => {
     notAssigned: [],
     totalMatches: 0,
   });
-  const { data, fetchNextPage, isFetchingNextPage } = useSearchCandidates({
+  const { data, isError, isFetched, fetchNextPage, isFetchingNextPage } = useSearchCandidates({
     startDate,
     endDate,
     savedStatus,
@@ -65,6 +65,25 @@ export const CandidateList = () => {
     queryID,
   });
   const totalMatches = data?.pages[0].totalMatches;
+  useEffect(() => {
+    if (isFetched && (isError || totalMatches === 0)) {
+      presentAlert({
+        header: isError ? "Error" : "No candidates found",
+        message:
+          isError ?
+            "An error occurred while searching for candidates. Please try again." :
+            "No candidates were found with the selected options. Please try again.",
+        buttons: [
+          {
+            text: "OK",
+            handler: () => {
+              history.back();
+            },
+          },
+        ],
+      })
+    }
+  }, [isFetched, isError, totalMatches, presentAlert]);
   /** @type {import("../../../scanning.lib.js").Candidate[]|undefined} */
   const candidates = data?.pages.map((page) => page.candidates).flat(1);
   const currentCandidate = candidates?.at(currentIndex);
@@ -222,7 +241,7 @@ export const CandidateList = () => {
   scanningRecap.current.queryId = state?.queryID ?? "";
   scanningRecap.current.totalMatches = totalMatches ?? 0;
 
-  if (candidates && candidates.length === totalMatches && !isLastBatch) {
+  if (candidates?.length === totalMatches && !isLastBatch) {
     setIsLastBatch(true);
   }
 
@@ -317,7 +336,7 @@ export const CandidateList = () => {
                   />
                 </div>
               ))}
-              {isLastBatch && (
+              {totalMatches && isLastBatch && (
                 <div className="embla__slide">
                   <ScanningEnd recap={scanningRecap} />
                 </div>
