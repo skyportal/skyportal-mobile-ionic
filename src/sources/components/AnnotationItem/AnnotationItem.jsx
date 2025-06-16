@@ -27,13 +27,14 @@ export const AnnotationItem = ({ annotation }) => {
               detail={false}
               button
             >
-              <IonText color="secondary">{key}:</IonText>
-              {"\u00A0"}
-              <IonText>{sanitizeAnnotationData(value,false)}</IonText>
-              {"\u00A0"}
-              {"\u00A0"}
-              {"\u00A0"}
-              <IonIcon icon={copyOutline} size="small" color="secondary" />
+              <IonText color="secondary" style={{ marginRight: "0.5rem" }}>
+                {key}:
+              </IonText>
+              <IonText style={{ wordBreak: "break-word", marginRight: "0.5rem"}}
+              >
+                {sanitizeAnnotationData(value,false)}
+              </IonText>
+              <IonIcon icon={copyOutline} size="small" color="secondary" style={{ minWidth: "19.125px" }} />
             </IonItem>
           ))}
       </IonList>
