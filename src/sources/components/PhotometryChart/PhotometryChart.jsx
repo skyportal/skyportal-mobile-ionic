@@ -44,7 +44,7 @@ const PhotometryChartBase = ({ sourceId, isInView = true }) => {
 
   useEffect(() => {
     if (!isInView) {
-      unmountVega.current();
+      if (unmountVega.current) unmountVega.current();
       setHasLoaded(false);
       if (container.current) {
         const canvas = container.current.getElementsByTagName("canvas")[0];

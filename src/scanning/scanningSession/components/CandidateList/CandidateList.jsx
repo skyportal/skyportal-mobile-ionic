@@ -22,7 +22,7 @@ import { RequestFollowupModal } from "../../../../sources/components/FollowupReq
 
 export const CandidateList = () => {
   /** @type {{state: import("../../../scanning.lib.js").ScanningConfig|undefined}} */
-  let { state } = useLocation();
+  const { state } = useLocation();
   const {
     startDate,
     endDate,
