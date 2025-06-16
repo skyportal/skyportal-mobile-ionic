@@ -1,6 +1,6 @@
 import { CapacitorHttp } from "@capacitor/core";
 import { fetchUserProfile } from "../onboarding/onboarding.lib.js";
-import { CANDIDATES_PER_PAGE } from "../common/common.lib.js";
+import { CANDIDATES_PER_PAGE } from "./scanning.lib.js";
 
 /**
  * @typedef {Object} CandidateSearchResponse
@@ -24,7 +24,7 @@ import { CANDIDATES_PER_PAGE } from "../common/common.lib.js";
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo - The user info
  * @param {string} params.startDate - The start date of the candidates
  * @param {string|null} [params.endDate=null] - The end date of the candidates
- * @param {import("../common/common.lib.js").SavedStatus} params.savedStatus - The saved status of the candidates
+ * @param {import("./scanning.lib.js").SavedStatus} params.savedStatus - The saved status of the candidates
  * @param {number[]} params.groupIDs - The group IDs to search for
  * @param {string|null} [params.queryID=null] - The query ID
  * @param {number} params.pageNumber - The page number
@@ -70,7 +70,7 @@ export async function searchCandidates({
 /**
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
- * @param {import("../onboarding/onboarding.lib.js").ScanningProfile} params.profile
+ * @param {import("./scanning.lib.js").ScanningProfile} params.profile
  * @returns {Promise<*>}
  */
 export const createNewProfile = async ({ userInfo, profile }) => {

@@ -8,23 +8,8 @@ import { CapacitorHttp } from "@capacitor/core";
  */
 
 /**
- * @typedef {Object} ScanningProfile
- * @property {string} name - The name of the scanning profile
- * @property {boolean} default - Whether the profile is the default one
- * @property {number[]} groupIDs - The IDs of the groups that the profile is associated with
- * @property {string} timeRange - The time range of the profile
- * @property {string} [sortingKey] - The key to use to sort the profile
- * @property {import("../common/common.lib.js").SavedStatus} savedStatus - The status of the profile
- * @property {string} [sortingOrder] - The order to use to sort the profile
- * @property {string} [sortingOrigin] - The origin of the sorting
- * @property {string} rejectedStatus - The status of the rejected
- * @property {string} [redshiftMaximum] - The maximum redshift
- * @property {string} [redshiftMinimum] - The minimum redshift
- */
-
-/**
  * @typedef {Object} UserPreferences
- * @property {ScanningProfile[]} scanningProfiles - The scanning profiles of the user
+ * @property {import("../scanning/scanning.lib.js").ScanningProfile[]} scanningProfiles - The scanning profiles of the user
  * @property {number} followupDefault - The default allocation ID for follow-up
  */
 

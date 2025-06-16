@@ -26,7 +26,7 @@ export const ScanningProfilesScreen = () => {
 
   const handleOnProfileClick = useCallback(
     /**
-     * @param {import("../../../../onboarding/onboarding.lib.js").ScanningProfile} profile
+     * @param {import("../../../scanning.lib.js").ScanningProfile} profile
      */
     (profile) => {
       navigateWithParams(history, "/scanning", {

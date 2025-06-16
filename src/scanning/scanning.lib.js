@@ -9,6 +9,21 @@
 /** @typedef {import("../sources/sources.lib.js").Annotation} Annotation */
 
 /**
+ * @typedef {Object} ScanningProfile
+ * @property {string} name - The name of the scanning profile
+ * @property {boolean} default - Whether the profile is the default one
+ * @property {number[]} groupIDs - The IDs of the groups that the profile is associated with
+ * @property {string} timeRange - The time range of the profile
+ * @property {string} [sortingKey] - The key to use to sort the profile
+ * @property {SavedStatus} savedStatus - The status of the profile
+ * @property {string} [sortingOrder] - The order to use to sort the profile
+ * @property {string} [sortingOrigin] - The origin of the sorting
+ * @property {string} rejectedStatus - The status of the rejected
+ * @property {string} [redshiftMaximum] - The maximum redshift
+ * @property {string} [redshiftMinimum] - The minimum redshift
+ */
+
+/**
  * @typedef {Object} Candidate
  * @property {number} ra - Right ascension
  * @property {number} dec - Declination
@@ -321,7 +336,7 @@ export const parseIntList = (intListString) => {
 
 /**
  *
- * @param {import("../onboarding/onboarding.lib.js").ScanningProfile} scanningProfile
+ * @param {import("./scanning.lib.js").ScanningProfile} scanningProfile
  * @returns {string}
  */
 export const getStartDate = (scanningProfile) => {
@@ -331,7 +346,7 @@ export const getStartDate = (scanningProfile) => {
 };
 
 /**
- * @param {import("../onboarding/onboarding.lib.js").ScanningProfile} scanningProfile
+ * @param {import("./scanning.lib.js").ScanningProfile} scanningProfile
  */
 export const getFiltering = (scanningProfile) => {
   switch (scanningProfile.savedStatus) {

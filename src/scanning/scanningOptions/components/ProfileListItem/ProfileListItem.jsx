@@ -13,11 +13,11 @@ import { useRef } from "react";
 
 /**
  * @param {Object} props
- * @param {import("../../../../onboarding/onboarding.lib.js").ScanningProfile} props.profile
+ * @param {import("../../../../scanning/scanning.lib.js").ScanningProfile} props.profile
  * @param {import("../../../scanning.lib.js").Group[]} props.userAccessibleGroups
  * @param {boolean} [props.itemSliding=false]
  * @param {() => void} [props.onClick]
- * @param {(profile: import("../../../../onboarding/onboarding.lib.js").ScanningProfile) => void} [props.onDelete]
+ * @param {(profile: import("../../../../scanning/scanning.lib.js").ScanningProfile) => void} [props.onDelete]
  * @returns {JSX.Element}
  */
 export const ProfileListItem = ({

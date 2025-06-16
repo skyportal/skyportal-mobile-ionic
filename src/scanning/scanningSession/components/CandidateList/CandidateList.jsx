@@ -16,7 +16,8 @@ import { SCANNING_TOOLBAR_ACTION } from "../../../scanning.lib.js";
 import { ScanningEnd } from "../ScanningEnd/ScanningEnd.jsx";
 import { ScanningToolbar } from "../ScanningToolbar/ScanningToolbar.jsx";
 import { UserContext } from "../../../../common/common.context.js";
-import { CANDIDATES_PER_PAGE, QUERY_KEYS } from "../../../../common/common.lib.js";
+import { CANDIDATES_PER_PAGE } from "../../../scanning.lib.js";
+import { QUERY_KEYS } from "../../../../common/common.lib.js";
 import { RequestFollowupModal } from "../../../../sources/components/FollowupRequests/RequestFollowupModal.jsx";
 
 export const CandidateList = () => {

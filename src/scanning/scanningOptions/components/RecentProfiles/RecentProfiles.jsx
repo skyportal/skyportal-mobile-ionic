@@ -17,7 +17,7 @@ export const RecentProfiles = () => {
 
   const handleScanWithProfile = useCallback(
     /**
-     * @param {import("../../../../onboarding/onboarding.lib.js").ScanningProfile} profile
+     * @param {import("../../../../scanning/scanning.lib.js").ScanningProfile} profile
      */
     (profile) => {
       navigateWithParams(history, "/scanning", {

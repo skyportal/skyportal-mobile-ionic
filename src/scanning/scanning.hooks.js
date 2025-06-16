@@ -49,7 +49,7 @@ export const useSearchCandidates = ({ startDate, endDate, savedStatus, groupIDs,
 };
 
 /**
- * @returns {{profiles: import("../onboarding/onboarding.lib.js").ScanningProfile[] | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined}}
+ * @returns {{profiles: import("./scanning.lib.js").ScanningProfile[] | undefined, status: import("@tanstack/react-query").QueryStatus, error: any | undefined}}
  */
 export const useScanningProfiles = () => {
   const { userInfo } = useContext(UserContext);

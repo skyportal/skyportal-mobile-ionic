@@ -41,7 +41,7 @@ export const ScanningProfileCreator = () => {
       });
       return;
     }
-    /** @type {import("../../../../onboarding/onboarding.lib.js").ScanningProfile} */
+    /** @type {import("../../../scanning.lib.js").ScanningProfile} */
     const profile = {
       name: data.profileName,
       default: true,
