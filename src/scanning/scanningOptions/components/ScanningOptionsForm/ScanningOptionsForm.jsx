@@ -2,17 +2,15 @@ import "./ScanningOptionsForm.scss";
 import { ScanningOptionsDate } from "../ScanningOptionsDate/ScanningOptionsDate.jsx";
 import { ScanningOptionsProgram } from "../ScanningOptionsProgram/ScanningOptionsProgram.jsx";
 import { ScanningOptionsDiscarding } from "../ScanningOptionsDiscarding/ScanningOptionsDiscarding.jsx";
-import { IonButton, IonLoading, useIonAlert } from "@ionic/react";
+import { IonButton } from "@ionic/react";
 import { useForm } from "react-hook-form";
 import moment from "moment-timezone";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   useUserAccessibleGroups,
   useUserProfile,
 } from "../../../../common/common.hooks.js";
 import { useHistory, useLocation } from "react-router";
-import { useMutation } from "@tanstack/react-query";
-import { searchCandidates } from "../../../scanning.requests.js";
 import {
   computeSavedStatus,
   getDefaultValues,
@@ -20,18 +18,13 @@ import {
   getStartDate,
 } from "../../../scanning.lib.js";
 import { ScanningOptionsPinnedAnnotations } from "../ScanningOptionsPinnedAnnotations/ScanningOptionsPinnedAnnotations.jsx";
-import { UserContext } from "../../../../common/common.context.js";
 
 const useQuery = () => new URLSearchParams(useLocation().search);
 
 export const ScanningOptionsForm = () => {
   const profileName = useQuery().get("profile");
-  const { userInfo } = useContext(UserContext);
-
   const { userProfile } = useUserProfile();
   const history = useHistory();
-  const [presentAlert] = useIonAlert();
-  const [loading, setLoading] = useState(false);
   const scanningProfile = useMemo(
     () =>
       userProfile?.preferences?.scanningProfiles?.find(
@@ -70,49 +63,6 @@ export const ScanningOptionsForm = () => {
     }
   }, [scanningProfile]);
 
-  const searchCandidatesMutation = useMutation({
-    /**
-     * @param {Object} params
-     * @param {number[]} params.saveGroupIds
-     * @param {import("../../../../common/common.lib.js").SavedStatus} params.savedStatus
-     * @param {string} params.startDate
-     * @param {string} params.endDate
-     * @returns {Promise<any>}
-     */
-    mutationFn: async ({ saveGroupIds, savedStatus, startDate, endDate }) => {
-      const response = await searchCandidates({
-        groupIDs: saveGroupIds,
-        savedStatus,
-        startDate,
-        endDate,
-        pageNumber: 1,
-        userInfo,
-      });
-      if (response.totalMatches === 0) {
-        throw new Error("No candidates found");
-      }
-      return {
-        totalMatches: response.totalMatches,
-        saveGroupIds,
-        savedStatus,
-        startDate,
-        endDate,
-        queryID: response.queryID,
-      };
-    },
-    onError: (error) => {
-      setLoading(false);
-      presentAlert({
-        header: error.message === "No candidates found" ? "No candidates found" : "Error",
-        message:
-          error.message === "No candidates found"
-            ? "No candidates were found with the selected options. Please try again."
-            : "An error occurred while searching for candidates. Please try again.",
-        buttons: ["OK"],
-      }).then();
-    },
-  });
-
   /**
    * @param {any} data
    */
@@ -124,30 +74,15 @@ export const ScanningOptionsForm = () => {
       });
       return;
     }
-    setLoading(true);
-    const saveGroupIds = data.selectedGroups;
-    const savedStatus = computeSavedStatus({ ...data });
-    const startDate = moment(data.startDate).format();
-    const endDate = moment(data.endDate).format();
-    const junkGroupIDs = data.junkGroups;
-    const discardBehavior = data.discardBehavior;
-    const discardGroup = data.discardGroup;
-    const pinnedAnnotations = data.pinnedAnnotations;
-
-    const response = await searchCandidatesMutation.mutateAsync({
-      saveGroupIds,
-      savedStatus,
-      startDate,
-      endDate,
-    });
-
-    setLoading(false);
     history.push("/scanning/result", {
-      ...response,
-      junkGroupIDs,
-      discardBehavior,
-      discardGroup,
-      pinnedAnnotations
+      saveGroupIds: data.selectedGroups,
+      savedStatus: computeSavedStatus({ ...data }),
+      startDate: moment(data.startDate).format(),
+      endDate: moment(data.endDate).format(),
+      junkGroupIDs: data.junkGroups,
+      discardBehavior: data.discardBehavior,
+      discardGroup: data.discardGroup,
+      pinnedAnnotations: data.pinnedAnnotations,
     });
   };
 
@@ -202,7 +137,6 @@ export const ScanningOptionsForm = () => {
           Scan
         </IonButton>
       </div>
-      <IonLoading isOpen={loading} message="Scanning..." />
     </>
   );
 };
