@@ -169,7 +169,7 @@ export const CandidateList = () => {
           },
         })
       }),
-    [state, currentCandidate, presentAlert, state, userAccessibleGroups],
+    [state, currentCandidate, presentAlert, userAccessibleGroups],
   );
 
   const handleSave = useCallback(async () => {
