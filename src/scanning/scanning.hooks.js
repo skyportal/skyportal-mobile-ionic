@@ -3,34 +3,19 @@ import { fetchAnnotationInfo, searchCandidates } from "./scanning.requests.js";
 import { fetchUserProfile } from "../onboarding/onboarding.lib.js";
 import { useContext } from "react";
 import { UserContext } from "../common/common.context.js";
-import { useLocation } from "react-router";
 import { CANDIDATES_PER_PAGE, QUERY_KEYS } from "../common/common.lib.js";
 
 /**
+ * @param {Object} props
+ * @param {string} props.startDate - Only includes candidates that passed filters after this date.
+ * @param {string} [props.endDate] - Only includes candidates that passed filters before this date.
+ * @param {import("../common/common.lib.js").SavedStatus} props.savedStatus - The saved status of the candidates
+ * @param {number[]} props.groupIDs - The group IDs linked to the filter passed by the candidates.
+ * @param {string} [props.queryID] - The query ID to filter candidates.
  * @returns {import("@tanstack/react-query").UseInfiniteQueryResult<import("@tanstack/react-query").InfiniteData<import("./scanning.requests.js").CandidateSearchResponse, unknown>, Error>}
  */
-export const useSearchCandidates = () => {
+export const useSearchCandidates = ({ startDate, endDate, savedStatus, groupIDs, queryID }) => {
   const { userInfo } = useContext(UserContext);
-  /** @type {any} */
-  const { state } = useLocation();
-  /** @type {string} */
-  let startDate = "";
-  /** @type {string} */
-  let endDate = "";
-  /** @type {import("../common/common.lib.js").SavedStatus} */
-  let savedStatus = "all";
-  /** @type {number[]} */
-  let groupIDs = [];
-  /** @type {string} */
-  let queryID = "";
-
-  if (state) {
-    startDate = state.startDate;
-    endDate = state.endDate;
-    savedStatus = state.savedStatus;
-    groupIDs = state.saveGroupIds;
-    queryID = state.queryID;
-  }
 
   return useInfiniteQuery({
     queryKey: [
@@ -41,9 +26,6 @@ export const useSearchCandidates = () => {
       groupIDs,
     ],
     queryFn: async (ctx) => {
-      if (!startDate || !endDate || !savedStatus || !groupIDs) {
-        throw new Error("Missing parameters");
-      }
       return await searchCandidates({
         userInfo,
         startDate,
@@ -61,7 +43,7 @@ export const useSearchCandidates = () => {
       }
       return +lastPage.pageNumber + 1;
     },
-    enabled: !!state,
+    enabled: !!(startDate && savedStatus && groupIDs.length),
   });
 };
 
