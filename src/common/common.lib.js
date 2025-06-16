@@ -64,10 +64,6 @@ import { Preferences } from "@capacitor/preferences";
  */
 
 /**
- * @typedef {"all" | "savedToAllSelected" | "savedToAnySelected" | "savedToAnyAccessible" | "notSavedToAnyAccessible" | "notSavedToAnySelected" | "notSavedToAllSelected"} SavedStatus
- */
-
-/**
  * The instances that are available for login
  * @type {SkyPortalInstance[]}
  */
@@ -102,19 +98,6 @@ export const QUERY_KEYS = {
   INSTRUMENT_FORMS: "instrumentForms",
   INSTRUMENTS: "instruments",
 };
-/**
- * @type {Object.<SavedStatus, string>}
- */
-export const SAVED_STATUS = {
-  ALL: "all",
-  SAVED_TO_ALL_SELECTED: "savedToAllSelected",
-  SAVED_TO_ANY_SELECTED: "savedToAnySelected",
-  SAVED_TO_ANY_ACCESSIBLE: "savedToAnyAccessible",
-  NOT_SAVED_TO_ANY_ACCESSIBLE: "notSavedToAnyAccessible",
-  NOT_SAVED_TO_ANY_SELECTED: "notSavedToAnySelected",
-  NOT_SAVED_TO_ALL_SELECTED: "notSavedToAllSelected",
-};
-export const CANDIDATES_PER_PAGE = 50;
 
 /**
  * Navigate to a new path with params

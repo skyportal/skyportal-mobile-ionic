@@ -32,7 +32,7 @@
  * @typedef {Object} ScanningConfig
  * @property {string} startDate
  * @property {string} endDate
- * @property {import("../common/common.lib.js").SavedStatus} savedStatus
+ * @property {SavedStatus} savedStatus
  * @property {number[]} saveGroupIds
  * @property {Group[]} saveGroups
  * @property {number[]} junkGroupIDs
@@ -52,10 +52,26 @@
  * @property {Candidate[]} notAssigned
  */
 
+/**
+ * @typedef {"all" | "savedToAllSelected" | "savedToAnySelected" | "savedToAnyAccessible" | "notSavedToAnyAccessible" | "notSavedToAnySelected" | "notSavedToAllSelected"} SavedStatus
+ */
+
 import config from "../config.js";
 import moment from "moment-timezone";
 
-import { SAVED_STATUS } from "../common/common.lib.js";
+/**
+ * @type {Object.<SavedStatus, string>}
+ */
+export const SAVED_STATUS = {
+  ALL: "all",
+  SAVED_TO_ALL_SELECTED: "savedToAllSelected",
+  SAVED_TO_ANY_SELECTED: "savedToAnySelected",
+  SAVED_TO_ANY_ACCESSIBLE: "savedToAnyAccessible",
+  NOT_SAVED_TO_ANY_ACCESSIBLE: "notSavedToAnyAccessible",
+  NOT_SAVED_TO_ANY_SELECTED: "notSavedToAnySelected",
+  NOT_SAVED_TO_ALL_SELECTED: "notSavedToAllSelected",
+};
+export const CANDIDATES_PER_PAGE = 10;
 
 /**
  * @param {Object} params
@@ -359,7 +375,7 @@ export const getFiltering = (scanningProfile) => {
  * @param {boolean} data.filterCandidates
  * @param {string} data.filteringType
  * @param {string} data.filteringAnyOrAll
- * @returns {import("../common/common.lib.js").SavedStatus}
+ * @returns {SavedStatus}
  */
 export const computeSavedStatus = ({
   filterCandidates,
