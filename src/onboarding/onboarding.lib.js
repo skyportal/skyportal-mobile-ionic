@@ -35,7 +35,8 @@ import { CapacitorHttp } from "@capacitor/core";
  */
 
 /**
- * Check the token and fetch the user from the API
+ * Fetch the user from the API and throw an error if
+ * the token is invalid or the instance URL is not found.
  * @param {UserInfo} userInfo - The user info
  * @returns {Promise<UserProfile>} - The user from the API
  */
@@ -46,5 +47,22 @@ export const fetchUserProfile = async (userInfo) => {
       Authorization: `token ${userInfo.token}`,
     },
   });
+
+  let error;
+  if (response.status === 401) {
+    error = new Error("Invalid token");
+    throw error;
+  }
+
+  if (response.status === 404) {
+    error = new Error("Instance URL not found");
+    throw error;
+  }
+
+  if (response.status >= 400) {
+    error = new Error(`Unexpected API error: ${response.status}`);
+    throw error;
+  }
+
   return response.data.data;
 };

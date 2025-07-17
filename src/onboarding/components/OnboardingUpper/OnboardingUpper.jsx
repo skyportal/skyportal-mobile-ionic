@@ -13,20 +13,12 @@ const OnboardingUpper = ({ page }) => {
 
   function getTagline() {
     switch (page) {
-      case "welcome":
-        return (
-          <p>
-            Welcome back to SkyPortal Mobile
-            <br />
-            An Astronomical Data Platform
-          </p>
-        );
       case "login":
-        return <p>Please select a SkyPortal instance and a login method</p>;
+        return <p>Please select an instance<br />and a login method</p>;
       default:
         return (
           <p>
-            Welcome back to SkyPortal Mobile
+            Welcome to SkyPortal Mobile
             <br />
             An Astronomical Data Platform
           </p>
