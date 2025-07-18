@@ -150,7 +150,7 @@ const OnboardingLower = ({ page, setPage }) => {
                 if (e.detail.value === "__add__") {
                   setShowModal(true);
                   setSelectedInstance(null);
-                }else {
+                } else {
                   setSelectedInstance(e.detail.value)
                 }
               }}
