@@ -27,7 +27,7 @@ import { UserContext } from "../../../common/common.context.js";
  */
 const isDefaultInstance = (instance) => {
   return INSTANCES.some((defaultInstance) => defaultInstance.name === instance.name && defaultInstance.url === instance.url);
-}
+};
 
 /**
  * The lower part of the onboarding screen
