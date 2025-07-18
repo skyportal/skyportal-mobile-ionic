@@ -1,11 +1,33 @@
-import { IonButton, IonIcon, IonInput, IonSelect, IonSelectOption } from "@ionic/react";
+import {
+  IonButton, IonButtons, IonContent,
+  IonHeader,
+  IonIcon,
+  IonInput, IonItem, IonLabel, IonList,
+  IonModal, IonSegment, IonSegmentButton,
+  IonSelect,
+  IonSelectOption, IonTitle,
+  IonToolbar
+} from "@ionic/react";
 import "./OnboardingLower.scss";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { qrCode } from "ionicons/icons";
 import { CapacitorBarcodeScanner } from "@capacitor/barcode-scanner";
 import { Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useHistory } from "react-router";
-import { INSTANCES, navigateWithParams, QUERY_PARAMS } from "../../../common/common.lib.js";
+import { INSTANCES, QUERY_KEYS, setPreference } from "../../../common/common.lib.js";
+import { fetchUserProfile } from "../../onboarding.lib.js";
+import { UserContext } from "../../../common/common.context.js";
+
+/** @typedef {import("../../../common/common.lib").SkyPortalInstance} SkyPortalInstance */
+
+/**
+ * Check if the instance is one of the default instances
+ * @param {SkyPortalInstance} instance
+ * @returns {boolean}
+ */
+const isDefaultInstance = (instance) => {
+  return INSTANCES.some((defaultInstance) => defaultInstance.name === instance.name && defaultInstance.url === instance.url);
+}
 
 /**
  * The lower part of the onboarding screen
@@ -15,42 +37,90 @@ import { INSTANCES, navigateWithParams, QUERY_PARAMS } from "../../../common/com
  * @returns {JSX.Element}
  */
 const OnboardingLower = ({ page, setPage }) => {
+  const { updateUserInfo } = useContext(UserContext);
   const history = useHistory();
-  const [instance, setInstance] = useState(null);
   const [typedToken, setTypedToken] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [segment, setSegment] = useState("add");
 
-  const navigateToCheckToken = useCallback(
-    /**
-     * @param {string} token
-     */
-    (token) => {
-      navigateWithParams(history, "/check-creds", {
-        params: {
-          [QUERY_PARAMS.TOKEN]: token,
-          [QUERY_PARAMS.INSTANCE]: JSON.stringify(instance),
-        },
-        replace: true,
-      });
-    },
-    [instance],
-  );
+  /** @type {SkyPortalInstance[]} */
+  const storedInstances = JSON.parse(localStorage.getItem("instances") || "[]");
+  const [instances, setInstances] = useState([
+    ...INSTANCES,
+    ...storedInstances.filter((i) => !isDefaultInstance(i))
+  ]);
+
+  /** @type {[SkyPortalInstance | null, React.Dispatch<SkyPortalInstance | null>]} */
+  const [selectedInstance, setSelectedInstance] = useState(/** @type {SkyPortalInstance | null} */ (null));
+  const [newInstance, setNewInstance] = useState({ name: "", url: "" });
+
+  /**
+   * Save a new instance to the local state and localStorage
+   * @param {SkyPortalInstance} instance - The instance to save
+   */
+  const saveInstance = (instance) => {
+    const updated = [...instances, instance];
+    setInstances(updated);
+    localStorage.setItem("instances", JSON.stringify(updated));
+  };
+
+  /**
+   * Remove an instance from the local state and localStorage
+   * @param {string} name - The name of the instance to remove
+   * @param {string} url - The URL of the instance to remove
+   */
+  const removeInstance = (name, url) => {
+    const updated = instances.filter((i) => i.name !== name || i.url !== url);
+    setInstances(updated);
+    localStorage.setItem("instances", JSON.stringify(updated));
+  };
+
+  /**
+   * Check the credentials by fetching the user profile
+   * @param {string} token - The token to check
+   */
+  const checkCredentials = async (token) => {
+    if (!selectedInstance) return alert("Please select an instance");
+    const userInfo = {token, instance: selectedInstance}
+    try {
+      await fetchUserProfile(userInfo);
+      await setPreference(QUERY_KEYS.USER_INFO, userInfo);
+      updateUserInfo(userInfo);
+      history.replace("/login-ok");
+    } catch (error) {
+      // @ts-ignore
+      alert(error.message || "An error occurred while checking credentials");
+    }
+  }
 
   const handleScanQRCode = async () => {
-    let token = "";
     try {
       const result = await CapacitorBarcodeScanner.scanBarcode({
         hint: Html5QrcodeSupportedFormats.QR_CODE,
       });
-      token = result.ScanResult;
+      await checkCredentials(result.ScanResult);
     } catch (error) {
-      console.error(error);
+      alert("Error scanning QR code. Please try again.");
     }
-    navigateToCheckToken(token);
   };
 
-  const handleTypeTokenSubmit = useCallback(() => {
-    navigateToCheckToken(typedToken);
-  }, [typedToken, instance]);
+  const handleTypeTokenSubmit = useCallback(() =>
+      checkCredentials(typedToken),[typedToken, selectedInstance]);
+
+  const handleAddInstance = () => {
+    const { name, url } = newInstance;
+    if (!name || !url || instances.some((i) => i.name === name)) {
+      alert("Please fill in both fields with a unique instance name.");
+      return;
+    }
+    // Remove trailing slashes from the URL
+    const cleanUrl = url.replace(/\/+$/, "");
+    const instance = { name, url: cleanUrl };
+    setSelectedInstance(instance);
+    saveInstance(instance);
+    setNewInstance({ name: "", url: "" });
+    setShowModal(false);
+  };
 
   switch (page) {
     case "welcome":
@@ -72,22 +142,34 @@ const OnboardingLower = ({ page, setPage }) => {
           <div className="instance-container">
             <IonSelect
               class="select"
-              label={"Instance"}
+              label="Instance"
               placeholder="Select an instance"
-              onIonChange={(e) => setInstance(e.detail.value)}
+              interface="action-sheet"
+              value={selectedInstance}
+              onIonChange={(e) => {
+                if (e.detail.value === "__add__") {
+                  setShowModal(true);
+                  setSelectedInstance(null);
+                }else {
+                  setSelectedInstance(e.detail.value)
+                }
+              }}
             >
-              {INSTANCES.map((instance) => (
-                <IonSelectOption key={instance.name} value={instance}>
-                  {instance.name}
+              {instances.map((/** @type {SkyPortalInstance} */ option) => (
+                <IonSelectOption key={option.name} value={option}>
+                  {option.name}
                 </IonSelectOption>
               ))}
+              <IonSelectOption value="__add__">
+                ➕ Manage instances...
+              </IonSelectOption>
             </IonSelect>
           </div>
           <div className="login-methods">
             <IonButton
-              onClick={() => handleScanQRCode()}
+              onClick={handleScanQRCode}
               shape="round"
-              disabled={instance === null}
+              disabled={!selectedInstance}
               strong
             >
               <IonIcon slot="start" icon={qrCode}></IonIcon>
@@ -96,29 +178,111 @@ const OnboardingLower = ({ page, setPage }) => {
             <IonButton
               onClick={() => setPage("type_token")}
               shape="round"
-              disabled={instance === null}
+              disabled={!selectedInstance}
               fill="outline"
               strong
             >
               Log in with token
             </IonButton>
           </div>
+          <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}
+                    initialBreakpoint={0.5} breakpoints={[0, 0.5, 1]}>
+            <IonHeader>
+              <IonToolbar>
+                <IonButtons slot="start">
+                  <IonButton onClick={() => setShowModal(false)}>Close</IonButton>
+                </IonButtons>
+                <IonTitle>Manage Instances</IonTitle>
+              </IonToolbar>
+            </IonHeader>
+            <IonContent>
+              <IonSegment
+                value={segment}
+                onIonChange={(e) => setSegment(/** @type { "add" | "delete" } */ (e.detail.value))}
+              >
+                <IonSegmentButton value="add">
+                  <IonLabel>Add</IonLabel>
+                </IonSegmentButton>
+                <IonSegmentButton value="delete">
+                  <IonLabel>Delete</IonLabel>
+                </IonSegmentButton>
+              </IonSegment>
+              <IonList>
+                {segment === "delete" ? instances.filter((instance) => !isDefaultInstance(instance))
+                  .map((instance) => (
+                  <IonItem key={instance.name}>
+                    <IonLabel>
+                      <h2>{instance.name}</h2>
+                      <p>{instance.url}</p>
+                    </IonLabel>
+                    <IonButton fill="clear" color="danger" slot="end" onClick={() => {
+                      if (selectedInstance?.name === instance.name) setSelectedInstance(null);
+                      removeInstance(instance.name, instance.url);
+                    }}>
+                      Delete
+                    </IonButton>
+                  </IonItem>
+                )) : (
+                  <>
+                    <IonItem>
+                      <IonInput
+                        label="Instance Name"
+                        placeholder="Enter instance name"
+                        value={newInstance.name}
+                        // @ts-ignore
+                        onIonInput={(e) => setNewInstance({ ...newInstance, name: e.target.value })}
+                      />
+                    </IonItem>
+                    <IonItem>
+                      <IonInput
+                        label="Instance URL"
+                        placeholder="Enter instance URL"
+                        value={newInstance.url}
+                        // @ts-ignore
+                        onIonInput={(e) => setNewInstance({ ...newInstance, url: e.target.value })}
+                      />
+                    </IonItem>
+                  </>
+                )}
+              </IonList>
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                <IonButton onClick={handleAddInstance} size="small" disabled={!newInstance?.name || !newInstance?.url}>
+                  Add Instance
+                </IonButton>
+              </div>
+            </IonContent>
+          </IonModal>
         </div>
       );
     case "type_token":
+      if (!selectedInstance) {
+        alert("Please select an instance.");
+        setPage("login");
+      }
       return (
         <div className="lower">
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <IonLabel style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--ion-color-dark)' }}>
+              {selectedInstance?.name}
+            </IonLabel>
+            <IonLabel style={{ fontSize: '0.9rem', fontStyle: 'italic', color: 'var(--ion-color-medium)' }}>
+              {selectedInstance?.url}
+            </IonLabel>
+          </div>
           <IonInput
-            label="token"
+            fill="solid"
+            label="Token"
+            labelPlacement="stacked"
             placeholder="Enter your token"
             // @ts-ignore
             onInput={(e) => setTypedToken(e.target.value)}
             value={typedToken}
-          ></IonInput>
+          />
           <IonButton
-            onClick={() => handleTypeTokenSubmit()}
+            onClick={handleTypeTokenSubmit}
             shape="round"
             strong
+            disabled={!typedToken}
           >
             Log in
           </IonButton>
