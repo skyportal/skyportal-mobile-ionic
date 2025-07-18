@@ -81,7 +81,7 @@ const OnboardingLower = ({ page, setPage }) => {
    */
   const checkCredentials = async (token) => {
     if (!selectedInstance) return alert("Please select an instance");
-    const userInfo = {token, instance: selectedInstance}
+    const userInfo = {token, instance: selectedInstance};
     try {
       await fetchUserProfile(userInfo);
       await setPreference(QUERY_KEYS.USER_INFO, userInfo);
