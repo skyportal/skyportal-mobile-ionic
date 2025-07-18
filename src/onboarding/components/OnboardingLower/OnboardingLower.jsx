@@ -6,17 +6,18 @@ import {
   IonModal, IonSegment, IonSegmentButton,
   IonSelect,
   IonSelectOption, IonTitle,
-  IonToolbar
+  IonToolbar, useIonToast
 } from "@ionic/react";
 import "./OnboardingLower.scss";
 import { useCallback, useContext, useState } from "react";
-import { qrCode } from "ionicons/icons";
+import { checkmarkCircleOutline, qrCode } from "ionicons/icons";
 import { CapacitorBarcodeScanner } from "@capacitor/barcode-scanner";
 import { Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useHistory } from "react-router";
 import { INSTANCES, QUERY_KEYS, setPreference } from "../../../common/common.lib.js";
 import { fetchUserProfile } from "../../onboarding.lib.js";
 import { UserContext } from "../../../common/common.context.js";
+import { useErrorToast } from "../../../common/common.hooks.js";
 
 /** @typedef {import("../../../common/common.lib").SkyPortalInstance} SkyPortalInstance */
 
@@ -38,6 +39,8 @@ const isDefaultInstance = (instance) => {
  */
 const OnboardingLower = ({ page, setPage }) => {
   const { updateUserInfo } = useContext(UserContext);
+  const errorToast = useErrorToast();
+  const [presentToast] = useIonToast();
   const history = useHistory();
   const [typedToken, setTypedToken] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -80,7 +83,10 @@ const OnboardingLower = ({ page, setPage }) => {
    * @param {string} token - The token to check
    */
   const checkCredentials = async (token) => {
-    if (!selectedInstance) return alert("Please select an instance");
+    if (!selectedInstance){
+      setPage("login");
+      return;
+    }
     const userInfo = {token, instance: selectedInstance};
     try {
       await fetchUserProfile(userInfo);
@@ -89,7 +95,7 @@ const OnboardingLower = ({ page, setPage }) => {
       history.replace("/login-ok");
     } catch (error) {
       // @ts-ignore
-      alert(error.message || "An error occurred while checking credentials");
+      errorToast(error.message || "An error occurred while checking credentials");
     }
   }
 
@@ -100,7 +106,7 @@ const OnboardingLower = ({ page, setPage }) => {
       });
       await checkCredentials(result.ScanResult);
     } catch (error) {
-      alert("Error scanning QR code. Please try again.");
+      errorToast("Error scanning QR code. Please try again.");
     }
   };
 
@@ -110,7 +116,7 @@ const OnboardingLower = ({ page, setPage }) => {
   const handleAddInstance = () => {
     const { name, url } = newInstance;
     if (!name || !url || instances.some((i) => i.name === name)) {
-      alert("Please fill in both fields with a unique instance name.");
+      errorToast("Please fill in both fields with a unique instance name.");
       return;
     }
     // Remove trailing slashes from the URL
@@ -119,6 +125,13 @@ const OnboardingLower = ({ page, setPage }) => {
     setSelectedInstance(instance);
     saveInstance(instance);
     setNewInstance({ name: "", url: "" });
+    presentToast({
+      message: `Instance "${name}" added successfully!`,
+      duration: 3000,
+      position: "top",
+      color: "success",
+      icon: checkmarkCircleOutline
+    })
     setShowModal(false);
   };
 
@@ -242,14 +255,14 @@ const OnboardingLower = ({ page, setPage }) => {
                         onIonInput={(e) => setNewInstance({ ...newInstance, url: e.target.value })}
                       />
                     </IonItem>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                      <IonButton onClick={handleAddInstance} size="small" disabled={!newInstance?.name || !newInstance?.url}>
+                        Add Instance
+                      </IonButton>
+                    </div>
                   </>
                 )}
               </IonList>
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
-                <IonButton onClick={handleAddInstance} size="small" disabled={!newInstance?.name || !newInstance?.url}>
-                  Add Instance
-                </IonButton>
-              </div>
             </IonContent>
           </IonModal>
         </div>
