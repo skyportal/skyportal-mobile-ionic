@@ -121,9 +121,8 @@ const App = ({ darkMode: initialDarkMode }) => {
               } />
               <Redirect exact from="/" to="/onboarding" />
 
-              <PrivateRoute path="/login-ok">
-                <Route path="/login-ok" component={LoginOkScreen} />
-              </PrivateRoute>
+              {/* Login success route */}
+              <Route path="/login-ok" component={LoginOkScreen} />
 
               {/* Scanning routes */}
               <PrivateRoute path="/scanning">

@@ -256,7 +256,6 @@ const OnboardingLower = ({ page, setPage }) => {
       );
     case "type_token":
       if (!selectedInstance) {
-        alert("Please select an instance.");
         setPage("login");
       }
       return (
