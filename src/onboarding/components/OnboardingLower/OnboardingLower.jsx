@@ -105,7 +105,7 @@ const OnboardingLower = ({ page, setPage }) => {
   };
 
   const handleTypeTokenSubmit = useCallback(() =>
-      checkCredentials(typedToken),[typedToken, selectedInstance]);
+      checkCredentials(typedToken), [typedToken, selectedInstance]);
 
   const handleAddInstance = () => {
     const { name, url } = newInstance;
