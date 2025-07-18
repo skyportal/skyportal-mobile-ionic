@@ -14,7 +14,9 @@ const OnboardingUpper = ({ page }) => {
   function getTagline() {
     switch (page) {
       case "login":
-        return <p>Please select an instance<br />and a login method</p>;
+        return <p>Select an instance<br />and a login method</p>;
+      case "type_token":
+        return <p>Enter your token to<br />access SkyPortal Mobile</p>;
       default:
         return (
           <p>
