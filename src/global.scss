@@ -110,3 +110,9 @@ form {
     --padding-bottom: 1rem;
   }
 }
+
+// Remove padding from ion-list in md mode
+.list-md {
+  padding-top: 0;
+  padding-bottom: 0;
+}

@@ -1,22 +1,16 @@
-:root {
-  --item-padding: 0.5rem;
-}
-
 .annotation-item {
   display: block;
   width: 100%;
-
-  ion-item {
-    --inner-padding-top: var(--item-padding);
-    --inner-padding-bottom: var(--item-padding);
-    --min-height: 0;
-  }
+  margin-bottom: 0.5rem;
 
   ion-list-header {
-    h6 {
-      font-size: 0.8rem;
-      font-weight: 400;
-      color: var(--ion-color-secondary);
-    }
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+
+  ion-item {
+    --inner-padding-top: 0.5rem;
+    --inner-padding-bottom: 0.5rem;
+    --min-height: 0;
   }
 }

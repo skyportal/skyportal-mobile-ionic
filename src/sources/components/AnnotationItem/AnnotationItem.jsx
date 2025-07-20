@@ -15,9 +15,9 @@ export const AnnotationItem = ({ annotation }) => {
     <div className="annotation-item">
       <IonList lines="full">
         <IonListHeader>
-          <h6>
-            <IonLabel>{annotation.origin}</IonLabel>
-          </h6>
+          <IonLabel>
+            {annotation.origin}
+          </IonLabel>
         </IonListHeader>
         {Object.entries(annotation.data)
           .map(([key, value]) => (
