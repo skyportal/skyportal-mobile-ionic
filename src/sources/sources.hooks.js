@@ -41,8 +41,6 @@ export const useFetchSources = ({ page, numPerPage, params = {}}) => {
         numPerPage,
         params
       }),
-    // @ts-ignore
-    suspense: true,
   });
   return {
     sources,

@@ -3,7 +3,6 @@ import {
   IonFooter,
   IonHeader,
   IonLabel,
-  IonLoading,
   IonPage,
   IonSearchbar,
   IonSegment,
@@ -11,7 +10,7 @@ import {
   IonTitle,
   IonToolbar
 } from "@ionic/react";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { SourceList } from "../../components/SourceList/SourceList.jsx";
 
 export const SourceListTab = () => {
@@ -38,9 +37,7 @@ export const SourceListTab = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <Suspense fallback={<IonLoading isOpen={true} />}>
-          <SourceList filter={segment} searchName={searchName} />
-        </Suspense>
+        <SourceList filter={segment} searchName={searchName} />
       </IonContent>
       <IonFooter>
         <IonSegment
