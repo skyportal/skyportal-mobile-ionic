@@ -20,19 +20,26 @@ const PhotometryChartBase = ({ sourceId, isInView = true }) => {
   const unmountVega = useRef(() => {});
   const { bandpassesColors } = useBandpassesColors();
   /** @type {React.MutableRefObject<NodeJS.Timeout|undefined>} */
-  const revealTimeout = useRef(undefined);
+  const revealTimeout = useRef();
+
+  const clearVega = () => {
+    unmountVega.current();
+    unmountVega.current = () => {};
+    clearTimeout(revealTimeout.current);
+    setHasLoaded(false);
+  };
 
   const renderVega = useCallback(async () => {
     if (!photometry || !container.current || !bandpassesColors) return;
 
+    clearVega();
+
     const result = await embed(
-      // @ts-ignore
       container.current,
       getVegaPlotSpec({
         photometry,
         titleFontSize: 13,
         labelFontSize: 11,
-        // @ts-ignore
         bandpassesColors,
       }),
       { actions: false }
@@ -44,38 +51,32 @@ const PhotometryChartBase = ({ sourceId, isInView = true }) => {
 
   useEffect(() => {
     if (!isInView) {
-      if (unmountVega.current) unmountVega.current();
-      setHasLoaded(false);
-      if (container.current) {
-        const canvas = container.current.getElementsByTagName("canvas")[0];
-        if (canvas) {
-          canvas.height = 0;
-          canvas.width = 0;
-        }
-      }
-    } else if (status === "success" && !hasLoaded) {
-      renderVega();
+      clearVega();
+      return;
     }
+    if (status !== "success" || !container.current || !bandpassesColors || !photometry) return;
+
+    const observer = new ResizeObserver(() => {
+      if (container.current && container.current.offsetWidth > 0) {
+        renderVega();
+      }
+    });
+
+    observer.observe(container.current);
     return () => {
-      clearTimeout(revealTimeout.current);
+      observer.disconnect();
+      clearVega();
     };
-  }, [isInView, status, renderVega]);
+  }, [isInView, status, photometry, bandpassesColors, renderVega]);
 
   return (
     <div className="photometry-chart">
-      <div
-        className="canvas-container"
-        ref={container}
-        style={{ visibility: hasLoaded ? "visible" : "hidden" }}
-      />
-      <div
-        className={`canvas-loading ${hasLoaded ? "loaded" : "loading"}`}
-        style={{
-          visibility: hasLoaded ? "hidden" : "visible",
-        }}
-      >
-        <IonSkeletonText animated />
-      </div>
+      <div ref={container} className="canvas-container" />
+      {!hasLoaded && (
+        <div className="canvas-loading">
+          <IonSkeletonText animated />
+        </div>
+      )}
     </div>
   );
 };
