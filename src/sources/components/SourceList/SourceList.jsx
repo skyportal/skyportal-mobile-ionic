@@ -18,7 +18,7 @@ export const SourceList = ({ filter, searchName }) => {
     page,
     numPerPage,
     params: {
-      ...searchName.trim() !== "" &&{ sourceID: searchName },
+      ...searchName.trim() !== "" && { sourceID: searchName },
       ...filter === "favorites" && { listName: "favorites" },
     },
   });
