@@ -179,7 +179,7 @@ export function Source() {
                 {source.thumbnails?.length > 0 ? Object.keys(THUMBNAIL_TYPES).map((type) => (
                   <Thumbnail key={type} source={source} type={type} />
                 )) : (
-                  <div className="">
+                  <div>
                     <IonText color="secondary">
                       no thumbnails found...
                     </IonText>

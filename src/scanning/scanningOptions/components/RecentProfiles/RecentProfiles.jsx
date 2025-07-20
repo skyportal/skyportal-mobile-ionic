@@ -48,7 +48,7 @@ export const RecentProfiles = () => {
     <div className="recent-profiles">
       <div className="recent-profiles-header">
         <h1>Recent profiles</h1>
-        <IonButton fill="clear" onClick={handleSeeAll}>
+        <IonButton fill="clear" onClick={handleSeeAll} disabled={!profiles?.length}>
           See all
           <IonIcon icon={chevronForwardOutline} />
         </IonButton>
@@ -80,15 +80,13 @@ export const RecentProfiles = () => {
                   />
                 ))}
             </IonList>
-          ) : (
-            <div className="hint-container">
-              <IonText color="secondary" className="hint">
-                You don’t have any profiles yet. You can add a new one or
-                click the “Scan without a profile” button below to configure
-                the scanning session manually.
-              </IonText>
-            </div>
-          )
+          ) : <div className="no-profiles">
+            <IonText color="secondary">
+              You don’t have any profiles yet. You can add a new one or
+              click the “Scan without a profile” button below to configure
+              the scanning session manually.
+            </IonText>
+          </div>
         )}
         <IonLoading isOpen={profilesStatus === "pending" || groupsStatus === "pending"} />
       </div>

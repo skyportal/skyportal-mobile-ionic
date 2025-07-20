@@ -15,7 +15,6 @@ export const ScanningEnd = ({ recap }) => {
   return (
     <div className="scanning-end">
       <h3 className="hint">You reached the end of the candidate list!</h3>
-
       <IonButton expand="block" shape="round" onClick={handleButtonClick}>
         Show recap
       </IonButton>

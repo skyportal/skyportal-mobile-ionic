@@ -42,7 +42,7 @@ export const ScanningProfilesScreen = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons>
+          <IonButtons slot="start">
             <IonBackButton />
           </IonButtons>
           <IonTitle>Scanning profiles</IonTitle>
@@ -70,8 +70,8 @@ export const ScanningProfilesScreen = () => {
                 />
               ))}
             </IonList>
-          ) : <div className="hint-container">
-                <IonText color="secondary" className="hint">
+          ) : <div className="no-profiles">
+                <IonText color="secondary">
                   You don’t have any profiles yet.
                 </IonText>
               </div>
