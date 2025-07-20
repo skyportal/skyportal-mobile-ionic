@@ -42,8 +42,7 @@ export const ScanningOptionsProgram = ({
           </IonLabel>
 
           <IonButton id="add-group" fill="clear">
-            Edit
-            <IonIcon icon={pencil} slot="end"></IonIcon>
+            Edit<IonIcon icon={pencil} slot="end"/>
           </IonButton>
         </IonItem>
         {watch("selectedGroups").length > 0 && (

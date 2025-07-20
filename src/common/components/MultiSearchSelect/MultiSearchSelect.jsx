@@ -111,11 +111,11 @@ export const MultiSearchSelect = ({
     <>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
+          <IonButtons slot="secondary">
             <IonButton onClick={cancelChanges}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>{title}</IonTitle>
-          <IonButtons slot="end">
+          <IonButtons slot="primary">
             <IonButton onClick={confirmChanges}>Done</IonButton>
           </IonButtons>
         </IonToolbar>

@@ -76,7 +76,7 @@ export const ProfileListItem = ({
             slot="icon-only"
             onClick={handleDelete}
             icon={trash}
-          ></IonIcon>
+          />
         </IonItemOption>
       </IonItemOptions>
     </IonItemSliding>

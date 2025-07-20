@@ -22,7 +22,7 @@ export const GroupsModal = ({ title, groups, modal }) => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>{title || "Groups"}</IonTitle>
-          <IonButtons slot="end">
+          <IonButtons slot="primary">
             <IonButton onClick={() => modal.current?.dismiss()}>Close</IonButton>
           </IonButtons>
         </IonToolbar>

@@ -32,8 +32,8 @@ export const SpectraModal = ({spectra, setOpenSpectra}) => {
     >
       <IonHeader>
         <IonToolbar>
-          <IonTitle slot="start">Spectra from {spectra?.instrument_name}</IonTitle>
-          <IonButtons slot="end">
+          <IonTitle>Spectra from {spectra?.instrument_name}</IonTitle>
+          <IonButtons slot="secondary">
             <IonButton onClick={() => setOpenSpectra(null)}>Close</IonButton>
           </IonButtons>
         </IonToolbar>

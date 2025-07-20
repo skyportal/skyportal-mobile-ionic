@@ -31,8 +31,8 @@ export const FollowupRequestModal = ({followupRequest, setOpenFollowupRequest}) 
     >
       <IonHeader>
         <IonToolbar>
-          <IonTitle slot="start">{followupRequest?.allocation?.instrument?.name}</IonTitle>
-          <IonButtons slot="end">
+          <IonTitle>{followupRequest?.allocation?.instrument?.name}</IonTitle>
+          <IonButtons slot="secondary">
             <IonButton onClick={() => setOpenFollowupRequest(null)}>Close</IonButton>
           </IonButtons>
         </IonToolbar>

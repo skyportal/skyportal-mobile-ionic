@@ -184,8 +184,6 @@ export const useFetchFavoriteSourceIds = () => {
       fetchFavorites({
         userInfo,
       }),
-    // @ts-ignore
-    suspense: true,
   });
   const favoriteSourceIds = Array.isArray(data)
     ? data.map((source) => source.obj_id)

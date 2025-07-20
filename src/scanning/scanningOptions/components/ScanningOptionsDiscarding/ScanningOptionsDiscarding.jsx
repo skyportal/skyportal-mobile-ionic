@@ -51,7 +51,7 @@ export const ScanningOptionsDiscarding = ({
             </p>
           </IonLabel>
           <IonButton id="add-junk" fill="clear">
-            Edit<IonIcon slot="end" icon={pencil}></IonIcon>
+            Edit<IonIcon slot="end" icon={pencil}/>
           </IonButton>
         </IonItem>
         {junkGroups.length > 0 && (

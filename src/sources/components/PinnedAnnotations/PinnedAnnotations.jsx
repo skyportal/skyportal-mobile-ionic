@@ -87,7 +87,7 @@ export const PinnedAnnotations = ({
               {annotationLine.value ? (
                 <IonLabel className="annotation-value">
                   {concat(sanitizeAnnotationData(annotationLine.value,false), 15)}
-                  <IonIcon icon={copyOutline} size="small" color="secondary"></IonIcon>
+                  <IonIcon icon={copyOutline} size="small" color="secondary"/>
                 </IonLabel>
               ) : (
                 <IonLabel color="warning" className="no-value">

@@ -185,7 +185,7 @@ const OnboardingLower = ({ page, setPage }) => {
               disabled={!selectedInstance}
               strong
             >
-              <IonIcon slot="start" icon={qrCode}></IonIcon>
+              <IonIcon slot="start" icon={qrCode}/>
               Scan QR code
             </IonButton>
             <IonButton
@@ -202,7 +202,7 @@ const OnboardingLower = ({ page, setPage }) => {
                     initialBreakpoint={0.5} breakpoints={[0, 0.5, 1]}>
             <IonHeader>
               <IonToolbar>
-                <IonButtons slot="start">
+                <IonButtons slot="secondary">
                   <IonButton onClick={() => setShowModal(false)}>Close</IonButton>
                 </IonButtons>
                 <IonTitle>Manage Instances</IonTitle>

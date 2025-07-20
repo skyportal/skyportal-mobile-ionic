@@ -109,13 +109,13 @@ export const PinnedAnnotationsPicker = ({
     <>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
+          <IonButtons slot="secondary">
             <IonButton onClick={() => modal.current?.dismiss()}>
               Cancel
             </IonButton>
           </IonButtons>
           <IonTitle>Select pinned annotations</IonTitle>
-          <IonButtons slot="end">
+          <IonButtons slot="primary">
             <IonButton onClick={onDone}>Done</IonButton>
           </IonButtons>
         </IonToolbar>

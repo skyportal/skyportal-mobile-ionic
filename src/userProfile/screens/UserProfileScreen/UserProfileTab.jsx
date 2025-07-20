@@ -114,7 +114,7 @@ export const UserProfileTab = () => {
                     onClick={() => instanceSwitchMutation.mutate()}
                   >
                     {userInfo.instance.name}
-                    <IonIcon slot="end" icon={swapHorizontal}></IonIcon>
+                    <IonIcon slot="end" icon={swapHorizontal}/>
                   </IonButton>
                 </IonItem>
               </IonList>

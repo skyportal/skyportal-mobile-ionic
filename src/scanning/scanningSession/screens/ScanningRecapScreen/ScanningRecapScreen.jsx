@@ -83,7 +83,7 @@ export const ScanningRecapScreen = () => {
                         slot="end"
                         icon={linkOutline}
                         color="primary"
-                      ></IonIcon>
+                      />
                     </IonItem>
                   ))}
                 </IonList>
@@ -98,7 +98,7 @@ export const ScanningRecapScreen = () => {
           {(recap?.notAssigned?.length ?? 0) > 0 && (
             <a href={handleDraftEmail()}>
               <IonButton expand="block">
-                <IonIcon slot="start" icon={mailOutline}></IonIcon>
+                <IonIcon slot="start" icon={mailOutline}/>
                 Draft email
               </IonButton>
             </a>
@@ -109,7 +109,7 @@ export const ScanningRecapScreen = () => {
             color="danger"
             onClick={() => history.replace("/app/scanning")}
           >
-            <IonIcon slot="start" icon={exitOutline}></IonIcon>
+            <IonIcon slot="start" icon={exitOutline}/>
             Exit
           </IonButton>
         </div>

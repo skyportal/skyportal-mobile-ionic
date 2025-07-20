@@ -422,10 +422,10 @@ export const RequestFollowupModal = ({ sourceId, submitRequestCallback, modal })
       keepContentsMounted={true}>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
+          <IonButtons slot="secondary">
             <IonButton color="secondary" onClick={() => modal.current?.dismiss()}>Close</IonButton>
           </IonButtons>
-          <IonTitle slot="start">Request Follow-Up</IonTitle>
+          <IonTitle>Request Follow-Up</IonTitle>
           <IonButtons slot="primary">
             <IonButton
               fill="solid"

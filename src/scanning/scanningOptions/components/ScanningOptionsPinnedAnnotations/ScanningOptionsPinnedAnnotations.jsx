@@ -25,7 +25,7 @@ export const ScanningOptionsPinnedAnnotations = ({ control, watch, modal }) => {
             <p>{pinnedAnnotations.length} selected (select up to 3)</p>
           </IonLabel>
           <IonButton id="select-pinned-annotations" fill="clear">
-            Edit<IonIcon slot="end" icon={pencil}></IonIcon>
+            Edit<IonIcon slot="end" icon={pencil}/>
           </IonButton>
         </IonItem>
         {pinnedAnnotations
