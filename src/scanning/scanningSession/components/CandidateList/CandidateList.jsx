@@ -74,15 +74,9 @@ export const CandidateList = () => {
           isError ?
             "An error occurred while searching for candidates. Please try again." :
             "No candidates were found with the selected options. Please try again.",
-        buttons: [
-          {
-            text: "OK",
-            handler: () => {
-              history.back();
-            },
-          },
-        ],
+        buttons: ["OK"],
       })
+      history.back();
     }
   }, [isFetched, isError, totalMatches, presentAlert]);
   /** @type {import("../../../scanning.lib.js").Candidate[]|undefined} */
@@ -317,6 +311,10 @@ export const CandidateList = () => {
         break;
     }
   };
+
+  if (isFetched && (isError || totalMatches === 0)) {
+    return null;
+  }
 
   return (
     <div className="candidate-list">
