@@ -123,7 +123,7 @@ export const UserProfileTab = () => {
               <IonList inset>
                 <IonItem color="light">
                   <IonSelect
-                    label="Dark theme"
+                    label="Dark Mode"
                     value={darkMode}
                     interface="popover"
                     onIonChange={onDarkModeChange}

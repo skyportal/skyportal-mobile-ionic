@@ -133,7 +133,7 @@ const App = ({ darkMode: initialDarkMode }) => {
       value={{ darkMode: darkMode ?? "auto", updateDarkMode: setDarkMode }}
     >
       <UserContext.Provider value={{ userInfo, updateUserInfo: setUserInfo }}>
-        <IonApp>
+        <IonApp key={darkMode}>
           <IonReactRouter>
             <IonRouterOutlet>
               <Route path="/onboarding" render={() =>

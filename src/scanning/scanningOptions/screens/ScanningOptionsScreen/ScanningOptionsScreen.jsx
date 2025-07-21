@@ -5,9 +5,9 @@ import {
   IonContent,
   IonHeader,
   IonPage,
-  IonSpinner,
+  IonLoading,
   IonTitle,
-  IonToolbar,
+  IonToolbar
 } from "@ionic/react";
 import { ScanningOptionsForm } from "../../components/ScanningOptionsForm/ScanningOptionsForm.jsx";
 import React, { Suspense } from "react";
@@ -24,13 +24,7 @@ export const ScanningOptionsScreen = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent force-overscroll="false">
-        <Suspense
-          fallback={
-            <div className="scanning-option-loading">
-              <IonSpinner />
-            </div>
-          }
-        >
+        <Suspense fallback={<IonLoading isOpen />}>
           <div className="scanning-options-container">
             <ScanningOptionsForm />
           </div>

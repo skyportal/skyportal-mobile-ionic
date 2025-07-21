@@ -93,6 +93,7 @@ export const CANDIDATES_PER_PAGE = 10;
  * @param {Photometry[]} params.photometry
  * @param {number} params.titleFontSize
  * @param {number} params.labelFontSize
+ * @param {boolean} params.isDarkMode
  * @param {import("../common/common.requests.js").BandpassesColors} params.bandpassesColors
  */
 export const getVegaPlotSpec = ({
@@ -100,6 +101,7 @@ export const getVegaPlotSpec = ({
   titleFontSize,
   labelFontSize,
   bandpassesColors,
+  isDarkMode,
 }) => {
   /** @type {{domain: string[], range: string[]}} */
   const colorScale = { domain: [], range: [] };
@@ -107,9 +109,6 @@ export const getVegaPlotSpec = ({
     colorScale.domain.push(f);
     colorScale.range.push(`rgb(${bandpassesColors[f].join(",")})`);
   });
-  const isDarkMode =
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
   const mjdNow = Date.now() / 86400000.0 + 40587.0;
   return /** @type {any} */ ({
     $schema: "https://vega.github.io/schema/vega-lite/v6.json",
@@ -308,7 +307,7 @@ export const getVegaPlotSpec = ({
             type: "nominal",
           },
           opacity: {
-            condition: { selection: "filterLimitingMags", value: 0.3 },
+            condition: { selection: "filterLimitingMags", value: isDarkMode ? 0.5 : 0.3 },
             value: 0,
           },
         },

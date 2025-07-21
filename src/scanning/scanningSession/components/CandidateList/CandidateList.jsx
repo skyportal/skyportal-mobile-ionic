@@ -58,7 +58,13 @@ export const CandidateList = () => {
     notAssigned: [],
     totalMatches: 0,
   });
-  const { data, isError, isFetched, fetchNextPage, isFetchingNextPage } = useSearchCandidates({
+  const {
+    data,
+    isError,
+    isFetched,
+    fetchNextPage,
+    isFetchingNextPage
+  } = useSearchCandidates({
     startDate,
     endDate,
     savedStatus,

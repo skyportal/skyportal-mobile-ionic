@@ -1,11 +1,13 @@
 import "./PhotometryChart.scss";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useContext, useEffect, useRef, useState } from "react";
 // @ts-ignore
 import embed from "vega-embed";
 import { getVegaPlotSpec } from "../../../scanning/scanning.lib.js";
 import { useBandpassesColors } from "../../../common/common.hooks.js";
 import { IonSkeletonText } from "@ionic/react";
 import { useSourcePhotometry } from "../../sources.hooks.js";
+import { AppContext } from "../../../common/common.context.js";
+import { isActuallyDarkMode } from "../../../common/common.lib.js";
 
 /**
  * @param {Object} props
@@ -14,6 +16,7 @@ import { useSourcePhotometry } from "../../sources.hooks.js";
  * @returns {JSX.Element}
  */
 const PhotometryChartBase = ({ sourceId, isInView = true }) => {
+  const { darkMode } = useContext(AppContext);
   const { photometry, status } = useSourcePhotometry(sourceId, isInView);
   const [hasLoaded, setHasLoaded] = useState(false);
   /** @type {React.MutableRefObject<HTMLDivElement|null>} */
@@ -42,6 +45,7 @@ const PhotometryChartBase = ({ sourceId, isInView = true }) => {
         titleFontSize: 13,
         labelFontSize: 11,
         bandpassesColors,
+        isDarkMode: isActuallyDarkMode(darkMode),
       }),
       { actions: false }
     );
