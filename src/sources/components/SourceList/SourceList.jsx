@@ -23,7 +23,7 @@ export const SourceList = ({ filter, searchName }) => {
     },
   });
 
-  if (status === "pending") return <IonLoading isOpen={true} />
+  if (status === "pending") return <IonLoading isOpen />
 
   return (
     <div className="source-list">

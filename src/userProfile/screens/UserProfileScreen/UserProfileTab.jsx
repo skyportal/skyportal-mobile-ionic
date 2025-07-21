@@ -136,7 +136,7 @@ export const UserProfileTab = () => {
               </IonList>
             </div>
           </form>
-        ) : <IonLoading isOpen={true} />}
+        ) : <IonLoading isOpen />}
       </IonContent>
     </IonPage>
   );
