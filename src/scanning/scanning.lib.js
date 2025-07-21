@@ -113,7 +113,7 @@ export const getVegaPlotSpec = ({
     window.matchMedia("(prefers-color-scheme: dark)").matches;
   const mjdNow = Date.now() / 86400000.0 + 40587.0;
   return /** @type {any} */ ({
-    $schema: "https://vega.github.io/schema/vega-lite/v5.2.0.json",
+    $schema: "https://vega.github.io/schema/vega-lite/v6.json",
     background: "transparent",
     width: "container",
     height: "container",
