@@ -112,6 +112,8 @@ export const UserProfileTab = () => {
                     slot="end"
                     fill="clear"
                     onClick={() => instanceSwitchMutation.mutate()}
+                    className="ion-text-capitalize"
+                    style={{ fontSize: "17px" }}
                   >
                     {userInfo.instance.name}
                     <IonIcon slot="end" icon={swapHorizontal}/>
