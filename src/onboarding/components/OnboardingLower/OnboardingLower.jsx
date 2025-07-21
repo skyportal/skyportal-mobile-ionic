@@ -95,7 +95,7 @@ const OnboardingLower = ({ page, setPage }) => {
       history.replace("/login-ok");
     } catch (error) {
       // @ts-ignore
-      errorToast(error.message || "An error occurred while checking credentials");
+      errorToast(error.message || "An error occurred while checking credentials", true);
     }
   }
 
