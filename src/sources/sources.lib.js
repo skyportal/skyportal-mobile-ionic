@@ -107,7 +107,7 @@
  * @property {Group[]} groups - Groups the annotation belongs to
  */
 
-import { useIonToast } from "@ionic/react";
+import { isPlatform, useIonToast } from "@ionic/react";
 import { useCallback } from "react";
 import { Clipboard } from "@capacitor/clipboard";
 
@@ -264,7 +264,9 @@ export const useCopyAnnotationLineOnClick = () => {
       });
       await present({
         message: "Annotation copied to clipboard!",
-        duration: 2000,
+        duration: 1000,
+        color: "success",
+        cssClass: isPlatform('android') ? 'avoid-blocking-page-swipe' : '',
       });
     },
     [present],

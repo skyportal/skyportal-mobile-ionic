@@ -116,3 +116,8 @@ form {
   padding-top: 0;
   padding-bottom: 0;
 }
+
+ion-toast.avoid-blocking-page-swipe {
+  height: 15%;
+  top: 85%;
+}
