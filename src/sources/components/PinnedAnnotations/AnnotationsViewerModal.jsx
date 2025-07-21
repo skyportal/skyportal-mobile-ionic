@@ -12,7 +12,7 @@ export const AnnotationsViewerModal = ({ source, modal }) => {
     <IonModal
       ref={modal}
       initialBreakpoint={0.75}
-      breakpoints={[0.75, 1]}
+      breakpoints={[0, 0.75, 1]}
     >
       <IonHeader>
         <IonSearchbar />
