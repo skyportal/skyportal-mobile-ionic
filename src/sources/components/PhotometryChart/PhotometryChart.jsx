@@ -1,5 +1,6 @@
 import "./PhotometryChart.scss";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
+// @ts-ignore
 import embed from "vega-embed";
 import { getVegaPlotSpec } from "../../../scanning/scanning.lib.js";
 import { useBandpassesColors } from "../../../common/common.hooks.js";

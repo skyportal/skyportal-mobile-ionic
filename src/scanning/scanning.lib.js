@@ -94,7 +94,6 @@ export const CANDIDATES_PER_PAGE = 10;
  * @param {number} params.titleFontSize
  * @param {number} params.labelFontSize
  * @param {import("../common/common.requests.js").BandpassesColors} params.bandpassesColors
- * @returns {import("vega-embed").VisualizationSpec}
  */
 export const getVegaPlotSpec = ({
   photometry,
