@@ -58,8 +58,28 @@ import { ScanningProfilesScreen } from "./scanning/scanningOptions/screens/Scann
 import { UserProfileTab } from "./userProfile/screens/UserProfileScreen/UserProfileTab.jsx";
 import { setDarkModeInDocument } from "./common/common.lib.js";
 import { Source } from "./sources/screens/Source/Source";
+import { SafeArea } from "capacitor-plugin-safe-area";
 
 setupIonicReact();
+
+// Set CSS variables for the safe area insets using the SafeArea plugin
+// to fix capacitor safe area issues on android
+SafeArea.getSafeAreaInsets().then((data) => {
+  const { insets } = data;
+  document.body.style.setProperty("--ion-safe-area-top", `${insets.top}px`);
+  document.body.style.setProperty(
+    "--ion-safe-area-right",
+    `${insets.right}px`
+  );
+  document.body.style.setProperty(
+    "--ion-safe-area-bottom",
+    `${insets.bottom}px`
+  );
+  document.body.style.setProperty(
+    "--ion-safe-area-left",
+    `${insets.left}px`
+  );
+});
 
 /**
  * @param {Object} props

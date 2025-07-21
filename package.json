@@ -36,6 +36,7 @@
     "@types/react-router": "5.1.20",
     "@types/react-router-dom": "5.3.3",
     "axios": "1.8.3",
+    "capacitor-plugin-safe-area": "4.0.0",
     "embla-carousel-react": "8.1.6",
     "ionicons": "7.0.0",
     "moment-timezone": "0.5.45",
