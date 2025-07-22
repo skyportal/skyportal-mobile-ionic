@@ -24,15 +24,6 @@ ion-popover {
   --backdrop-opacity: 0.2;
 }
 
-.app-loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: var(--ion-background-color);
-}
-
-
 .section-padding {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -120,4 +111,11 @@ form {
 ion-toast.avoid-blocking-page-swipe {
   height: 15%;
   top: 85%;
+}
+
+.suspense-spinner{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
