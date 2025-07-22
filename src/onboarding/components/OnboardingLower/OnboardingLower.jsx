@@ -105,8 +105,8 @@ const OnboardingLower = ({ page, setPage }) => {
         hint: Html5QrcodeSupportedFormats.QR_CODE,
       });
       await checkCredentials(result.ScanResult);
-    } catch (error) {
-      errorToast("Error scanning QR code. Please try again.");
+    } catch (/** @type {any} */ error) {
+      errorToast(error?.message || "Error scanning QR code. Please try again.");
     }
   };
 
