@@ -157,7 +157,7 @@ export const CandidateList = () => {
           inputs: resolveGroups(
             action === "save" ? state.saveGroupIds : state.junkGroupIDs,
               userAccessibleGroups).map((group) => ({
-            disabled: currentCandidate.saved_groups.some((g) => g.id === group.id),
+            disabled: currentCandidate.saved_groups?.some((g) => g.id === group.id),
             type: "checkbox",
             label: group.name,
             value: String(group.id),
@@ -215,7 +215,7 @@ export const CandidateList = () => {
     } else {
       groupIdsToAdd = (state.discardBehavior === "specific" && state.discardGroup ?
         [state.discardGroup] : state.junkGroupIDs.map(String))
-        .filter((id) => !currentCandidate.saved_groups.some((g) => g.id === id),
+        .filter((id) => !currentCandidate.saved_groups?.some((g) => g.id === id),
       ).map(String);
       if (groupIdsToAdd.length === 0) {
         errorToast("This candidate is already in the selected junk groups");
