@@ -2,7 +2,7 @@ import "./SourceList.scss";
 import { SourceListItem } from "../SourceListItem/SourceListItem.jsx";
 import React, { useState } from "react";
 import { useFetchFavoriteSourceIds, useFetchSources } from "../../sources.hooks.js";
-import { IonLoading, IonText } from "@ionic/react";
+import { IonSpinner, IonText } from "@ionic/react";
 
 /**
  * @param {Object} props
@@ -23,8 +23,6 @@ export const SourceList = ({ filter, searchName }) => {
     },
   });
 
-  if (status === "pending") return <IonLoading isOpen />
-
   return (
     <div className="source-list">
       {sources?.length ? sources?.map((source) => (
@@ -32,11 +30,12 @@ export const SourceList = ({ filter, searchName }) => {
           key={source.id}
           source={source}
           isFavorite={favoriteSourceIds?.includes(source.id)} />
-      )) : <div className="no-sources">
-        <IonText color="secondary">
-          No sources found...
-        </IonText>
-      </div>
+      )) :
+        <div className="no-sources">
+          <IonText color="secondary">
+            {status === "pending" ? <IonSpinner /> : "No sources found..."}
+          </IonText>
+        </div>
       }
     </div>
   );
