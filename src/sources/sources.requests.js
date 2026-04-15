@@ -52,6 +52,29 @@ export async function fetchSource({ userInfo, sourceId, params = {} }) {
 }
 
 /**
+ * Post a new comment on a source
+ * @param {Object} params
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
+ * @param {string} params.sourceId
+ * @param {string} params.text
+ * @param {number[]} [params.groupIds]
+ * @returns {Promise<any>}
+ */
+export const postSourceComment = async ({ userInfo, sourceId, text, groupIds }) => {
+  return await CapacitorHttp.post({
+    url: `${userInfo.instance.url}/api/sources/${sourceId}/comments`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+      "Content-Type": "application/json",
+    },
+    data: {
+      text,
+      ...(groupIds && groupIds.length > 0 ? { group_ids: groupIds } : {}),
+    },
+  });
+};
+
+/**
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @param {string} params.sourceId

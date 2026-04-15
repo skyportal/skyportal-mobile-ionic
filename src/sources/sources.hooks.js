@@ -8,6 +8,7 @@ import {
   fetchSource,
   fetchSourcePhotometry,
   fetchSourceSpectra,
+  postSourceComment,
   removeFromFavorites,
   submitFollowupRequest,
   updateSourceGroups,
@@ -134,6 +135,41 @@ export const useSourcePhotometry = (sourceId, enableFetch = true) => {
     error,
   };
 }
+
+// Comment related hooks
+
+export const usePostSourceComment = () => {
+  const { userInfo } = useContext(UserContext);
+  const queryClient = useQueryClient();
+  const [presentToast] = useIonToast();
+  const errorToast = useErrorToast();
+  return useMutation({
+    /**
+     * @param {Object} params
+     * @param {string} params.sourceId
+     * @param {string} params.text
+     * @param {number[]} [params.groupIds]
+     * @returns {Promise<*>}
+     */
+    mutationFn: ({ sourceId, text, groupIds }) =>
+      postSourceComment({ userInfo, sourceId, text, groupIds }),
+    onSuccess: (response, { sourceId }) => {
+      if (response.status !== 200) {
+        errorToast(response.data?.message || "Failed to post comment");
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SOURCE, sourceId] });
+      presentToast({
+        message: "Comment posted",
+        duration: 2000,
+        position: "top",
+        color: "success",
+        icon: checkmarkCircleOutline,
+      });
+    },
+    onError: () => errorToast("Failed to post comment"),
+  });
+};
 
 // Followup request related hooks
 
