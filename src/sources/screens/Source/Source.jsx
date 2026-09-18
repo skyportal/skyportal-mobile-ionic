@@ -15,7 +15,7 @@ import {
 import { useParams } from "react-router";
 import { useFetchSource, useUpdateSourceGroups } from "../../sources.hooks.js";
 import React, { useEffect, useRef, useState } from "react";
-import { THUMBNAIL_TYPES } from "../../sources.lib.js";
+import { getDisplayedThumbnails } from "../../sources.lib.js";
 import { Thumbnail } from "../../components/Thumbnail/Thumbnail.jsx";
 import {
   PinnedAnnotations
@@ -52,6 +52,7 @@ export function Source() {
   const { sourceId } = useParams();
   const queryClient = useQueryClient();
   const { source } = useFetchSource({ sourceId });
+  const thumbnails = source ? getDisplayedThumbnails(source) : [];
   const [loading, setLoading] = useState(true);
   /** @type {React.MutableRefObject<any>} */
   const annotationsModal = useRef(null);
@@ -176,8 +177,13 @@ export function Source() {
                 </IonChip>
               </div>
               <div className="thumbnails-container">
-                {source.thumbnails?.length > 0 ? Object.keys(THUMBNAIL_TYPES).map((type) => (
-                  <Thumbnail key={type} source={source} type={type} />
+                {thumbnails.length > 0 ? thumbnails.map((thumbnail) => (
+                  <Thumbnail
+                    key={thumbnail.id}
+                    ra={source.ra}
+                    dec={source.dec}
+                    thumbnail={thumbnail}
+                  />
                 )) : (
                   <div>
                     <IonText color="secondary">

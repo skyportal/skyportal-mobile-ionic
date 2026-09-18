@@ -6,6 +6,15 @@
   justify-content: center;
   width: 32%;
 
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-decoration: none;
+  }
+
   .thumbnail-name {
     font-size: 0.6rem;
     font-weight: 500;
@@ -28,6 +37,10 @@
 
     .thumbnail-skeleton-img {
       height: 100%;
+    }
+
+    img.cutout.inverted {
+      filter: invert(1);
     }
 
     .crosshairs {

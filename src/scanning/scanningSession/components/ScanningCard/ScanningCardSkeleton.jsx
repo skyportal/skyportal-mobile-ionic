@@ -1,6 +1,6 @@
 import "./ScanningCard.scss";
 import { IonSkeletonText } from "@ionic/react";
-import { THUMBNAIL_TYPES } from "../../../../sources/sources.lib.js";
+import { ALERT_THUMBNAIL_TYPES, ARCHIVAL_THUMBNAIL_TYPES } from "../../../../sources/sources.lib.js";
 import { ThumbnailSkeleton } from "../../../../sources/components/Thumbnail/ThumbnailSkeleton.jsx";
 import { PinnedAnnotationsSkeleton } from "../../../../sources/components/PinnedAnnotations/PinnedAnnotationsSkeleton.jsx";
 
@@ -31,7 +31,7 @@ export const ScanningCardSkeleton = ({ animated = false, visible = true }) => {
         </div>
       </div>
       <div className="thumbnails-container">
-        {Object.keys(THUMBNAIL_TYPES).map((type) => (
+        {[...ALERT_THUMBNAIL_TYPES, ...ARCHIVAL_THUMBNAIL_TYPES].map((type) => (
           <ThumbnailSkeleton key={type} type={type} animated={animated} />
         ))}
       </div>

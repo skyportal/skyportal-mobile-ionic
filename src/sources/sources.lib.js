@@ -5,7 +5,7 @@
 /** @typedef {import("../scanning/scanning.lib.js").Candidate} Candidate */
 
 /**
- * @typedef {"new" | "ref" | "sub" | "sdss" | "ls" | "ps1"} ThumbnailType
+ * @typedef {"new" | "ref" | "sub" | "sdss" | "ls" | "ps1" | "sm" | "hst" | "chandra" | "jwst"} ThumbnailType
  */
 
 /**
@@ -66,8 +66,12 @@
 
 /**
  * @typedef {Object} Thumbnail
- * @property {string} type - Thumbnail type
+ * @property {number} id - Thumbnail ID
+ * @property {ThumbnailType} type - Thumbnail type
  * @property {string} public_url - URL of the thumbnail
+ * @property {string} created_at - Created date
+ * @property {string|null} survey - Survey the alert cutout comes from
+ * @property {boolean} is_grayscale - Whether the image is grayscale
  */
 
 /**
@@ -111,27 +115,72 @@ import { isPlatform, useIonToast } from "@ionic/react";
 import { useCallback } from "react";
 import { Clipboard } from "@capacitor/clipboard";
 
+/** @type {ThumbnailType[]} */
+export const ALERT_THUMBNAIL_TYPES = ["new", "ref", "sub"];
+
+/** @type {ThumbnailType[]} */
+export const ARCHIVAL_THUMBNAIL_TYPES = ["sdss", "ls", "ps1"];
+
 /**
- * @type {Object<ThumbnailType, ThumbnailType>}
+ * Cutouts SkyPortal only generates when asked to from the source page.
+ * @type {ThumbnailType[]}
  */
-export const THUMBNAIL_TYPES = {
-  new: "new",
-  ref: "ref",
-  sub: "sub",
-  sdss: "sdss",
-  ls: "ls",
-  ps1: "ps1",
+export const ON_DEMAND_THUMBNAIL_TYPES = ["sm", "hst", "chandra", "jwst"];
+
+/** @type {ThumbnailType[]} */
+export const THUMBNAIL_TYPES = [
+  ...ALERT_THUMBNAIL_TYPES,
+  ...ARCHIVAL_THUMBNAIL_TYPES,
+  ...ON_DEMAND_THUMBNAIL_TYPES,
+];
+
+/**
+ * @param {string} url
+ * @returns {boolean}
+ */
+const isPlaceholderThumbnail = (url) =>
+  !url || url.includes("outside_survey") || url.includes("currently_unavailable");
+
+/**
+ * Get the thumbnails to display, in display order: the most recent one of each
+ * type, and for alert cutouts the most recent one of each survey, as a source
+ * can hold cutouts from several surveys at once.
+ * @param {Candidate | Source} source
+ * @returns {Thumbnail[]}
+ */
+export const getDisplayedThumbnails = (source) => {
+  const sorted = [...(source.thumbnails ?? [])].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+  );
+  return THUMBNAIL_TYPES.flatMap((type) => {
+    const ofType = sorted.filter(
+      (t) => t.type === type && !isPlaceholderThumbnail(t.public_url),
+    );
+    if (!ALERT_THUMBNAIL_TYPES.includes(type)) {
+      return ofType.slice(0, 1);
+    }
+    /** @type {Map<string, Thumbnail>} */
+    const bySurvey = new Map();
+    ofType.forEach((t) => {
+      if (!bySurvey.has(t.survey ?? "")) {
+        bySurvey.set(t.survey ?? "", t);
+      }
+    });
+    return [...bySurvey.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([, t]) => t);
+  });
 };
 
 /**
  * Get the link for the survey and alt text for thumbnail
- * @param {string} instanceUrl - Instance URL
- * @param {string} name - Thumbnail type
+ * @param {ThumbnailType} name - Thumbnail type
  * @param {number} ra - Right ascension
  * @param {number} dec - Declination
  * @returns {{alt: string, link: string}}
  */
-export const getThumbnailAltAndSurveyLink = (instanceUrl, name, ra, dec) => {
+export const getThumbnailAltAndSurveyLink = (name, ra, dec) => {
   let alt = "";
   let link = "";
   switch (name) {
@@ -146,18 +195,33 @@ export const getThumbnailAltAndSurveyLink = (instanceUrl, name, ra, dec) => {
       break;
     case "sdss":
       alt = "Link to SDSS Navigate tool";
-      link = `https://skyserver.sdss.org/dr16/en/tools/chart/navi.aspx?opt=G&ra=${ra}&dec=${dec}&scale=0.25`;
+      link = `https://skyserver.sdss.org/dr18/VisualTools/navi?opt=G&ra=${ra}&dec=${dec}&scale=0.1`;
       break;
     case "ls":
-      alt = "Link to Legacy Survey DR9 Image Access";
-      link = `https://www.legacysurvey.org/viewer?ra=${ra}&dec=${dec}&layer=ls-dr9&photoz-dr9&zoom=16&mark=${ra},${dec}`;
+      alt = "Link to Legacy Survey DR10 Image Access";
+      link = `https://www.legacysurvey.org/viewer?ra=${ra}&dec=${dec}&layer=ls-dr10&photoz-dr9&zoom=16&mark=${ra},${dec}`;
       break;
     case "ps1":
       alt = "Link to PanSTARRS-1 Image Access";
       link = `https://ps1images.stsci.edu/cgi-bin/ps1cutouts?pos=${ra}+${dec}&filter=color&filter=g&filter=r&filter=i&filter=z&filter=y&filetypes=stack&auxiliary=data&size=240&output_size=0&verbose=0&autoscale=99.500000&catlist=`;
       break;
+    case "sm":
+      alt = "Link to SkyMapper Image Access";
+      link = `https://api.skymapper.nci.org.au/public/siap/dr4/query?POS=${ra},${dec}&SIZE=0.0167&BAND=g,r,i&FORMAT=GRAPHIC&VERB=3`;
+      break;
+    case "hst":
+      alt = "Link to Hubble Legacy Archive";
+      link = `https://hla.stsci.edu/hlaview.html#/HLA/${ra},${dec}`;
+      break;
+    case "chandra":
+      alt = "Link to Chandra Source Catalog";
+      link = `https://cda.harvard.edu/chaser/searchGuest.do?ra=${ra}&dec=${dec}`;
+      break;
+    case "jwst":
+      alt = "Link to JWST data in MAST";
+      link = `https://mast.stsci.edu/search/ui/#/jwst?ra=${ra}&dec=${dec}&radius=6%20arcsec`;
+      break;
     default:
-      link = `${instanceUrl}/static/images/outside_survey.png`;
       break;
   }
   return { alt, link };
@@ -165,35 +229,41 @@ export const getThumbnailAltAndSurveyLink = (instanceUrl, name, ra, dec) => {
 
 /**
  * Get the header for the thumbnail
- * @param {string} type - Thumbnail type
+ * @param {ThumbnailType} type - Thumbnail type
+ * @param {string|null} [survey] - Survey the alert cutout comes from
  * @returns {string}
  */
-export const getThumbnailHeader = (type) => {
+export const getThumbnailHeader = (type, survey = null) => {
+  let header;
   switch (type) {
     case "ls":
-      return "LEGACY SURVEY DR9";
+      header = "LEGACY SURVEY DR10";
+      break;
     case "ps1":
-      return "PANSTARRS DR2";
+      header = "PANSTARRS DR2";
+      break;
+    case "sm":
+      header = "SKYMAPPER DR4";
+      break;
     default:
-      return type.toUpperCase();
+      header = type.toUpperCase();
+      break;
   }
+  return survey && ALERT_THUMBNAIL_TYPES.includes(type)
+    ? `${survey.toUpperCase()} ${header}`
+    : header;
 };
 
 /**
  * Get the URL of the thumbnail image
  * @param {string} instanceUrl
- * @param {Candidate | Source} source
- * @param {string} type
- * @returns {string|null}
+ * @param {Thumbnail} thumbnail
+ * @returns {string}
  */
-export function getThumbnailImageUrl(instanceUrl, source, type) {
-  let thumbnail = source.thumbnails.find((t) => t.type === type);
-  if (!thumbnail) {
-    return null;
-  }
+export function getThumbnailImageUrl(instanceUrl, thumbnail) {
   let res = thumbnail.public_url;
-  if (type === "new" || type === "ref" || type === "sub") {
-    res = instanceUrl + res;
+  if (!res.startsWith("http")) {
+    return instanceUrl + res;
   }
   // force https for urls that are not from the instance
   if (!res.startsWith(instanceUrl) && res.startsWith("http:")) {

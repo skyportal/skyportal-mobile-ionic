@@ -4,7 +4,7 @@ import { getThumbnailHeader } from "../../sources.lib.js";
 
 /**
  * @param {Object} props
- * @param {string} props.type
+ * @param {import("../../sources.lib.js").ThumbnailType} props.type
  * @param {boolean} props.animated
  * @returns {JSX.Element}
  */

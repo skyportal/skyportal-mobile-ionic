@@ -1,5 +1,5 @@
 import "./ScanningCard.scss";
-import { THUMBNAIL_TYPES } from "../../../../sources/sources.lib.js";
+import { getDisplayedThumbnails } from "../../../../sources/sources.lib.js";
 import { Thumbnail } from "../../../../sources/components/Thumbnail/Thumbnail.jsx";
 import { PinnedAnnotations } from "../../../../sources/components/PinnedAnnotations/PinnedAnnotations.jsx";
 import { PhotometryChart } from "../../../../sources/components/PhotometryChart/PhotometryChart.jsx";
@@ -57,8 +57,13 @@ const ScanningCardBase = ({
           </div>
         </div>
         <div className="thumbnails-container">
-          {Object.keys(THUMBNAIL_TYPES).map((type) => (
-            <Thumbnail key={type} source={candidate} type={type} />
+          {getDisplayedThumbnails(candidate).map((thumbnail) => (
+            <Thumbnail
+              key={thumbnail.id}
+              ra={candidate.ra}
+              dec={candidate.dec}
+              thumbnail={thumbnail}
+            />
           ))}
         </div>
         <PinnedAnnotations
