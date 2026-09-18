@@ -4,9 +4,7 @@ import { fetchUserProfile } from "../onboarding/onboarding.lib.js";
 import {
   fetchConfig,
   fetchGroups,
-  fetchAllocations,
   fetchAllocationsApiClassname,
-  fetchFollowupApis,
   fetchInstrumentForms
 } from "./common.requests.js";
 import { useContext } from "react";
@@ -203,22 +201,6 @@ export const useUserProfile = () => {
 };
 
 /**
- * @returns {{allocations: import("./common.lib.js").Allocation[]|undefined, status: QueryStatus, error: any|undefined}}
- */
-export const useAllocations = () => {
-  const { userInfo } = useContext(UserContext);
-  const { data, status, error } = useQuery({
-    queryKey: [QUERY_KEYS.ALLOCATIONS],
-    queryFn: () => fetchAllocations(userInfo),
-  });
-  return {
-    allocations: data,
-    status,
-    error,
-  };
-};
-
-/**
  * @returns {{allocationsApiClassname: import("./common.lib.js").AllocationApiClassname[]|undefined, status: QueryStatus, error: any|undefined}}
  */
 export const useAllocationsApiClassname = () => {
@@ -234,19 +216,6 @@ export const useAllocationsApiClassname = () => {
   };
 }
 
-export const useFollowupApis = () => {
-  const { userInfo } = useContext(UserContext);
-  const { data, status, error } = useQuery({
-    queryKey: [QUERY_KEYS.FOLLOWUP_APIS],
-    queryFn: () => fetchFollowupApis(userInfo),
-  });
-  return {
-    followupApis: data,
-    status,
-    error,
-  };
-}
-
 export const useInstrumentForms = () => {
   const { userInfo } = useContext(UserContext);
   const { data, status, error } = useQuery({
@@ -255,19 +224,6 @@ export const useInstrumentForms = () => {
   });
   return {
     instrumentForms: data,
-    status,
-    error,
-  };
-}
-
-export const useInstruments = () => {
-  const { userInfo } = useContext(UserContext);
-  const { data, status, error } = useQuery({
-    queryKey: [QUERY_KEYS.INSTRUMENTS],
-    queryFn: () => fetchInstrumentForms(userInfo),
-  });
-  return {
-    instruments: data,
     status,
     error,
   };

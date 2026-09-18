@@ -104,7 +104,7 @@
  * @property {string} obj_id - Object ID
  * @property {{[key: string]: string|number|Array<any>|undefined}} data - Annotation data
  * @property {number} author_id - Author ID
- * @property {Group[]} groups - Groups the annotation belongs to
+ * @property {Group[]} [groups] - Groups the annotation belongs to, only on candidates
  */
 
 import { isPlatform, useIonToast } from "@ionic/react";

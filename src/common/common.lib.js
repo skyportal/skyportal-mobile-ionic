@@ -82,18 +82,14 @@ export const QUERY_KEYS = {
   USER_INFO: "userInfo",
   GROUPS: "groups",
   SOURCE_PHOTOMETRY: "sourcePhotometry",
-  CONFIG: "config",
   APP_START: "appStart",
   BANDPASS_COLORS: "bandpassColors",
   SCANNING_PROFILES: "scanningProfiles",
   ANNOTATIONS_INFO: "annotationsInfo",
   APP_PREFERENCES: "appPreferences",
   SOURCE_SPECTRA: "sourceSpectra",
-  ALLOCATIONS: "allocations",
   ALLOCATIONS_API_CLASSNAME: "allocationsApiClassname",
-  FOLLOWUP_APIS: "followupApis",
   INSTRUMENT_FORMS: "instrumentForms",
-  INSTRUMENTS: "instruments",
 };
 
 /**

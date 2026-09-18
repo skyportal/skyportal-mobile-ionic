@@ -44,19 +44,6 @@ export async function fetchGroups(userInfo) {
 
 /**
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
- */
-export async function fetchAllocations(userInfo) {
-  let response = await CapacitorHttp.get({
-    url: `${userInfo.instance.url}/api/allocation`,
-    headers: {
-      Authorization: `token ${userInfo.token}`,
-    },
-  });
-  return response.data.data;
-}
-
-/**
- * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
  * @param {Record<string, string>} params
  */
 export async function fetchAllocationsApiClassname(userInfo, params = {}) {
@@ -67,19 +54,6 @@ export async function fetchAllocationsApiClassname(userInfo, params = {}) {
       Authorization: `token ${userInfo.token}`,
     },
     params: { ...apiQueryDefaults, ...params },
-  });
-  return response.data.data;
-}
-
-/**
- * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
- */
-export async function fetchFollowupApis(userInfo) {
-  let response = await CapacitorHttp.get({
-    url: `${userInfo.instance.url}/api/internal/followup_apis`,
-    headers: {
-      Authorization: `token ${userInfo.token}`,
-    },
   });
   return response.data.data;
 }
@@ -97,19 +71,6 @@ export async function fetchInstrumentForms(userInfo, apiType= "api_classname") {
     params: {
       apiType: apiType
     }
-  });
-  return response.data.data;
-}
-
-/**
- * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
- */
-export async function fetchInstruments( userInfo ) {
-  let response = await CapacitorHttp.get({
-    url: `${userInfo.instance.url}/api/instruments`,
-    headers: {
-      Authorization: `token ${userInfo.token}`,
-    },
   });
   return response.data.data;
 }
