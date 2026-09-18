@@ -33,6 +33,7 @@ import {
   AnnotationsViewerModal
 } from "../../components/PinnedAnnotations/AnnotationsViewerModal.jsx";
 import { GroupsModal } from "../../components/GroupsModal/GroupsModal.jsx";
+import { Tags } from "../../components/Tags/Tags.jsx";
 import { SourceSkeleton } from "./SourceSkeleton.jsx";
 import { RequestFollowupModal } from "../../components/FollowupRequests/RequestFollowupModal.jsx";
 import { QUERY_KEYS } from "../../../common/common.lib.js";
@@ -175,6 +176,7 @@ export function Source() {
                 >
                   Manage groups
                 </IonChip>
+                <Tags tags={source.tags} sourceId={source.id} />
               </div>
               <div className="thumbnails-container">
                 {thumbnails.length > 0 ? thumbnails.map((thumbnail) => (

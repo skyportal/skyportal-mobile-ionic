@@ -7,6 +7,7 @@
 /** @typedef {import("../sources/sources.lib.js").Photometry} Photometry */
 /** @typedef {import("../sources/sources.lib.js").Classification} Classification */
 /** @typedef {import("../sources/sources.lib.js").Annotation} Annotation */
+/** @typedef {import("../sources/sources.lib.js").Tag} Tag */
 
 /**
  * @typedef {Object} ScanningProfile
@@ -37,6 +38,7 @@
  * @property {Comment[]} comments - Comments on the follow-up request
  * @property {string} tns_name - TNS name
  * @property {Spectra[]} spectra - Spectra of the candidate
+ * @property {Tag[]} tags - Tags attached to the candidate
  */
 
 /**

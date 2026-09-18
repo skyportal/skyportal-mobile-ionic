@@ -8,6 +8,7 @@ import {
   fetchSource,
   fetchSourcePhotometry,
   fetchSourceSpectra,
+  fetchTagOptions,
   postSourceComment,
   removeFromFavorites,
   submitFollowupRequest,
@@ -135,6 +136,24 @@ export const useSourcePhotometry = (sourceId, enableFetch = true) => {
     error,
   };
 }
+
+// Object tags related hooks
+
+/**
+ * @returns {{tagOptions: import("./sources.lib.js").TagOption[]|undefined, status: QueryStatus, error: any|undefined}}
+ */
+export const useTagOptions = () => {
+  const { userInfo } = useContext(UserContext);
+  const { data, status, error } = useQuery({
+    queryKey: [QUERY_KEYS.TAG_OPTIONS],
+    queryFn: () => fetchTagOptions({ userInfo }),
+  });
+  return {
+    tagOptions: data,
+    status,
+    error,
+  };
+};
 
 // Comment related hooks
 

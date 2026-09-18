@@ -21,6 +21,7 @@
  * @property {Classification[]} classifications - Classifications of the source
  * @property {FollowupRequest[]} followup_requests - Follow-up requests of the source
  * @property {Annotation[]} annotations - Annotations on the source
+ * @property {Tag[]} tags - Tags attached to the source
  */
 
 /**
@@ -102,6 +103,21 @@
  */
 
 /**
+ * @typedef {Object} TagOption
+ * @property {number} id - Tag option ID
+ * @property {string} name - Tag name
+ * @property {string|null} color - Color of the tag chip
+ */
+
+/**
+ * @typedef {Object} Tag
+ * @property {number} id - Tag ID
+ * @property {string} name - Tag name
+ * @property {number} objtagoption_id - ID of the tag option it comes from
+ * @property {string} [obj_id] - Object the tag is attached to
+ */
+
+/**
  * @typedef {Object} Annotation
  * @property {number} id - Annotation ID
  * @property {string} origin - Annotation origin
@@ -114,6 +130,23 @@
 import { isPlatform, useIonToast } from "@ionic/react";
 import { useCallback } from "react";
 import { Clipboard } from "@capacitor/clipboard";
+
+export const DEFAULT_TAG_COLOR = "#dddfe2";
+
+/**
+ * Get the text color readable over the given background color
+ * @param {string} hexColor
+ * @returns {string}
+ */
+export const getContrastColor = (hexColor) => {
+  if (hexColor.length !== 7) {
+    return "#000000";
+  }
+  const r = parseInt(hexColor.slice(1, 3), 16);
+  const g = parseInt(hexColor.slice(3, 5), 16);
+  const b = parseInt(hexColor.slice(5, 7), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.5 ? "#000000" : "#ffffff";
+};
 
 /** @type {ThumbnailType[]} */
 export const ALERT_THUMBNAIL_TYPES = ["new", "ref", "sub"];

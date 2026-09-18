@@ -90,6 +90,7 @@ export const QUERY_KEYS = {
   SOURCE_SPECTRA: "sourceSpectra",
   ALLOCATIONS_API_CLASSNAME: "allocationsApiClassname",
   INSTRUMENT_FORMS: "instrumentForms",
+  TAG_OPTIONS: "tagOptions",
 };
 
 /**

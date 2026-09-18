@@ -22,6 +22,7 @@
 
     .header {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       width: 100%;
@@ -35,6 +36,11 @@
 
       .source-groups-chip {
         margin: 0;
+      }
+
+      .tags {
+        flex-basis: 100%;
+        margin-top: 0.3rem;
       }
     }
 

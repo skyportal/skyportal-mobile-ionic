@@ -11,6 +11,7 @@ import { FollowupRequests } from "../../../../sources/components/FollowupRequest
 import { Comments } from "../../../../sources/components/Comments/Comments.jsx";
 import { SpectraList } from "../../../../sources/components/Spectra/SpectraList.jsx";
 import { GroupsModal } from "../../../../sources/components/GroupsModal/GroupsModal.jsx";
+import { Tags } from "../../../../sources/components/Tags/Tags.jsx";
 import { AnnotationsViewerModal } from "../../../../sources/components/PinnedAnnotations/AnnotationsViewerModal.jsx";
 
 /**
@@ -55,6 +56,7 @@ const ScanningCardBase = ({
           <div className="pagination-indicator">
             {currentIndex + 1}/{nbCandidates}
           </div>
+          <Tags tags={candidate.tags} sourceId={candidate.id} />
         </div>
         <div className="thumbnails-container">
           {getDisplayedThumbnails(candidate).map((thumbnail) => (

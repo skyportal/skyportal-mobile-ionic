@@ -1,0 +1,13 @@
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+
+  ion-chip.tag {
+    margin: 0;
+    height: 1.25rem;
+    padding: 0 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+}

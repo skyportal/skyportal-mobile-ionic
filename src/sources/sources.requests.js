@@ -259,3 +259,21 @@ export const removeFromFavorites = async ({ userInfo, sourceId }) => {
     },
   });
 }
+
+// Object tags related functions
+
+/**
+ * Fetch the tags that can be attached to an object
+ * @param {Object} params
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
+ * @returns {Promise<import("./sources.lib.js").TagOption[]>}
+ */
+export const fetchTagOptions = async ({ userInfo }) => {
+  let response = await CapacitorHttp.get({
+    url: `${userInfo.instance.url}/api/objtagoption`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+    },
+  });
+  return response.data.data;
+};
