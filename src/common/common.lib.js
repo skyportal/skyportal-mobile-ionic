@@ -88,6 +88,8 @@ export const QUERY_KEYS = {
   ANNOTATIONS_INFO: "annotationsInfo",
   APP_PREFERENCES: "appPreferences",
   SOURCE_SPECTRA: "sourceSpectra",
+  SOURCE_COMMENTS: "sourceComments",
+  COMMENT_CHANNELS: "commentChannels",
   ALLOCATIONS_API_CLASSNAME: "allocationsApiClassname",
   INSTRUMENT_FORMS: "instrumentForms",
   TAG_OPTIONS: "tagOptions",

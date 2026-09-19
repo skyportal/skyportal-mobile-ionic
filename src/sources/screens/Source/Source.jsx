@@ -204,7 +204,7 @@ export function Source() {
                 />
               </div>
               <SourceInfo source={source} />
-              <Comments comments={source.comments} />
+              <Comments sourceId={source.id} />
               <SpectraList sourceId={source.id} />
               <FollowupRequests source={source} requestType={"triggered"} />
               <FollowupRequests source={source} requestType={"forced_photometry"}/>

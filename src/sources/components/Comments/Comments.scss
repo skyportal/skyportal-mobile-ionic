@@ -18,6 +18,25 @@
     }
   }
 
+  .new-comment {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.25rem;
+    padding-top: 0.5rem;
+
+    ion-textarea {
+      flex: 1;
+      font-size: 0.8rem;
+      --padding-top: 0.4rem;
+      --padding-bottom: 0.4rem;
+    }
+
+    ion-button {
+      margin: 0;
+      height: 2.2rem;
+    }
+  }
+
   .no-comments{
     text-align: center;
     font-size: 0.9rem;

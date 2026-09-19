@@ -16,7 +16,6 @@
  * @property {string} tns_name - TNS name
  * @property {string} created_at - Created date
  * @property {Thumbnail[]} thumbnails - Thumbnails of the source
- * @property {Comment[]} comments - Comments on the source
  * @property {Group[]} groups - Groups the source belongs to
  * @property {Classification[]} classifications - Classifications of the source
  * @property {FollowupRequest[]} followup_requests - Follow-up requests of the source
@@ -63,6 +62,9 @@
  * @property {string} text - Comment text
  * @property {User} author - Author of the comment
  * @property {string} created_at - Created date
+ * @property {string|null} channel - Conversation the comment belongs to
+ * @property {"scanning"|null} origin - Workflow the comment was created from
+ * @property {boolean} bot - Whether the comment was posted by a bot
  */
 
 /**
@@ -130,6 +132,9 @@
 import { isPlatform, useIonToast } from "@ionic/react";
 import { useCallback } from "react";
 import { Clipboard } from "@capacitor/clipboard";
+
+/** Name SkyPortal gives to the conversation holding the comments with no channel. */
+export const MAIN_COMMENT_CHANNEL = "Comments";
 
 export const DEFAULT_TAG_COLOR = "#dddfe2";
 

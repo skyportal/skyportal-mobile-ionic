@@ -4,8 +4,10 @@ import { UserContext } from "../common/common.context.js";
 import { QUERY_KEYS } from "../common/common.lib.js";
 import {
   addToFavorites,
+  fetchCommentChannels,
   fetchFavorites,
   fetchSource,
+  fetchSourceComments,
   fetchSourcePhotometry,
   fetchSourceSpectra,
   fetchTagOptions,
@@ -157,6 +159,45 @@ export const useTagOptions = () => {
 
 // Comment related hooks
 
+/**
+ * @param {string} sourceId
+ * @param {string} [channel] - Conversation to read, main one if unset
+ * @param {boolean} [enableFetch=true] - If false, the query will not be executed
+ * @returns {{comments: import("./sources.lib.js").Comment[] | undefined, status: QueryStatus, error: any | undefined }}
+ */
+export const useSourceComments = (sourceId, channel, enableFetch = true) => {
+  const { userInfo } = useContext(UserContext);
+  const { data: comments, status, error } = useQuery({
+    queryKey: [QUERY_KEYS.SOURCE_COMMENTS, sourceId, channel ?? null],
+    queryFn: () => fetchSourceComments({ userInfo, sourceId, channel }),
+    enabled: enableFetch && !!sourceId,
+  });
+  return {
+    comments,
+    status,
+    error,
+  };
+};
+
+/**
+ * @param {string} sourceId
+ * @param {boolean} [enableFetch=true] - If false, the query will not be executed
+ * @returns {{channels: string[] | undefined, status: QueryStatus, error: any | undefined }}
+ */
+export const useCommentChannels = (sourceId, enableFetch = true) => {
+  const { userInfo } = useContext(UserContext);
+  const { data: channels, status, error } = useQuery({
+    queryKey: [QUERY_KEYS.COMMENT_CHANNELS, sourceId],
+    queryFn: () => fetchCommentChannels({ userInfo, sourceId }),
+    enabled: enableFetch && !!sourceId,
+  });
+  return {
+    channels,
+    status,
+    error,
+  };
+};
+
 export const usePostSourceComment = () => {
   const { userInfo } = useContext(UserContext);
   const queryClient = useQueryClient();
@@ -168,16 +209,19 @@ export const usePostSourceComment = () => {
      * @param {string} params.sourceId
      * @param {string} params.text
      * @param {number[]} [params.groupIds]
+     * @param {string} [params.channel]
+     * @param {"scanning"} [params.origin]
      * @returns {Promise<*>}
      */
-    mutationFn: ({ sourceId, text, groupIds }) =>
-      postSourceComment({ userInfo, sourceId, text, groupIds }),
+    mutationFn: ({ sourceId, text, groupIds, channel, origin }) =>
+      postSourceComment({ userInfo, sourceId, text, groupIds, channel, origin }),
     onSuccess: (response, { sourceId }) => {
       if (response.status !== 200) {
         errorToast(response.data?.message || "Failed to post comment");
         return;
       }
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SOURCE, sourceId] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SOURCE_COMMENTS, sourceId] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.COMMENT_CHANNELS, sourceId] });
       presentToast({
         message: "Comment posted",
         duration: 2000,

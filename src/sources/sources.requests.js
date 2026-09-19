@@ -44,12 +44,47 @@ export async function fetchSource({ userInfo, sourceId, params = {} }) {
       includeDetectionStats: "true",
       includeLabellers: "true",
       includeHosts: "true",
-      includeComments: "true",
       ...params,
     },
   });
   return response.data.data;
 }
+
+/**
+ * Fetch the comments of a source, on the main conversation by default
+ * @param {Object} params
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
+ * @param {string} params.sourceId
+ * @param {string} [params.channel] - Conversation to read, main one if unset
+ * @returns {Promise<import("./sources.lib.js").Comment[]>}
+ */
+export const fetchSourceComments = async ({ userInfo, sourceId, channel }) => {
+  let response = await CapacitorHttp.get({
+    url: `${userInfo.instance.url}/api/sources/${sourceId}/comments`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+    },
+    params: channel ? { channel } : {},
+  });
+  return response.data.data;
+};
+
+/**
+ * Fetch the named conversations opened on a source
+ * @param {Object} params
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
+ * @param {string} params.sourceId
+ * @returns {Promise<string[]>}
+ */
+export const fetchCommentChannels = async ({ userInfo, sourceId }) => {
+  let response = await CapacitorHttp.get({
+    url: `${userInfo.instance.url}/api/sources/${sourceId}/comments/channels`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+    },
+  });
+  return response.data.data;
+};
 
 /**
  * Post a new comment on a source
@@ -58,9 +93,11 @@ export async function fetchSource({ userInfo, sourceId, params = {} }) {
  * @param {string} params.sourceId
  * @param {string} params.text
  * @param {number[]} [params.groupIds]
+ * @param {string} [params.channel] - Conversation to post to, main one if unset
+ * @param {"scanning"} [params.origin] - Workflow the comment is posted from
  * @returns {Promise<any>}
  */
-export const postSourceComment = async ({ userInfo, sourceId, text, groupIds }) => {
+export const postSourceComment = async ({ userInfo, sourceId, text, groupIds, channel, origin }) => {
   return await CapacitorHttp.post({
     url: `${userInfo.instance.url}/api/sources/${sourceId}/comments`,
     headers: {
@@ -70,6 +107,8 @@ export const postSourceComment = async ({ userInfo, sourceId, text, groupIds }) 
     data: {
       text,
       ...(groupIds && groupIds.length > 0 ? { group_ids: groupIds } : {}),
+      ...(channel ? { channel } : {}),
+      ...(origin ? { origin } : {}),
     },
   });
 };

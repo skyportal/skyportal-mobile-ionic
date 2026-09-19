@@ -80,7 +80,11 @@ const ScanningCardBase = ({
           />
         </div>
         <SourceInfo source={candidate} />
-        <Comments comments={candidate.comments} />
+        <Comments
+          sourceId={candidate.id}
+          isInView={isInView}
+          origin="scanning"
+        />
         <SpectraList sourceId={candidate.id} isInView={isInView} />
         <FollowupRequests source={candidate} requestType={"triggered"} />
         <FollowupRequests source={candidate} requestType={"forced_photometry"}/>
