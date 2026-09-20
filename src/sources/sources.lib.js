@@ -349,14 +349,14 @@ export const concat = (value, length) => {
 }
 
 /**
- * @param {string|number|Array<any>|undefined} data
+ * @param {any} data
  * @param {boolean} withIndentation
  * @returns {string|number|undefined}
  */
 export const sanitizeAnnotationData = (data, withIndentation) => {
-  if (Array.isArray(data)) {
+  if (data !== null && typeof data === "object") {
     data = JSON.stringify(data, null, withIndentation ? 2 : 0);
-  }else if (typeof data === "boolean") {
+  } else if (typeof data === "boolean") {
     data = data ? "true" : "false";
   }
   return data;
