@@ -19,6 +19,7 @@ import { UserContext } from "../../../../common/common.context.js";
 import { CANDIDATES_PER_PAGE } from "../../../scanning.lib.js";
 import { QUERY_KEYS } from "../../../../common/common.lib.js";
 import { NewFollowupRequestModal } from "../../../../sources/components/FollowupRequests/NewFollowupRequestModal.jsx";
+import { CommentsPanel } from "../../../../sources/components/Comments/CommentsPanel.jsx";
 
 export const CandidateList = () => {
   /** @type {{state: import("../../../scanning.lib.js").ScanningConfig|undefined}} */
@@ -361,6 +362,9 @@ export const CandidateList = () => {
           onAction={handleToolbarAction}
           isDiscardingEnabled={isDiscardingEnabled}
         />
+      )}
+      {currentCandidate && (
+        <CommentsPanel sourceId={currentCandidate.id} origin="scanning" />
       )}
       <NewFollowupRequestModal sourceId={currentCandidate?.id} submitRequestCallback={handleFollowupRequestSubmitted} modal={requestFollowupModal} />
     </div>

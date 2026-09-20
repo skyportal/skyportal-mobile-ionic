@@ -1,4 +1,5 @@
 .candidate-list {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 90% 10%;
@@ -24,5 +25,10 @@
         height: 100%;
       }
     }
+  }
+
+  .comments-fab {
+    bottom: 10%;
+    margin-bottom: 1rem;
   }
 }

@@ -1,45 +1,154 @@
-.comments {
-  .comment{
-    display: flex;
-    flex-direction: column;
-    padding: 0.5rem 0;
-    gap: 0.3rem;
-    width: 100%;
-    font-size: 0.8rem;
-    .date{
-      color: var(--ion-color-secondary);
-    }
-    .text {
-      text-align: left;
-      word-break: break-word;
-    }
-    .highlight {
-      color: var(--ion-color-primary);
-    }
+.comments-fab {
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.comments-modal {
+  ion-segment {
+    padding: 0 0.5rem 0.25rem;
   }
 
-  .new-comment {
-    display: flex;
-    align-items: flex-end;
-    gap: 0.25rem;
-    padding-top: 0.5rem;
+  .comment-thread {
+    --padding-start: 0.6rem;
+    --padding-end: 0.6rem;
+    --padding-top: 0.6rem;
+    --padding-bottom: 0.6rem;
+    font-size: 0.85rem;
 
-    ion-textarea {
-      flex: 1;
+    .thread-placeholder {
+      display: flex;
+      justify-content: center;
+      padding-top: 2rem;
       font-size: 0.8rem;
-      --padding-top: 0.4rem;
-      --padding-bottom: 0.4rem;
     }
 
-    ion-button {
-      margin: 0;
-      height: 2.2rem;
+    .thread-separator {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--ion-color-medium);
+      padding: 0.9rem 0 0.5rem;
+    }
+
+    .system-comment {
+      text-align: center;
+      font-size: 0.72rem;
+      font-style: italic;
+      color: var(--ion-color-medium);
+      padding: 0.4rem 1rem;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.35rem;
+      margin-bottom: 0.1rem;
+
+      &.run-end {
+        margin-bottom: 0.5rem;
+      }
+
+      .avatar {
+        flex: 0 0 auto;
+        width: 1.4rem;
+        height: 1.4rem;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .bubble-column {
+        display: flex;
+        flex-direction: column;
+        max-width: 78%;
+      }
+
+      .author {
+        font-size: 0.68rem;
+        color: var(--ion-color-medium);
+        padding: 0.3rem 0 0.15rem 0.7rem;
+      }
+
+      .bubble {
+        padding: 0.42rem 0.7rem;
+        border-radius: 1.15rem;
+        word-break: break-word;
+        white-space: pre-wrap;
+      }
+
+      .highlight {
+        font-weight: 500;
+      }
+
+      &.theirs {
+        .bubble {
+          background: var(--ion-color-light);
+          color: var(--ion-color-light-contrast);
+        }
+        .highlight {
+          color: var(--ion-color-primary);
+        }
+        &:not(.run-start) .bubble {
+          border-top-left-radius: 0.35rem;
+        }
+        &:not(.run-end) .bubble {
+          border-bottom-left-radius: 0.35rem;
+        }
+      }
+
+      &.mine {
+        justify-content: flex-end;
+
+        .bubble {
+          background: var(--ion-color-primary);
+          color: var(--ion-color-primary-contrast);
+        }
+        .highlight {
+          font-weight: 700;
+        }
+        &:not(.run-start) .bubble {
+          border-top-right-radius: 0.35rem;
+        }
+        &:not(.run-end) .bubble {
+          border-bottom-right-radius: 0.35rem;
+        }
+      }
+
+      &.bot .bubble {
+        font-size: 0.78rem;
+        font-style: italic;
+        opacity: 0.75;
+      }
     }
   }
 
-  .no-comments{
-    text-align: center;
-    font-size: 0.9rem;
-    padding: 0.5rem 0 1rem 0;
+  .comment-composer {
+    ion-toolbar {
+      --padding-top: 0.25rem;
+      --padding-bottom: 0.25rem;
+      --padding-start: 0.5rem;
+      --padding-end: 0.25rem;
+    }
+
+    .composer-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.25rem;
+
+      ion-textarea {
+        flex: 1;
+        margin: 0;
+        font-size: 0.85rem;
+        background: var(--ion-color-light);
+        border-radius: 1.15rem;
+        --padding-start: 0.8rem;
+        --padding-end: 0.8rem;
+        --padding-top: 0.45rem;
+        --padding-bottom: 0.45rem;
+      }
+
+      ion-button {
+        margin: 0;
+        height: 2.2rem;
+      }
+    }
   }
 }

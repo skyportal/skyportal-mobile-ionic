@@ -25,7 +25,7 @@ import {
 import {
   SourceInfo
 } from "../../components/SourceInfo/SourceInfo.jsx";
-import { Comments } from "../../components/Comments/Comments.jsx";
+import { CommentsPanel } from "../../components/Comments/CommentsPanel.jsx";
 import { SpectraList } from "../../components/Spectra/SpectraList.jsx";
 import { FollowupRequests } from "../../components/FollowupRequests/FollowupRequests.jsx";
 import {
@@ -187,7 +187,6 @@ export function Source() {
                 />
               </div>
               <SourceInfo source={source} />
-              <Comments sourceId={source.id} />
               <SpectraList sourceId={source.id} />
               <FollowupRequests source={source} requestType={"triggered"} />
               <FollowupRequests source={source} requestType={"forced_photometry"}/>
@@ -205,6 +204,7 @@ export function Source() {
             <SourceSkeleton animated={true} visible={loading} />
           </div>
         }
+        {source && <CommentsPanel sourceId={source.id} />}
       </IonContent>
     </IonPage>
   );

@@ -7,7 +7,6 @@ import { ScanningCardSkeleton } from "./ScanningCardSkeleton.jsx";
 import { IonChip } from "@ionic/react";
 import { SourceInfo } from "../../../../sources/components/SourceInfo/SourceInfo.jsx";
 import { FollowupRequests } from "../../../../sources/components/FollowupRequests/FollowupRequests.jsx";
-import { Comments } from "../../../../sources/components/Comments/Comments.jsx";
 import { SpectraList } from "../../../../sources/components/Spectra/SpectraList.jsx";
 import { GroupsModal } from "../../../../sources/components/GroupsModal/GroupsModal.jsx";
 import { Tags } from "../../../../sources/components/Tags/Tags.jsx";
@@ -70,11 +69,6 @@ const ScanningCardBase = ({
           />
         </div>
         <SourceInfo source={candidate} />
-        <Comments
-          sourceId={candidate.id}
-          isInView={isInView}
-          origin="scanning"
-        />
         <SpectraList sourceId={candidate.id} isInView={isInView} />
         <FollowupRequests source={candidate} requestType={"triggered"} />
         <FollowupRequests source={candidate} requestType={"forced_photometry"}/>

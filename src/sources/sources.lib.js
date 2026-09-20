@@ -57,14 +57,22 @@
  */
 
 /**
+ * @typedef {Object} CommentAuthor
+ * @property {string} id - Author ID
+ * @property {string} username - Username
+ * @property {string} gravatar_url - Url of the gravatar profile of the author
+ */
+
+/**
  * @typedef {Object} Comment
  * @property {string} id - Comment ID
  * @property {string} text - Comment text
- * @property {User} author - Author of the comment
+ * @property {CommentAuthor} author - Author of the comment
  * @property {string} created_at - Created date
  * @property {string|null} channel - Conversation the comment belongs to
  * @property {"scanning"|null} origin - Workflow the comment was created from
  * @property {boolean} bot - Whether the comment was posted by a bot
+ * @property {boolean} system - Whether the comment was emitted by SkyPortal itself
  */
 
 /**
