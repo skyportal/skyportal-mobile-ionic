@@ -1,5 +1,6 @@
 module.exports = {
   root: true,
+  ignorePatterns: ["capacitor.config.ts"],
   env: {
     node: true,
     browser: true,

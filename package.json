@@ -4,9 +4,10 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "dev": "vite --host=localhost --port=8100",
     "dev:android": "ionic cap run android -l --external --no-reload",
     "dev:android:device": "ionic cap run android -l --external --no-reload --target=$ANDROID_DEVICE",
-    "dev:ios": "ionic cap run ios -l --external --no-reload",
+    "dev:ios": "LIVE_RELOAD=1 npx cap sync ios && npx cap open ios",
     "dev:ios:device": "ionic cap run ios -l --external --no-reload --target=$IOS_DEVICE",
     "build": "vite build",
     "deploy:android": "npx cap run android",
