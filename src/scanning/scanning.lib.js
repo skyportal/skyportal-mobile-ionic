@@ -77,7 +77,7 @@ import moment from "moment-timezone";
 /**
  * @type {Object.<SavedStatus, string>}
  */
-export const SAVED_STATUS = {
+const SAVED_STATUS = {
   ALL: "all",
   SAVED_TO_ALL_SELECTED: "savedToAllSelected",
   SAVED_TO_ANY_SELECTED: "savedToAnySelected",
@@ -314,22 +314,6 @@ export const getVegaPlotSpec = ({
       },
     ],
   });
-};
-
-/**
- * Parse a string of integers separated by commas
- * @param {string} intListString
- * @returns {number[]}
- */
-export const parseIntList = (intListString) => {
-  try {
-    return intListString
-      .split(",")
-      .filter((/** @type {string} **/ id) => id !== "")
-      .map((/** @type {string} **/ id) => parseInt(id));
-  } catch (e) {
-    return [];
-  }
 };
 
 /**

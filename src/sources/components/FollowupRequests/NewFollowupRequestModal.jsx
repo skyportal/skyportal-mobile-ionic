@@ -1,4 +1,4 @@
-import "./RequestFollowupModal.scss";
+import "./NewFollowupRequestModal.scss";
 
 import React, { useEffect, useRef, useState } from "react";
 
@@ -47,7 +47,7 @@ import { formatIsoDateString } from "../../../common/common.lib.js";
  * @param {function} props.submitRequestCallback - The callback function to handle when the request is submitted.
  * @param {React.MutableRefObject<any>} props.modal - The modal reference.
  */
-export const RequestFollowupModal = ({ sourceId, submitRequestCallback, modal }) => {
+export const NewFollowupRequestModal = ({ sourceId, submitRequestCallback, modal }) => {
   const { allocationsApiClassname } = useAllocationsApiClassname();
   const { userAccessibleGroups } = useUserAccessibleGroups();
   const { instrumentForms } = useInstrumentForms();

@@ -12,7 +12,6 @@
     "build": "vite build",
     "deploy:android": "npx cap run android",
     "deploy:ios": "npx cap run ios",
-    "test.unit": "vitest",
     "lint": "eslint"
   },
   "dependencies": {
@@ -27,17 +26,14 @@
     "@capacitor/keyboard": "^8.0.0",
     "@capacitor/preferences": "^8.0.0",
     "@capacitor/status-bar": "^8.0.0",
-    "@emotion/react": "11.14.0",
-    "@emotion/styled": "11.14.0",
     "@ionic/react": "8.5.3",
     "@ionic/react-router": "8.5.3",
     "@rjsf/core": "5.24.8",
     "@rjsf/validator-ajv8": "5.24.8",
     "@tanstack/react-query": "5.37.1",
-    "@types/react-router": "5.1.20",
-    "@types/react-router-dom": "5.3.3",
     "capacitor-plugin-safe-area": "5.0.1",
     "embla-carousel-react": "8.1.6",
+    "html5-qrcode": "2.3.8",
     "ionicons": "7.0.0",
     "moment-timezone": "0.5.45",
     "react": "18.2.0",
@@ -50,23 +46,18 @@
   "devDependencies": {
     "@capacitor/assets": "3.0.5",
     "@capacitor/cli": "^8.0.0",
-    "@testing-library/dom": "7.21.4",
-    "@testing-library/jest-dom": "5.16.5",
-    "@testing-library/react": "14.0.0",
-    "@testing-library/user-event": "14.4.3",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.0.10",
+    "@types/react-router": "5.1.20",
+    "@types/react-router-dom": "5.3.3",
     "@vitejs/plugin-react": "4.3.4",
     "eslint": "8.35.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-react": "7.34.1",
-    "html5-qrcode": "2.3.8",
-    "jsdom": "22.1.0",
     "prettier": "3.2.5",
     "sass": "1.77.1",
     "terser": "5.39.0",
-    "typescript": "5.8.2",
-    "vitest": "3.0.8"
+    "typescript": "5.8.2"
   },
   "description": "An Ionic project"
 }

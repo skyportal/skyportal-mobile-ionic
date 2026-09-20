@@ -34,7 +34,7 @@ import {
 import { GroupsModal } from "../../components/GroupsModal/GroupsModal.jsx";
 import { Tags } from "../../components/Tags/Tags.jsx";
 import { SourceSkeleton } from "./SourceSkeleton.jsx";
-import { RequestFollowupModal } from "../../components/FollowupRequests/RequestFollowupModal.jsx";
+import { NewFollowupRequestModal } from "../../components/FollowupRequests/NewFollowupRequestModal.jsx";
 import { QUERY_KEYS } from "../../../common/common.lib.js";
 import { useQueryClient } from "@tanstack/react-query";
 import { useConfirmAlert, useErrorToast, useUserAccessibleGroups } from "../../../common/common.hooks.js";
@@ -198,7 +198,7 @@ export function Source() {
             {/* Modals */}
             <GroupsModal groups={source.groups} title={`Saved to ${source.groups.length} groups`} modal={groupsModal} />
             <AnnotationsViewerModal source={source} modal={annotationsModal}/>
-            <RequestFollowupModal sourceId={source.id} submitRequestCallback={handleFollowupRequestSubmitted} modal={requestFollowupModal} />
+            <NewFollowupRequestModal sourceId={source.id} submitRequestCallback={handleFollowupRequestSubmitted} modal={requestFollowupModal} />
           </div>
           ) :
           <div className="source-page">

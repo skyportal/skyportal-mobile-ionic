@@ -88,7 +88,7 @@ export const fetchUserProfile = async (userInfo) => {
 };
 
 /** @returns {SkyPortalInstance[]} */
-export const getInstancesFromLocalStorage = () =>
+const getInstancesFromLocalStorage = () =>
   JSON.parse(localStorage.getItem("instances") || "[]");
 
 /**
@@ -130,5 +130,5 @@ export const removeInstanceFromLocalStorage = (name) => {
  * @param {SkyPortalInstance} instance - The instance to save the token for
  * @param {string} token - The token to save
  */
-export const saveTokenToLocalStorage = (instance, token) =>
+const saveTokenToLocalStorage = (instance, token) =>
   saveInstanceToLocalStorage({ ...instance, token });
