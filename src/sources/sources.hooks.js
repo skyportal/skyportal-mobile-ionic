@@ -11,6 +11,7 @@ import {
   fetchSourcePhotometry,
   fetchSourceSpectra,
   fetchTagOptions,
+  generateSurveyThumbnails,
   postSourceComment,
   removeFromFavorites,
   submitFollowupRequest,
@@ -196,6 +197,28 @@ export const useCommentChannels = (sourceId, enableFetch = true) => {
     status,
     error,
   };
+};
+
+export const useGenerateSurveyThumbnails = () => {
+  const { userInfo } = useContext(UserContext);
+  const errorToast = useErrorToast();
+  return useMutation({
+    /**
+     * @param {Object} params
+     * @param {string} params.sourceId
+     * @param {import("./sources.lib.js").ThumbnailType[]} [params.types]
+     * @returns {Promise<import("./sources.lib.js").Thumbnail[]>}
+     */
+    mutationFn: async ({ sourceId, types }) => {
+      const response = await generateSurveyThumbnails({ userInfo, sourceId, types });
+      if (response.status !== 200) {
+        throw new Error(response.data?.message);
+      }
+      const source = await fetchSource({ userInfo, sourceId });
+      return source.thumbnails;
+    },
+    onError: () => errorToast("Failed to generate the cutouts"),
+  });
 };
 
 export const usePostSourceComment = () => {

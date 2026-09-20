@@ -1,0 +1,22 @@
+.thumbnail-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .thumbnails-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .thumbnails-container {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    ion-button {
+      --padding-start: 0;
+      --padding-end: 0;
+      margin: 0;
+    }
+  }
+}

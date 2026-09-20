@@ -165,6 +165,12 @@ export const ARCHIVAL_THUMBNAIL_TYPES = ["sdss", "ls", "ps1"];
  */
 export const ON_DEMAND_THUMBNAIL_TYPES = ["sm", "hst", "chandra", "jwst"];
 
+/**
+ * Cutouts whose "no coverage" answer can only be told apart by fetching them.
+ * @type {ThumbnailType[]}
+ */
+export const FETCHED_THUMBNAIL_TYPES = ["ls", "sdss"];
+
 /** @type {ThumbnailType[]} */
 export const THUMBNAIL_TYPES = [
   ...ALERT_THUMBNAIL_TYPES,

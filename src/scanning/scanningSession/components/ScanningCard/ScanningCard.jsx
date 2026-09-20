@@ -1,6 +1,5 @@
 import "./ScanningCard.scss";
-import { getDisplayedThumbnails } from "../../../../sources/sources.lib.js";
-import { Thumbnail } from "../../../../sources/components/Thumbnail/Thumbnail.jsx";
+import { ThumbnailList } from "../../../../sources/components/Thumbnail/ThumbnailList.jsx";
 import { PinnedAnnotations } from "../../../../sources/components/PinnedAnnotations/PinnedAnnotations.jsx";
 import { PhotometryChart } from "../../../../sources/components/PhotometryChart/PhotometryChart.jsx";
 import { memo, useRef } from "react";
@@ -58,16 +57,7 @@ const ScanningCardBase = ({
           </div>
           <Tags tags={candidate.tags} sourceId={candidate.id} />
         </div>
-        <div className="thumbnails-container">
-          {getDisplayedThumbnails(candidate).map((thumbnail) => (
-            <Thumbnail
-              key={thumbnail.id}
-              ra={candidate.ra}
-              dec={candidate.dec}
-              thumbnail={thumbnail}
-            />
-          ))}
-        </div>
+        <ThumbnailList source={candidate} isCandidate />
         <PinnedAnnotations
           source={candidate}
           onButtonClick={() => annotationsModal.current?.present()}

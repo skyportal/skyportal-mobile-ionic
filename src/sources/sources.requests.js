@@ -87,6 +87,28 @@ export const fetchCommentChannels = async ({ userInfo, sourceId }) => {
 };
 
 /**
+ * Ask the instance to generate survey cutouts for a source
+ * @param {Object} params
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
+ * @param {string} params.sourceId
+ * @param {import("./sources.lib.js").ThumbnailType[]} [params.types] - Cutouts to generate, the automatic ones if unset
+ * @returns {Promise<any>}
+ */
+export const generateSurveyThumbnails = async ({ userInfo, sourceId, types }) => {
+  return await CapacitorHttp.post({
+    url: `${userInfo.instance.url}/api/internal/survey_thumbnail`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+      "Content-Type": "application/json",
+    },
+    data: {
+      objID: sourceId,
+      ...(types ? { types } : {}),
+    },
+  });
+};
+
+/**
  * Post a new comment on a source
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo

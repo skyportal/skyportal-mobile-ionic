@@ -6,7 +6,7 @@ import {
   IonChip,
   IonContent,
   IonHeader,
-  IonPage, IonText,
+  IonPage,
   IonTitle,
   IonToolbar,
   useIonAlert,
@@ -15,8 +15,7 @@ import {
 import { useParams } from "react-router";
 import { useFetchSource, useUpdateSourceGroups } from "../../sources.hooks.js";
 import React, { useEffect, useRef, useState } from "react";
-import { getDisplayedThumbnails } from "../../sources.lib.js";
-import { Thumbnail } from "../../components/Thumbnail/Thumbnail.jsx";
+import { ThumbnailList } from "../../components/Thumbnail/ThumbnailList.jsx";
 import {
   PinnedAnnotations
 } from "../../components/PinnedAnnotations/PinnedAnnotations.jsx";
@@ -53,7 +52,6 @@ export function Source() {
   const { sourceId } = useParams();
   const queryClient = useQueryClient();
   const { source } = useFetchSource({ sourceId });
-  const thumbnails = source ? getDisplayedThumbnails(source) : [];
   const [loading, setLoading] = useState(true);
   /** @type {React.MutableRefObject<any>} */
   const annotationsModal = useRef(null);
@@ -178,22 +176,7 @@ export function Source() {
                 </IonChip>
                 <Tags tags={source.tags} sourceId={source.id} />
               </div>
-              <div className="thumbnails-container">
-                {thumbnails.length > 0 ? thumbnails.map((thumbnail) => (
-                  <Thumbnail
-                    key={thumbnail.id}
-                    ra={source.ra}
-                    dec={source.dec}
-                    thumbnail={thumbnail}
-                  />
-                )) : (
-                  <div>
-                    <IonText color="secondary">
-                      no thumbnails found...
-                    </IonText>
-                  </div>
-                )}
-              </div>
+              <ThumbnailList source={source} />
               <PinnedAnnotations
                 source={source}
                 onButtonClick={() => annotationsModal.current?.present()}
