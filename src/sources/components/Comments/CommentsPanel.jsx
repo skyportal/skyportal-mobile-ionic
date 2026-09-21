@@ -13,10 +13,11 @@ import {
   IonTitle,
   IonToolbar
 } from "@ionic/react";
-import { chatbubbleEllipses } from "ionicons/icons";
-import { useState } from "react";
+import { chatbubbleEllipses, hardwareChip, hardwareChipOutline } from "ionicons/icons";
+import { useEffect, useState } from "react";
 import { MAIN_COMMENT_CHANNEL } from "../../sources.lib.js";
 import { useCommentChannels } from "../../sources.hooks.js";
+import { useUserProfile } from "../../../common/common.hooks.js";
 import { CommentThread } from "./CommentThread.jsx";
 
 /**
@@ -29,7 +30,16 @@ import { CommentThread } from "./CommentThread.jsx";
 export const CommentsPanel = ({ sourceId, origin }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [channel, setChannel] = useState(MAIN_COMMENT_CHANNEL);
+  const [includeBots, setIncludeBots] = useState(false);
   const { channels } = useCommentChannels(sourceId, isOpen);
+  const { userProfile } = useUserProfile();
+  const showBotComments = userProfile?.preferences?.showBotComments;
+
+  useEffect(() => {
+    setIncludeBots(!!showBotComments);
+  }, [showBotComments]);
+
+  const isMainChannel = channel === MAIN_COMMENT_CHANNEL;
 
   return (
     <>
@@ -50,6 +60,21 @@ export const CommentsPanel = ({ sourceId, origin }) => {
       >
         <IonHeader>
           <IonToolbar>
+            <IonButtons slot="start">
+              {isMainChannel && (
+                <IonButton
+                  className="bots-toggle"
+                  color={includeBots ? "primary" : "medium"}
+                  onClick={() => setIncludeBots(!includeBots)}
+                >
+                  <IonIcon
+                    slot="start"
+                    icon={includeBots ? hardwareChip : hardwareChipOutline}
+                  />
+                  Bots
+                </IonButton>
+              )}
+            </IonButtons>
             <IonTitle>{sourceId}</IonTitle>
             <IonButtons slot="end">
               <IonButton onClick={() => setIsOpen(false)}>Close</IonButton>
@@ -74,9 +99,10 @@ export const CommentsPanel = ({ sourceId, origin }) => {
         <CommentThread
           key={channel}
           sourceId={sourceId}
-          channel={channel === MAIN_COMMENT_CHANNEL ? undefined : channel}
+          channel={isMainChannel ? undefined : channel}
           origin={origin}
           isOpen={isOpen}
+          includeBots={includeBots}
         />
       </IonModal>
     </>

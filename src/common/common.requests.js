@@ -74,3 +74,33 @@ export async function fetchInstrumentForms(userInfo, apiType= "api_classname") {
   });
   return response.data.data;
 }
+
+/**
+ * Fetch the users of the instance, with just what is needed to name them
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
+ * @returns {Promise<import("./common.lib.js").SlimUser[]>}
+ */
+export async function fetchUsers(userInfo) {
+  let response = await CapacitorHttp.get({
+    url: `${userInfo.instance.url}/api/user`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+    },
+    params: { slim: "true" },
+  });
+  return response.data.data.users;
+}
+
+/**
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
+ * @returns {Promise<import("./common.lib.js").Instrument[]>}
+ */
+export async function fetchInstruments(userInfo) {
+  let response = await CapacitorHttp.get({
+    url: `${userInfo.instance.url}/api/instrument`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+    },
+  });
+  return response.data.data;
+}

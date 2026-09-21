@@ -35,6 +35,15 @@ import { Preferences } from "@capacitor/preferences";
  */
 
 /**
+ * @typedef {Object} SlimUser
+ * @property {string} id - User ID
+ * @property {string} username - Username
+ * @property {string|null} first_name - First name
+ * @property {string|null} last_name - Last name
+ * @property {boolean} is_bot - Whether the user is a bot
+ */
+
+/**
  * @typedef {Object} Instrument
  * @property {string} id - Instrument ID
  * @property {string} name - Instrument name
@@ -45,6 +54,7 @@ import { Preferences } from "@capacitor/preferences";
  * @typedef {Object} Telescope
  * @property {string} id - Telescope ID
  * @property {string} name - Telescope name
+ * @property {string} nickname - Short telescope name
  */
 
 /**
@@ -90,8 +100,11 @@ export const QUERY_KEYS = {
   SOURCE_SPECTRA: "sourceSpectra",
   SOURCE_COMMENTS: "sourceComments",
   COMMENT_CHANNELS: "commentChannels",
+  COMMENT_ATTACHMENT: "commentAttachment",
   ALLOCATIONS_API_CLASSNAME: "allocationsApiClassname",
   INSTRUMENT_FORMS: "instrumentForms",
+  INSTRUMENTS: "instruments",
+  USERS: "users",
   TAG_OPTIONS: "tagOptions",
 };
 

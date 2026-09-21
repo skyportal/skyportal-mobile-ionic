@@ -13,6 +13,7 @@ import { INSTANCES, QUERY_KEYS, setPreference } from "../common/common.lib.js";
  * @property {import("../scanning/scanning.lib.js").ScanningProfile[]} scanningProfiles - The scanning profiles of the user
  * @property {number} followupDefault - The default allocation ID for follow-up
  * @property {boolean} [invertThumbnails] - Whether to invert grayscale thumbnails
+ * @property {boolean} [showBotComments] - Whether bot comments are shown by default
  */
 
 /**

@@ -87,6 +87,32 @@ export const fetchCommentChannels = async ({ userInfo, sourceId }) => {
 };
 
 /**
+ * Fetch the attachment of a comment, rendered for preview
+ * @param {Object} params
+ * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
+ * @param {string} params.sourceId
+ * @param {string} params.commentId
+ * @returns {Promise<{dataUrl: string, contentType: string}>}
+ */
+export const fetchCommentAttachment = async ({ userInfo, sourceId, commentId }) => {
+  let response = await CapacitorHttp.get({
+    url: `${userInfo.instance.url}/api/sources/${sourceId}/comments/${commentId}/attachment`,
+    headers: {
+      Authorization: `token ${userInfo.token}`,
+    },
+    params: { preview: "true" },
+    responseType: "blob",
+  });
+  if (response.status !== 200) {
+    throw new Error(response.data?.message || "Failed to load the attachment");
+  }
+  const headers = response.headers ?? {};
+  const contentType =
+    headers["content-type"] ?? headers["Content-Type"] ?? "application/octet-stream";
+  return { dataUrl: `data:${contentType};base64,${response.data}`, contentType };
+};
+
+/**
  * Ask the instance to generate survey cutouts for a source
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
@@ -114,12 +140,13 @@ export const generateSurveyThumbnails = async ({ userInfo, sourceId, types }) =>
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @param {string} params.sourceId
  * @param {string} params.text
- * @param {number[]} [params.groupIds]
+ * @param {number[]} [params.groupIds] - Groups the comment is restricted to, public if unset
  * @param {string} [params.channel] - Conversation to post to, main one if unset
  * @param {"scanning"} [params.origin] - Workflow the comment is posted from
+ * @param {import("./sources.lib.js").CommentAttachment} [params.attachment]
  * @returns {Promise<any>}
  */
-export const postSourceComment = async ({ userInfo, sourceId, text, groupIds, channel, origin }) => {
+export const postSourceComment = async ({ userInfo, sourceId, text, groupIds, channel, origin, attachment }) => {
   return await CapacitorHttp.post({
     url: `${userInfo.instance.url}/api/sources/${sourceId}/comments`,
     headers: {
@@ -131,6 +158,7 @@ export const postSourceComment = async ({ userInfo, sourceId, text, groupIds, ch
       ...(groupIds && groupIds.length > 0 ? { group_ids: groupIds } : {}),
       ...(channel ? { channel } : {}),
       ...(origin ? { origin } : {}),
+      ...(attachment ? { attachment } : {}),
     },
   });
 };

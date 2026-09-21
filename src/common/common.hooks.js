@@ -5,7 +5,9 @@ import {
   fetchConfig,
   fetchGroups,
   fetchAllocationsApiClassname,
-  fetchInstrumentForms
+  fetchInstrumentForms,
+  fetchInstruments,
+  fetchUsers
 } from "./common.requests.js";
 import { useContext } from "react";
 import { UserContext } from "./common.context.js";
@@ -224,6 +226,38 @@ export const useInstrumentForms = () => {
   });
   return {
     instrumentForms: data,
+    status,
+    error,
+  };
+}
+
+/**
+ * @returns {{users: import("./common.lib.js").SlimUser[]|undefined, status: QueryStatus, error: any|undefined}}
+ */
+export const useUsers = () => {
+  const { userInfo } = useContext(UserContext);
+  const { data, status, error } = useQuery({
+    queryKey: [QUERY_KEYS.USERS],
+    queryFn: () => fetchUsers(userInfo),
+  });
+  return {
+    users: data,
+    status,
+    error,
+  };
+}
+
+/**
+ * @returns {{instruments: import("./common.lib.js").Instrument[]|undefined, status: QueryStatus, error: any|undefined}}
+ */
+export const useInstruments = () => {
+  const { userInfo } = useContext(UserContext);
+  const { data, status, error } = useQuery({
+    queryKey: [QUERY_KEYS.INSTRUMENTS],
+    queryFn: () => fetchInstruments(userInfo),
+  });
+  return {
+    instruments: data,
     status,
     error,
   };

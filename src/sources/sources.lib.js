@@ -60,7 +60,15 @@
  * @typedef {Object} CommentAuthor
  * @property {string} id - Author ID
  * @property {string} username - Username
+ * @property {string|null} first_name - First name
+ * @property {string|null} last_name - Last name
  * @property {string} gravatar_url - Url of the gravatar profile of the author
+ */
+
+/**
+ * @typedef {Object} CommentAttachment
+ * @property {string} name - File name
+ * @property {string} body - File contents as a base64 data URL
  */
 
 /**
@@ -73,6 +81,7 @@
  * @property {"scanning"|null} origin - Workflow the comment was created from
  * @property {boolean} bot - Whether the comment was posted by a bot
  * @property {boolean} system - Whether the comment was emitted by SkyPortal itself
+ * @property {string|null} attachment_name - File name of the attachment, if any
  */
 
 /**

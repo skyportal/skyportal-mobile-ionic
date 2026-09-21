@@ -4,6 +4,7 @@ import { UserContext } from "../common/common.context.js";
 import { QUERY_KEYS } from "../common/common.lib.js";
 import {
   addToFavorites,
+  fetchCommentAttachment,
   fetchCommentChannels,
   fetchFavorites,
   fetchSource,
@@ -199,6 +200,27 @@ export const useCommentChannels = (sourceId, enableFetch = true) => {
   };
 };
 
+/**
+ * @param {string} sourceId
+ * @param {string} commentId
+ * @param {boolean} [enableFetch=true] - If false, the query will not be executed
+ * @returns {{attachment: {dataUrl: string, contentType: string} | undefined, status: QueryStatus, error: any | undefined }}
+ */
+export const useCommentAttachment = (sourceId, commentId, enableFetch = true) => {
+  const { userInfo } = useContext(UserContext);
+  const { data: attachment, status, error } = useQuery({
+    queryKey: [QUERY_KEYS.COMMENT_ATTACHMENT, sourceId, commentId],
+    queryFn: () => fetchCommentAttachment({ userInfo, sourceId, commentId }),
+    enabled: enableFetch && !!sourceId && !!commentId,
+    retry: false,
+  });
+  return {
+    attachment,
+    status,
+    error,
+  };
+};
+
 export const useGenerateSurveyThumbnails = () => {
   const { userInfo } = useContext(UserContext);
   const errorToast = useErrorToast();
@@ -234,10 +256,11 @@ export const usePostSourceComment = () => {
      * @param {number[]} [params.groupIds]
      * @param {string} [params.channel]
      * @param {"scanning"} [params.origin]
+     * @param {import("./sources.lib.js").CommentAttachment} [params.attachment]
      * @returns {Promise<*>}
      */
-    mutationFn: ({ sourceId, text, groupIds, channel, origin }) =>
-      postSourceComment({ userInfo, sourceId, text, groupIds, channel, origin }),
+    mutationFn: ({ sourceId, text, groupIds, channel, origin, attachment }) =>
+      postSourceComment({ userInfo, sourceId, text, groupIds, channel, origin, attachment }),
     onSuccess: (response, { sourceId }) => {
       if (response.status !== 200) {
         errorToast(response.data?.message || "Failed to post comment");

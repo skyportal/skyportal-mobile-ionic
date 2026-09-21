@@ -1,23 +1,26 @@
 import {
-  IonButton,
   IonContent,
   IonFooter,
   IonIcon,
   IonSpinner,
-  IonText,
-  IonTextarea,
-  IonToolbar
+  IonText
 } from "@ionic/react";
-import { send } from "ionicons/icons";
+import { attach } from "ionicons/icons";
 import React, { useEffect, useRef, useState } from "react";
 import { getDateDiff } from "../../../common/common.lib.js";
 import { useUserProfile } from "../../../common/common.hooks.js";
-import { usePostSourceComment, useSourceComments } from "../../sources.hooks.js";
+import { useSourceComments } from "../../sources.hooks.js";
+import { CommentAttachmentModal } from "./CommentAttachmentModal.jsx";
+import { CommentComposer } from "./CommentComposer.jsx";
 
 const RUN_GAP_MS = 60 * 60 * 1000;
 
 /** @param {string} stringUTCDate */
 const toTime = (stringUTCDate) => new Date(stringUTCDate + "Z").getTime();
+
+/** @param {import("../../sources.lib.js").CommentAuthor} [author] */
+const initialsOf = (author) =>
+  `${author?.first_name?.[0] ?? author?.username?.[0] ?? "?"}${author?.last_name?.[0] ?? ""}`;
 
 /**
  * Formats the text to highlight mentions and hashtags.
@@ -41,39 +44,28 @@ const formattedText = (text) => {
  * @param {string} [props.channel] - Conversation to read, main one if unset
  * @param {"scanning"} [props.origin] - Workflow the comments are posted from
  * @param {boolean} props.isOpen - Whether the panel holding the thread is open
+ * @param {boolean} props.includeBots - Whether comments posted by bots are shown
  * @returns {JSX.Element}
  */
-export const CommentThread = ({ sourceId, channel, origin, isOpen }) => {
-  const [text, setText] = useState("");
+export const CommentThread = ({ sourceId, channel, origin, isOpen, includeBots }) => {
+  const [previewed, setPreviewed] = useState(
+    /** @type {import("../../sources.lib.js").Comment|null} */ (null),
+  );
   const { userProfile } = useUserProfile();
   const { comments, status } = useSourceComments(sourceId, channel, isOpen);
-  const postComment = usePostSourceComment();
   /** @type {React.MutableRefObject<any>} */
   const content = useRef(null);
 
   // The comments endpoint returns no particular order, the thread is built here.
-  const ordered = [...(comments ?? [])].sort((a, b) =>
-    a.created_at < b.created_at ? -1 : 1
-  );
+  const ordered = [...(comments ?? [])]
+    .filter((comment) => includeBots || channel || !comment.bot)
+    .sort((a, b) => (a.created_at < b.created_at ? -1 : 1));
 
   useEffect(() => {
     if (!isOpen) return;
     const frame = requestAnimationFrame(() => content.current?.scrollToBottom());
     return () => cancelAnimationFrame(frame);
   }, [isOpen, ordered.length]);
-
-  const handlePostComment = async () => {
-    const value = text.trim();
-    if (!value || postComment.isPending) {
-      return;
-    }
-    const response = await postComment
-      .mutateAsync({ sourceId, text: value, channel, origin })
-      .catch(() => null);
-    if (response?.status === 200) {
-      setText("");
-    }
-  };
 
   return (
     <>
@@ -132,16 +124,32 @@ export const CommentThread = ({ sourceId, channel, origin, isOpen }) => {
                   ].filter(Boolean).join(" ")}
                 >
                   {!mine &&
-                    (endsRun && comment.author?.gravatar_url ? (
-                      <img className="avatar" alt="" src={comment.author.gravatar_url} />
+                    (endsRun ? (
+                      <span className="avatar">
+                        {initialsOf(comment.author)}
+                        {comment.author?.gravatar_url && (
+                          <img alt="" src={comment.author.gravatar_url} />
+                        )}
+                      </span>
                     ) : (
-                      <span className="avatar" />
+                      <span className="avatar-spacer" />
                     ))}
                   <div className="bubble-column">
                     {!mine && startsRun && (
                       <div className="author">{comment.author?.username}</div>
                     )}
-                    <div className="bubble">{formattedText(comment.text)}</div>
+                    <div className="bubble">
+                      {formattedText(comment.text)}
+                      {comment.attachment_name && (
+                        <button
+                          className="attachment"
+                          onClick={() => setPreviewed(comment)}
+                        >
+                          <IonIcon icon={attach} />
+                          {comment.attachment_name}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </React.Fragment>
@@ -150,31 +158,13 @@ export const CommentThread = ({ sourceId, channel, origin, isOpen }) => {
         )}
       </IonContent>
       <IonFooter className="comment-composer">
-        <IonToolbar>
-          <div className="composer-row">
-            <IonTextarea
-              rows={1}
-              autoGrow
-              placeholder={channel ? `Message ${channel}` : "Message"}
-              value={text}
-              onIonInput={(e) => setText(`${e.detail.value ?? ""}`)}
-            />
-            <IonButton
-              fill="clear"
-              shape="round"
-              disabled={!text.trim() || postComment.isPending}
-              onClick={handlePostComment}
-              aria-label="Post comment"
-            >
-              {postComment.isPending ? (
-                <IonSpinner name="crescent" />
-              ) : (
-                <IonIcon slot="icon-only" icon={send} />
-              )}
-            </IonButton>
-          </div>
-        </IonToolbar>
+        <CommentComposer sourceId={sourceId} channel={channel} origin={origin} />
       </IonFooter>
+      <CommentAttachmentModal
+        sourceId={sourceId}
+        comment={previewed}
+        onClose={() => setPreviewed(null)}
+      />
     </>
   );
 };
