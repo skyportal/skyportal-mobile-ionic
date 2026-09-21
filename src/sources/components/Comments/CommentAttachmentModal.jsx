@@ -20,9 +20,7 @@ import { useCommentAttachment } from "../../sources.hooks.js";
 const AttachmentPreview = ({ sourceId, comment }) => {
   const { attachment, status, error } = useCommentAttachment(sourceId, comment.id);
 
-  if (status === "pending") {
-    return <IonSpinner />;
-  }
+  if (status === "pending") return <IonSpinner />;
   if (status === "error" || !attachment) {
     return (
       <IonText color="secondary">

@@ -40,6 +40,31 @@ const nextChatName = (chats) => {
 
 /**
  * @param {Object} props
+ * @param {string[]} props.names
+ * @param {string} props.value
+ * @param {(name: string) => void} props.onChange
+ * @returns {JSX.Element|null}
+ */
+const ChannelSegment = ({ names, value, onChange }) =>
+  names.length < 2 ? null : (
+    <IonToolbar>
+      <IonSegment
+        className="channel-segment"
+        scrollable
+        value={value}
+        onIonChange={(e) => onChange(String(e.detail.value))}
+      >
+        {names.map((name) => (
+          <IonSegmentButton key={name} value={name}>
+            <IonLabel>{name}</IonLabel>
+          </IonSegmentButton>
+        ))}
+      </IonSegment>
+    </IonToolbar>
+  );
+
+/**
+ * @param {Object} props
  * @param {string} props.sourceId
  * @param {boolean} props.isOpen - Whether the panel holding the segment is open
  * @param {string} props.channel
@@ -48,23 +73,12 @@ const nextChatName = (chats) => {
  */
 const CommentChannels = ({ sourceId, isOpen, channel, onChange }) => {
   const { channels } = useCommentChannels(sourceId, isOpen);
-
-  if (!channels?.length) return null;
   return (
-    <IonToolbar>
-      <IonSegment
-        className="channel-segment"
-        scrollable
-        value={channel}
-        onIonChange={(e) => onChange(String(e.detail.value))}
-      >
-        {[MAIN_COMMENT_CHANNEL, ...channels].map((name) => (
-          <IonSegmentButton key={name} value={name}>
-            <IonLabel>{name}</IonLabel>
-          </IonSegmentButton>
-        ))}
-      </IonSegment>
-    </IonToolbar>
+    <ChannelSegment
+      names={[MAIN_COMMENT_CHANNEL, ...(channels ?? [])]}
+      value={channel}
+      onChange={onChange}
+    />
   );
 };
 
@@ -183,31 +197,18 @@ export const CommentsPanel = ({ sourceId, origin }) => {
               <IonButton onClick={() => setIsOpen(false)}>Close</IonButton>
             </IonButtons>
           </IonToolbar>
-          {showAssistant
-            ? chats.length > 1 && (
-                <IonToolbar>
-                  <IonSegment
-                    className="channel-segment"
-                    scrollable
-                    value={openedChat}
-                    onIonChange={(e) => setChat(String(e.detail.value))}
-                  >
-                    {chats.map((name) => (
-                      <IonSegmentButton key={name} value={name}>
-                        <IonLabel>{name}</IonLabel>
-                      </IonSegmentButton>
-                    ))}
-                  </IonSegment>
-                </IonToolbar>
-              )
-            : sourceId && (
-                <CommentChannels
-                  sourceId={sourceId}
-                  isOpen={isOpen}
-                  channel={channel}
-                  onChange={setChannel}
-                />
-              )}
+          {showAssistant ? (
+            <ChannelSegment names={chats} value={openedChat} onChange={setChat} />
+          ) : (
+            sourceId && (
+              <CommentChannels
+                sourceId={sourceId}
+                isOpen={isOpen}
+                channel={channel}
+                onChange={setChannel}
+              />
+            )
+          )}
         </IonHeader>
         {showAssistant ? (
           <AssistantThread

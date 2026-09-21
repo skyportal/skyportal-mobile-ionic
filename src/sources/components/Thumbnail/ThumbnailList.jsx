@@ -1,32 +1,33 @@
 import "./ThumbnailList.scss";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { IonButton, IonIcon, IonText } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { Thumbnail } from "./Thumbnail.jsx";
 import {
   ALERT_THUMBNAIL_TYPES,
   getDisplayedThumbnails,
-  ON_DEMAND_THUMBNAIL_TYPES,
-  THUMBNAIL_TYPES
+  ON_DEMAND_THUMBNAIL_TYPES
 } from "../../sources.lib.js";
 import { useGenerateSurveyThumbnails } from "../../sources.hooks.js";
 
 /** 3 columns over 2 rows, the remaining thumbnails are reached with the arrows. */
 const MAX_VISIBLE_THUMBNAILS = 6;
 
-/** @type {import("../../sources.lib.js").Thumbnail} */
+/**
+ * Stands in until the instance resolves the cutout, Thumbnail reads an empty url as loading.
+ * @type {import("../../sources.lib.js").Thumbnail}
+ */
 const PS1_PENDING_THUMBNAIL = {
   id: -1,
   type: "ps1",
-  public_url: "#",
+  public_url: "",
   created_at: "",
   survey: null,
   is_grayscale: false,
 };
 
 /**
- * Thumbnails of a source, dropping the ones the surveys report as having no
- * coverage at that position.
+ * Thumbnails of a source, minus the ones the surveys report as having no coverage.
  * @param {Object} props
  * @param {import("../../sources.lib.js").Source|import("../../../scanning/scanning.lib.js").Candidate} props.source
  * @param {boolean} [props.isCandidate] - Candidates only display the cutouts generated on scanning
@@ -44,16 +45,14 @@ export const ThumbnailList = ({ source, isCandidate = false }) => {
 
   const allThumbnails = [...(source.thumbnails ?? []), ...generated];
   const hasPs1 = allThumbnails.some((thumbnail) => thumbnail.type === "ps1");
-  const displayTypes = isCandidate
-    ? THUMBNAIL_TYPES.filter(
-        (type) =>
-          !ON_DEMAND_THUMBNAIL_TYPES.includes(type) && (type !== "ps1" || hasPs1),
-      )
-    : THUMBNAIL_TYPES;
-  const thumbnails = getDisplayedThumbnails({ ...source, thumbnails: allThumbnails })
-    .filter((thumbnail) => displayTypes.includes(thumbnail.type));
+  const thumbnails = getDisplayedThumbnails({
+    ...source,
+    thumbnails: allThumbnails,
+  }).filter(
+    (thumbnail) =>
+      !isCandidate || !ON_DEMAND_THUMBNAIL_TYPES.includes(thumbnail.type),
+  );
   const shown = thumbnails.filter((thumbnail) => !unavailable.has(thumbnail.id));
-  // PanSTARRS is resolved by the instance after the source loads.
   const tiles =
     !isCandidate && !hasPs1 && shown.some((thumbnail) => !ALERT_THUMBNAIL_TYPES.includes(thumbnail.type))
       ? [...shown, PS1_PENDING_THUMBNAIL]
@@ -66,13 +65,25 @@ export const ThumbnailList = ({ source, isCandidate = false }) => {
   const hasOnDemand = thumbnails.some((thumbnail) =>
     ON_DEMAND_THUMBNAIL_TYPES.includes(thumbnail.type),
   );
+  const canGenerate = isCandidate ? !hasPs1 : !hasOnDemand;
+  const generateLabel = isCandidate
+    ? "Generate PS1 Cutout"
+    : generateThumbnails.isPending
+      ? "Loading…"
+      : "Request more thumbnails";
 
-  /**
-   * @param {import("../../sources.lib.js").ThumbnailType[]} [types]
-   */
-  const requestThumbnails = (types) =>
+  const markUnavailable = useCallback(
+    /** @param {number} thumbnailId */
+    (thumbnailId) =>
+      setUnavailable((previous) =>
+        previous.has(thumbnailId) ? previous : new Set(previous).add(thumbnailId),
+      ),
+    [],
+  );
+
+  const requestThumbnails = () =>
     generateThumbnails.mutate(
-      { sourceId: source.id, types },
+      { sourceId: source.id, types: isCandidate ? undefined : ON_DEMAND_THUMBNAIL_TYPES },
       { onSuccess: setGenerated },
     );
 
@@ -98,13 +109,7 @@ export const ThumbnailList = ({ source, isCandidate = false }) => {
                 ra={source.ra}
                 dec={source.dec}
                 thumbnail={thumbnail}
-                onUnavailable={() =>
-                  setUnavailable((previous) =>
-                    previous.has(thumbnail.id)
-                      ? previous
-                      : new Set(previous).add(thumbnail.id),
-                  )
-                }
+                onUnavailable={markUnavailable}
               />
             ))
           ) : (
@@ -125,27 +130,16 @@ export const ThumbnailList = ({ source, isCandidate = false }) => {
           </IonButton>
         )}
       </div>
-      {isCandidate
-        ? !hasPs1 && (
-            <IonButton
-              fill="clear"
-              size="small"
-              disabled={generateThumbnails.isPending}
-              onClick={() => requestThumbnails()}
-            >
-              Generate PS1 Cutout
-            </IonButton>
-          )
-        : !hasOnDemand && (
-            <IonButton
-              fill="clear"
-              size="small"
-              disabled={generateThumbnails.isPending}
-              onClick={() => requestThumbnails(ON_DEMAND_THUMBNAIL_TYPES)}
-            >
-              {generateThumbnails.isPending ? "Loading…" : "Request more thumbnails"}
-            </IonButton>
-          )}
+      {canGenerate && (
+        <IonButton
+          fill="clear"
+          size="small"
+          disabled={generateThumbnails.isPending}
+          onClick={requestThumbnails}
+        >
+          {generateLabel}
+        </IonButton>
+      )}
     </div>
   );
 };

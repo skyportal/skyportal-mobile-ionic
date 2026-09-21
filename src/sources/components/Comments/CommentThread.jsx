@@ -1,8 +1,8 @@
 import { IonContent, IonFooter, IonIcon, IonSpinner, IonText } from "@ionic/react";
 import { attach } from "ionicons/icons";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useState } from "react";
 import { getDateDiff } from "../../../common/common.lib.js";
-import { useUserProfile } from "../../../common/common.hooks.js";
+import { useScrollToBottom, useUserProfile } from "../../../common/common.hooks.js";
 import { useSourceComments } from "../../sources.hooks.js";
 import { CommentAttachmentModal } from "./CommentAttachmentModal.jsx";
 import { CommentComposer } from "./CommentComposer.jsx";
@@ -19,10 +19,7 @@ const toTime = (stringUTCDate) => new Date(stringUTCDate + "Z").getTime();
 const initialsOf = (author) =>
   `${author?.first_name?.[0] ?? author?.username?.[0] ?? "?"}${author?.last_name?.[0] ?? ""}`;
 
-/**
- * Highlights the mentions and the hashtags of a comment.
- * @param {string} text
- */
+/** @param {string} text */
 const formattedText = (text) =>
   text.split(MENTION_PATTERN).map((part, index) =>
     MENTION_PATTERN.test(part) ? (
@@ -33,7 +30,6 @@ const formattedText = (text) =>
   );
 
 /**
- * Pairs every comment with its place in its run of consecutive messages.
  * @param {Comment[]} comments - Comments sorted from the oldest to the newest
  * @param {string} [username] - Username of the reader, whose messages are shown as his own
  */
@@ -117,8 +113,6 @@ export const CommentThread = ({ sourceId, channel, origin, isOpen, includeBots }
   const [previewed, setPreviewed] = useState(/** @type {Comment|null} */ (null));
   const { userProfile } = useUserProfile();
   const { comments, status } = useSourceComments(sourceId, channel, isOpen);
-  /** @type {React.RefObject<HTMLIonContentElement>} */
-  const content = useRef(null);
 
   // The comments endpoint answers in no particular order, the thread is ordered here.
   const rows = toRows(
@@ -127,12 +121,7 @@ export const CommentThread = ({ sourceId, channel, origin, isOpen, includeBots }
       .sort((a, b) => (a.created_at < b.created_at ? -1 : 1)),
     userProfile?.username,
   );
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const frame = requestAnimationFrame(() => content.current?.scrollToBottom());
-    return () => cancelAnimationFrame(frame);
-  }, [isOpen, rows.length]);
+  const content = useScrollToBottom(isOpen, [rows.length]);
 
   return (
     <>

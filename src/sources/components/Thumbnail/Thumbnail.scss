@@ -36,11 +36,24 @@
       height: auto;
     }
 
+    img.cutout {
+      opacity: 0;
+
+      &.loaded {
+        opacity: 1;
+      }
+
+      &.inverted {
+        filter: invert(1);
+      }
+    }
+
     .thumbnail-skeleton-img {
       position: absolute;
       top: 0;
       left: 0;
       height: 100%;
+      margin: 0;
     }
 
     .thumbnail-status {
@@ -54,10 +67,6 @@
       font-size: 12cqi;
       font-weight: bold;
       color: rgba(0, 0, 0, 0.75);
-    }
-
-    img.cutout.inverted {
-      filter: invert(1);
     }
 
     .crosshairs {

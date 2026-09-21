@@ -54,41 +54,35 @@ export async function fetchGroups(userInfo) {
 
 /**
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
- * @param {Record<string, string>} params
  */
-export async function fetchAllocationsApiClassname(userInfo, params = {}) {
-  const apiQueryDefaults = { apiType: "api_classname" };
+export async function fetchAllocationsApiClassname(userInfo) {
   let response = await CapacitorHttp.get({
     url: `${userInfo.instance.url}/api/allocation`,
     headers: {
       Authorization: `token ${userInfo.token}`,
     },
-    params: { ...apiQueryDefaults, ...params },
+    params: { apiType: "api_classname" },
   });
   return response.data.data;
 }
 
 /**
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
- * @param {string} apiType
  */
-export async function fetchInstrumentForms(userInfo, apiType= "api_classname") {
+export async function fetchInstrumentForms(userInfo) {
   let response = await CapacitorHttp.get({
     url: `${userInfo.instance.url}/api/internal/instrument_forms`,
     headers: {
       Authorization: `token ${userInfo.token}`,
     },
-    params: {
-      apiType: apiType
-    }
+    params: { apiType: "api_classname" },
   });
   return response.data.data;
 }
 
 /**
- * Fetch the users of the instance, with just what is needed to name them
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
- * @returns {Promise<import("./common.lib.js").SlimUser[]>}
+ * @returns {Promise<import("./common.lib.js").SlimUser[]>} - Users of the instance, slimmed down
  */
 export async function fetchUsers(userInfo) {
   let response = await CapacitorHttp.get({
@@ -116,9 +110,8 @@ export async function fetchInstruments(userInfo) {
 }
 
 /**
- * Fetch the names of the conversations the user holds with the assistant
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} userInfo
- * @returns {Promise<string[]>}
+ * @returns {Promise<string[]>} - Names of the conversations the user holds with the assistant
  */
 export async function fetchAssistantConversations(userInfo) {
   const response = await CapacitorHttp.get({
@@ -147,7 +140,7 @@ export async function fetchAssistantMessages(userInfo, channel) {
 }
 
 /**
- * Ask the assistant something. The answer lands in the conversation out of band.
+ * Ask the assistant something, the answer lands in the conversation out of band
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @param {string} params.text

@@ -150,7 +150,6 @@ import { isPlatform, useIonToast } from "@ionic/react";
 import { useCallback } from "react";
 import { Clipboard } from "@capacitor/clipboard";
 
-/** Name SkyPortal gives to the conversation holding the comments with no channel. */
 export const MAIN_COMMENT_CHANNEL = "Comments";
 
 export const DEFAULT_TAG_COLOR = "#dddfe2";
@@ -161,9 +160,7 @@ export const DEFAULT_TAG_COLOR = "#dddfe2";
  * @returns {string}
  */
 export const getContrastColor = (hexColor) => {
-  if (hexColor.length !== 7) {
-    return "#000000";
-  }
+  if (hexColor.length !== 7) return "#000000";
   const r = parseInt(hexColor.slice(1, 3), 16);
   const g = parseInt(hexColor.slice(3, 5), 16);
   const b = parseInt(hexColor.slice(5, 7), 16);
@@ -203,134 +200,106 @@ const isPlaceholderThumbnail = (url) =>
   !url || url.includes("outside_survey") || url.includes("currently_unavailable");
 
 /**
- * Get the thumbnails to display, in display order: the most recent one of each
- * type, and for alert cutouts the most recent one of each survey, as a source
- * can hold cutouts from several surveys at once.
+ * The most recent cutout of each type, and of each survey for the alert ones.
  * @param {Candidate | Source} source
  * @returns {Thumbnail[]}
  */
 export const getDisplayedThumbnails = (source) => {
-  const sorted = [...(source.thumbnails ?? [])].sort(
-    (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-  );
+  const sorted = [...(source.thumbnails ?? [])]
+    .filter((t) => !isPlaceholderThumbnail(t.public_url))
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   return THUMBNAIL_TYPES.flatMap((type) => {
-    const ofType = sorted.filter(
-      (t) => t.type === type && !isPlaceholderThumbnail(t.public_url),
-    );
-    if (!ALERT_THUMBNAIL_TYPES.includes(type)) {
-      return ofType.slice(0, 1);
-    }
-    /** @type {Map<string, Thumbnail>} */
-    const bySurvey = new Map();
-    ofType.forEach((t) => {
-      if (!bySurvey.has(t.survey ?? "")) {
-        bySurvey.set(t.survey ?? "", t);
-      }
-    });
-    return [...bySurvey.entries()]
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([, t]) => t);
+    const ofType = sorted.filter((t) => t.type === type);
+    if (!ALERT_THUMBNAIL_TYPES.includes(type)) return ofType.slice(0, 1);
+    return ofType
+      .filter((t, index) => ofType.findIndex((o) => o.survey === t.survey) === index)
+      .sort((a, b) => (a.survey ?? "").localeCompare(b.survey ?? ""));
   });
 };
 
 /**
- * Get the link for the survey and alt text for thumbnail
+ * @type {Partial<Record<ThumbnailType, {alt: string, link?: (ra: number, dec: number) => string}>>}
+ */
+const THUMBNAIL_SURVEYS = {
+  new: { alt: "discovery image" },
+  ref: { alt: "pre-discovery (reference) image" },
+  sub: { alt: "subtracted image" },
+  sdss: {
+    alt: "Link to SDSS Navigate tool",
+    link: (ra, dec) =>
+      `https://skyserver.sdss.org/dr18/VisualTools/navi?opt=G&ra=${ra}&dec=${dec}&scale=0.1`,
+  },
+  ls: {
+    alt: "Link to Legacy Survey DR10 Image Access",
+    link: (ra, dec) =>
+      `https://www.legacysurvey.org/viewer?ra=${ra}&dec=${dec}&layer=ls-dr10&photoz-dr9&zoom=16&mark=${ra},${dec}`,
+  },
+  ps1: {
+    alt: "Link to PanSTARRS-1 Image Access",
+    link: (ra, dec) =>
+      `https://ps1images.stsci.edu/cgi-bin/ps1cutouts?pos=${ra}+${dec}&filter=color&filter=g&filter=r&filter=i&filter=z&filter=y&filetypes=stack&auxiliary=data&size=240&output_size=0&verbose=0&autoscale=99.500000&catlist=`,
+  },
+  sm: {
+    alt: "Link to SkyMapper Image Access",
+    link: (ra, dec) =>
+      `https://api.skymapper.nci.org.au/public/siap/dr4/query?POS=${ra},${dec}&SIZE=0.0167&BAND=g,r,i&FORMAT=GRAPHIC&VERB=3`,
+  },
+  hst: {
+    alt: "Link to Hubble Legacy Archive",
+    link: (ra, dec) => `https://hla.stsci.edu/hlaview.html#/HLA/${ra},${dec}`,
+  },
+  chandra: {
+    alt: "Link to Chandra Source Catalog",
+    link: (ra, dec) =>
+      `https://cda.harvard.edu/chaser/searchGuest.do?ra=${ra}&dec=${dec}`,
+  },
+  jwst: {
+    alt: "Link to JWST data in MAST",
+    link: (ra, dec) =>
+      `https://mast.stsci.edu/search/ui/#/jwst?ra=${ra}&dec=${dec}&radius=6%20arcsec`,
+  },
+};
+
+/** @type {Partial<Record<ThumbnailType, string>>} */
+const THUMBNAIL_HEADERS = {
+  ls: "LEGACY SURVEY DR10",
+  ps1: "PANSTARRS DR2",
+  sm: "SKYMAPPER DR4",
+};
+
+/**
  * @param {ThumbnailType} name - Thumbnail type
  * @param {number} ra - Right ascension
  * @param {number} dec - Declination
  * @returns {{alt: string, link: string}}
  */
 export const getThumbnailAltAndSurveyLink = (name, ra, dec) => {
-  let alt = "";
-  let link = "";
-  switch (name) {
-    case "new":
-      alt = `discovery image`;
-      break;
-    case "ref":
-      alt = `pre-discovery (reference) image`;
-      break;
-    case "sub":
-      alt = `subtracted image`;
-      break;
-    case "sdss":
-      alt = "Link to SDSS Navigate tool";
-      link = `https://skyserver.sdss.org/dr18/VisualTools/navi?opt=G&ra=${ra}&dec=${dec}&scale=0.1`;
-      break;
-    case "ls":
-      alt = "Link to Legacy Survey DR10 Image Access";
-      link = `https://www.legacysurvey.org/viewer?ra=${ra}&dec=${dec}&layer=ls-dr10&photoz-dr9&zoom=16&mark=${ra},${dec}`;
-      break;
-    case "ps1":
-      alt = "Link to PanSTARRS-1 Image Access";
-      link = `https://ps1images.stsci.edu/cgi-bin/ps1cutouts?pos=${ra}+${dec}&filter=color&filter=g&filter=r&filter=i&filter=z&filter=y&filetypes=stack&auxiliary=data&size=240&output_size=0&verbose=0&autoscale=99.500000&catlist=`;
-      break;
-    case "sm":
-      alt = "Link to SkyMapper Image Access";
-      link = `https://api.skymapper.nci.org.au/public/siap/dr4/query?POS=${ra},${dec}&SIZE=0.0167&BAND=g,r,i&FORMAT=GRAPHIC&VERB=3`;
-      break;
-    case "hst":
-      alt = "Link to Hubble Legacy Archive";
-      link = `https://hla.stsci.edu/hlaview.html#/HLA/${ra},${dec}`;
-      break;
-    case "chandra":
-      alt = "Link to Chandra Source Catalog";
-      link = `https://cda.harvard.edu/chaser/searchGuest.do?ra=${ra}&dec=${dec}`;
-      break;
-    case "jwst":
-      alt = "Link to JWST data in MAST";
-      link = `https://mast.stsci.edu/search/ui/#/jwst?ra=${ra}&dec=${dec}&radius=6%20arcsec`;
-      break;
-    default:
-      break;
-  }
-  return { alt, link };
+  const survey = THUMBNAIL_SURVEYS[name];
+  return { alt: survey?.alt ?? "", link: survey?.link?.(ra, dec) ?? "" };
 };
 
 /**
- * Get the header for the thumbnail
  * @param {ThumbnailType} type - Thumbnail type
  * @param {string|null} [survey] - Survey the alert cutout comes from
  * @returns {string}
  */
 export const getThumbnailHeader = (type, survey = null) => {
-  let header;
-  switch (type) {
-    case "ls":
-      header = "LEGACY SURVEY DR10";
-      break;
-    case "ps1":
-      header = "PANSTARRS DR2";
-      break;
-    case "sm":
-      header = "SKYMAPPER DR4";
-      break;
-    default:
-      header = type.toUpperCase();
-      break;
-  }
+  const header = THUMBNAIL_HEADERS[type] ?? type.toUpperCase();
   return survey && ALERT_THUMBNAIL_TYPES.includes(type)
     ? `${survey.toUpperCase()} ${header}`
     : header;
 };
 
 /**
- * Get the URL of the thumbnail image
  * @param {string} instanceUrl
  * @param {Thumbnail} thumbnail
  * @returns {string}
  */
 export function getThumbnailImageUrl(instanceUrl, thumbnail) {
-  let res = thumbnail.public_url;
-  if (!res.startsWith("http")) {
-    return instanceUrl + res;
-  }
+  const url = thumbnail.public_url;
+  if (!url.startsWith("http")) return instanceUrl + url;
   // force https for urls that are not from the instance
-  if (!res.startsWith(instanceUrl) && res.startsWith("http:")) {
-    res = res.replace(/^http:/, "https:");
-  }
-  return res;
+  return url.startsWith(instanceUrl) ? url : url.replace(/^http:/, "https:");
 }
 
 /**

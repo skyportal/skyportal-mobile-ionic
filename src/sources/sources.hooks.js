@@ -257,8 +257,7 @@ export const usePostSourceComment = () => {
      * @param {import("./sources.lib.js").CommentAttachment} [params.attachment]
      * @returns {Promise<*>}
      */
-    mutationFn: ({ sourceId, text, groupIds, channel, origin, attachment }) =>
-      postSourceComment({ userInfo, sourceId, text, groupIds, channel, origin, attachment }),
+    mutationFn: (params) => postSourceComment({ userInfo, ...params }),
     onSuccess: (response, { sourceId }) => {
       if (response.status !== 200) {
         errorToast(response.data?.message || "Failed to post comment");

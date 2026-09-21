@@ -5,7 +5,7 @@ import {
   getThumbnailHeader,
   getThumbnailImageUrl
 } from "../../sources.lib.js";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { IonSkeletonText } from "@ionic/react";
 import { UserContext } from "../../../common/common.context.js";
 import { useUserProfile } from "../../../common/common.hooks.js";
@@ -13,30 +13,23 @@ import { useUserProfile } from "../../../common/common.hooks.js";
 const MAX_NB_OF_RETRIES = 3;
 
 /**
- * Thumbnail component
  * @param {Object} props
  * @param {number} props.ra - Right ascension of the source
  * @param {number} props.dec - Declination of the source
  * @param {import("../../sources.lib.js").Thumbnail} props.thumbnail
- * @param {() => void} [props.onUnavailable] - Called when the survey has no coverage at that position
+ * @param {(thumbnailId: number) => void} [props.onUnavailable] - Called when the survey has no coverage at that position
  * @returns {JSX.Element}
  */
 export const Thumbnail = ({ ra, dec, thumbnail, onUnavailable }) => {
   const { userInfo } = useContext(UserContext);
   const { userProfile } = useUserProfile();
   const instanceUrl = userInfo?.instance.url;
-  /** Cutout the instance is still resolving, it has no url yet. */
-  const isPending = thumbnail.public_url === "#";
+  const isPending = !thumbnail.public_url;
   const isFetched = FETCHED_THUMBNAIL_TYPES.includes(thumbnail.type);
   const url = isPending ? "" : getThumbnailImageUrl(instanceUrl, thumbnail);
   const [status, setStatus] = useState("loading");
   const [src, setSrc] = useState(isFetched || isPending ? null : url);
   const [retry, setRetry] = useState(0);
-  const onUnavailableRef = useRef(onUnavailable);
-
-  useEffect(() => {
-    onUnavailableRef.current = onUnavailable;
-  }, [onUnavailable]);
 
   useEffect(() => {
     setStatus("loading");
@@ -45,9 +38,7 @@ export const Thumbnail = ({ ra, dec, thumbnail, onUnavailable }) => {
   }, [url, isFetched, isPending]);
 
   useEffect(() => {
-    if (!isFetched) {
-      return undefined;
-    }
+    if (!isFetched) return undefined;
     let cancelled = false;
     /** @type {string|null} */
     let objectUrl = null;
@@ -64,7 +55,7 @@ export const Thumbnail = ({ ra, dec, thumbnail, onUnavailable }) => {
         // Outside their footprint these services answer a 404 holding a blank image.
         if (response.status === 404) {
           setStatus("Outside Survey Area");
-          onUnavailableRef.current?.();
+          onUnavailable?.(thumbnail.id);
           return null;
         }
         if (!response.ok) {
@@ -74,13 +65,11 @@ export const Thumbnail = ({ ra, dec, thumbnail, onUnavailable }) => {
         return response.blob();
       })
       .then((blob) => {
-        if (cancelled || !blob) {
-          return;
-        }
+        if (cancelled || !blob) return;
         // Legacy Survey answers a tiny grey image when it has no coverage.
         if (thumbnail.type === "ls" && blob.size < 1500) {
           setStatus("Outside Survey Area");
-          onUnavailableRef.current?.();
+          onUnavailable?.(thumbnail.id);
           return;
         }
         objectUrl = URL.createObjectURL(blob);
@@ -89,14 +78,15 @@ export const Thumbnail = ({ ra, dec, thumbnail, onUnavailable }) => {
       .catch(() => !cancelled && setStatus("Currently Unavailable"));
     return () => {
       cancelled = true;
-      if (objectUrl) {
-        URL.revokeObjectURL(objectUrl);
-      }
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [url, isFetched, retry, thumbnail.type]);
+  }, [url, isFetched, retry, thumbnail.id, thumbnail.type, onUnavailable]);
 
   const { alt, link } = getThumbnailAltAndSurveyLink(thumbnail.type, ra, dec);
   const inverted = thumbnail.is_grayscale && userProfile?.preferences?.invertThumbnails;
+  const cutoutClass = ["cutout", status === "loaded" && "loaded", inverted && "inverted"]
+    .filter(Boolean)
+    .join(" ");
   const image = (
     <>
       <div className="thumbnail-name">
@@ -107,20 +97,15 @@ export const Thumbnail = ({ ra, dec, thumbnail, onUnavailable }) => {
           <>
             {src && (
               <img
-                className={`cutout ${inverted ? "inverted" : ""}`}
+                className={cutoutClass}
                 src={src}
                 alt={alt}
-                style={{ opacity: status === "loaded" ? 1 : 0 }}
                 onLoad={() => setStatus("loaded")}
                 onError={() => !isFetched && setStatus("Currently Unavailable")}
               />
             )}
             {status === "loading" ? (
-              <IonSkeletonText
-                className="thumbnail-skeleton-img"
-                style={{ margin: "0" }}
-                animated
-              />
+              <IonSkeletonText className="thumbnail-skeleton-img" animated />
             ) : (
               thumbnail.type !== "sdss" && (
                 <img

@@ -12,10 +12,7 @@ import { DEFAULT_TAG_COLOR, getContrastColor } from "../../sources.lib.js";
 export const Tags = ({ tags, sourceId }) => {
   const { tagOptions } = useTagOptions();
 
-  if (!tags?.length) {
-    return null;
-  }
-
+  if (!tags?.length) return null;
   return (
     <div className="tags">
       {tags.map((tag) => {

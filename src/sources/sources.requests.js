@@ -51,7 +51,6 @@ export async function fetchSource({ userInfo, sourceId, params = {} }) {
 }
 
 /**
- * Fetch the comments of a source, on the main conversation by default
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @param {string} params.sourceId
@@ -70,7 +69,6 @@ export const fetchSourceComments = async ({ userInfo, sourceId, channel }) => {
 };
 
 /**
- * Fetch the named conversations opened on a source
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @param {string} params.sourceId
@@ -87,7 +85,6 @@ export const fetchCommentChannels = async ({ userInfo, sourceId }) => {
 };
 
 /**
- * Fetch the attachment of a comment, rendered for preview
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @param {string} params.sourceId
@@ -113,7 +110,6 @@ export const fetchCommentAttachment = async ({ userInfo, sourceId, commentId }) 
 };
 
 /**
- * Ask the instance to generate survey cutouts for a source
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @param {string} params.sourceId
@@ -352,7 +348,6 @@ export const removeFromFavorites = async ({ userInfo, sourceId }) => {
 // Object tags related functions
 
 /**
- * Fetch the tags that can be attached to an object
  * @param {Object} params
  * @param {import("../onboarding/onboarding.lib.js").UserInfo} params.userInfo
  * @returns {Promise<import("./sources.lib.js").TagOption[]>}

@@ -22,13 +22,6 @@ const readAsDataUrl = (file) =>
   });
 
 /**
- * @param {string|null|undefined} name
- * @param {string} prefix
- */
-const startsWith = (name, prefix) => !!name?.toLowerCase().startsWith(prefix);
-
-/**
- * Users and instruments the word being typed can expand to, none unless it opens with @ or #.
  * @param {string} typed
  * @param {import("../../../common/common.lib.js").SlimUser[]} users
  * @param {import("../../../common/common.lib.js").Instrument[]} instruments
@@ -36,14 +29,15 @@ const startsWith = (name, prefix) => !!name?.toLowerCase().startsWith(prefix);
  */
 const suggestionsFor = (typed, users, instruments) => {
   const prefix = typed.slice(1).toLowerCase();
+  /** @param {(string|null|undefined)[]} names */
+  const matches = (names) =>
+    names.some((name) => name?.toLowerCase().startsWith(prefix));
   if (typed.startsWith("@")) {
     return users
       .filter(
         (user) =>
           !user.is_bot &&
-          [user.username, user.first_name, user.last_name].some((name) =>
-            startsWith(name, prefix),
-          ),
+          matches([user.username, user.first_name, user.last_name]),
       )
       .slice(0, MAX_SUGGESTIONS)
       .map((user) => ({
@@ -55,9 +49,7 @@ const suggestionsFor = (typed, users, instruments) => {
   if (typed.startsWith("#")) {
     return instruments
       .filter((instrument) =>
-        [instrument.name, instrument.telescope?.nickname].some((name) =>
-          startsWith(name, prefix),
-        ),
+        matches([instrument.name, instrument.telescope?.nickname]),
       )
       .slice(0, MAX_SUGGESTIONS)
       .map((instrument) => ({

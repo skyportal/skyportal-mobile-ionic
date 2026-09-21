@@ -13,7 +13,7 @@ import {
   fetchUsers,
   postAssistantMessage
 } from "./common.requests.js";
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { UserContext } from "./common.context.js";
 import { clearPreference, getPreference, QUERY_KEYS, setPreference } from "./common.lib.js";
 import { warningOutline } from "ionicons/icons";
@@ -27,6 +27,22 @@ import { useIonAlert, useIonToast } from "@ionic/react";
  * @typedef {Object} AppPreferences
  * @property {"auto"|"light"|"dark"} darkMode
  */
+
+/**
+ * @param {boolean} enabled
+ * @param {any[]} deps - Values that scroll the content back down once they change
+ * @returns {React.RefObject<HTMLIonContentElement>}
+ */
+export const useScrollToBottom = (enabled, deps) => {
+  /** @type {React.RefObject<HTMLIonContentElement>} */
+  const content = useRef(null);
+  useEffect(() => {
+    if (!enabled) return;
+    const frame = requestAnimationFrame(() => content.current?.scrollToBottom());
+    return () => cancelAnimationFrame(frame);
+  }, [enabled, ...deps]);
+  return content;
+};
 
 /**
  * Custom hook to show error toast with optional infinite duration.
@@ -309,8 +325,10 @@ export const useAssistantMessages = (channel, enableFetch = true) => {
     queryFn: () => fetchAssistantMessages(userInfo, channel),
     enabled: enableFetch && !!channel,
     // The answer is written back out of band and no socket announces it here.
-    refetchInterval: ({ state }) =>
-      state.data?.length && !state.data[state.data.length - 1].system ? 2000 : false,
+    refetchInterval: ({ state }) => {
+      const last = state.data?.at(-1);
+      return last && !last.system ? 2000 : false;
+    },
   });
   return {
     messages: data,

@@ -9,10 +9,14 @@ import {
 } from "@ionic/react";
 import { send } from "ionicons/icons";
 import Markdown from "react-markdown";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../../../common/common.context.js";
 import { isActuallyDarkMode } from "../../../common/common.lib.js";
-import { useAskAssistant, useAssistantMessages } from "../../../common/common.hooks.js";
+import {
+  useAskAssistant,
+  useAssistantMessages,
+  useScrollToBottom
+} from "../../../common/common.hooks.js";
 
 /**
  * @param {Object} props
@@ -26,16 +30,9 @@ export const AssistantThread = ({ sourceId, channel, isOpen }) => {
   const { darkMode } = useContext(AppContext);
   const { messages = [], status } = useAssistantMessages(channel, isOpen);
   const askAssistant = useAskAssistant();
-  /** @type {React.RefObject<HTMLIonContentElement>} */
-  const content = useRef(null);
 
-  const answered = messages[messages.length - 1]?.system ?? true;
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const frame = requestAnimationFrame(() => content.current?.scrollToBottom());
-    return () => cancelAnimationFrame(frame);
-  }, [isOpen, messages.length, answered]);
+  const answered = messages.at(-1)?.system ?? true;
+  const content = useScrollToBottom(isOpen, [messages.length, answered]);
 
   const ask = () => {
     const text = question.trim();
