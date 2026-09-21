@@ -203,15 +203,13 @@ export const useCommentChannels = (sourceId, enableFetch = true) => {
 /**
  * @param {string} sourceId
  * @param {string} commentId
- * @param {boolean} [enableFetch=true] - If false, the query will not be executed
  * @returns {{attachment: {dataUrl: string, contentType: string} | undefined, status: QueryStatus, error: any | undefined }}
  */
-export const useCommentAttachment = (sourceId, commentId, enableFetch = true) => {
+export const useCommentAttachment = (sourceId, commentId) => {
   const { userInfo } = useContext(UserContext);
   const { data: attachment, status, error } = useQuery({
     queryKey: [QUERY_KEYS.COMMENT_ATTACHMENT, sourceId, commentId],
     queryFn: () => fetchCommentAttachment({ userInfo, sourceId, commentId }),
-    enabled: enableFetch && !!sourceId && !!commentId,
     retry: false,
   });
   return {

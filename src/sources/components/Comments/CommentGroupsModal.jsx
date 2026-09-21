@@ -3,10 +3,10 @@ import {
   IonContent,
   IonItem,
   IonList,
+  IonModal,
   IonSearchbar,
   IonText
 } from "@ionic/react";
-import { IonModal } from "@ionic/react";
 import { useState } from "react";
 import { useUserAccessibleGroups } from "../../../common/common.hooks.js";
 
@@ -47,15 +47,13 @@ export const CommentGroupsModal = ({ isOpen, groupIds, onChange, onClose }) => {
         <IonSearchbar
           placeholder="Filter groups"
           value={filter}
-          onIonInput={(e) => setFilter(`${e.detail.value ?? ""}`)}
+          onIonInput={(e) => setFilter(String(e.detail.value ?? ""))}
         />
-        <div className="groups-hint">
-          <IonText color="secondary">
-            {groupIds.length
-              ? `shared with ${groupIds.length} group${groupIds.length > 1 ? "s" : ""}`
-              : "public if no group is selected"}
-          </IonText>
-        </div>
+        <IonText className="groups-hint" color="secondary">
+          {groupIds.length
+            ? `shared with ${groupIds.length} group${groupIds.length > 1 ? "s" : ""}`
+            : "public if no group is selected"}
+        </IonText>
         <IonList>
           {matching.map((group) => (
             <IonItem key={group.id}>

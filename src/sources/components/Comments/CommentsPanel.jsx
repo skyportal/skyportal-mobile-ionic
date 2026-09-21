@@ -14,7 +14,7 @@ import {
   IonToolbar
 } from "@ionic/react";
 import { chatbubbleEllipses, hardwareChip, hardwareChipOutline } from "ionicons/icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MAIN_COMMENT_CHANNEL } from "../../sources.lib.js";
 import { useCommentChannels } from "../../sources.hooks.js";
 import { useUserProfile } from "../../../common/common.hooks.js";
@@ -30,16 +30,12 @@ import { CommentThread } from "./CommentThread.jsx";
 export const CommentsPanel = ({ sourceId, origin }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [channel, setChannel] = useState(MAIN_COMMENT_CHANNEL);
-  const [includeBots, setIncludeBots] = useState(false);
+  const [botsToggle, setBotsToggle] = useState(/** @type {boolean|null} */ (null));
   const { channels } = useCommentChannels(sourceId, isOpen);
   const { userProfile } = useUserProfile();
-  const showBotComments = userProfile?.preferences?.showBotComments;
-
-  useEffect(() => {
-    setIncludeBots(!!showBotComments);
-  }, [showBotComments]);
 
   const isMainChannel = channel === MAIN_COMMENT_CHANNEL;
+  const includeBots = botsToggle ?? !!userProfile?.preferences?.showBotComments;
 
   return (
     <>
@@ -65,7 +61,7 @@ export const CommentsPanel = ({ sourceId, origin }) => {
                 <IonButton
                   className="bots-toggle"
                   color={includeBots ? "primary" : "medium"}
-                  onClick={() => setIncludeBots(!includeBots)}
+                  onClick={() => setBotsToggle(!includeBots)}
                 >
                   <IonIcon
                     slot="start"
@@ -80,12 +76,12 @@ export const CommentsPanel = ({ sourceId, origin }) => {
               <IonButton onClick={() => setIsOpen(false)}>Close</IonButton>
             </IonButtons>
           </IonToolbar>
-          {channels && channels.length > 0 && (
+          {!!channels?.length && (
             <IonToolbar>
               <IonSegment
                 scrollable
                 value={channel}
-                onIonChange={(e) => setChannel(`${e.detail.value}`)}
+                onIonChange={(e) => setChannel(String(e.detail.value))}
               >
                 {[MAIN_COMMENT_CHANNEL, ...channels].map((name) => (
                   <IonSegmentButton key={name} value={name}>

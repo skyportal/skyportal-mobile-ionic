@@ -61,7 +61,7 @@ export const Thumbnail = ({ ra, dec, thumbnail, onUnavailable }) => {
           }
           return null;
         }
-        // Outside their footprint these services answer a 404 holding a blank image, that an <img> displays as is.
+        // Outside their footprint these services answer a 404 holding a blank image.
         if (response.status === 404) {
           setStatus("Outside Survey Area");
           onUnavailableRef.current?.();

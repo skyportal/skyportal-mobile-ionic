@@ -6,7 +6,7 @@ import {
   IonTextarea
 } from "@ionic/react";
 import { attach, closeCircle, people, send } from "ionicons/icons";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInstruments, useUsers } from "../../../common/common.hooks.js";
 import { usePostSourceComment } from "../../sources.hooks.js";
 import { CommentGroupsModal } from "./CommentGroupsModal.jsx";
@@ -17,16 +17,57 @@ const MAX_SUGGESTIONS = 10;
 const readAsDataUrl = (file) =>
   new Promise((resolve) => {
     const reader = new FileReader();
-    reader.onloadend = () => resolve(`${reader.result}`);
+    reader.onloadend = () => resolve(String(reader.result));
     reader.readAsDataURL(file);
   });
 
 /**
- * @param {string} value
- * @param {number} cursor
+ * @param {string|null|undefined} name
+ * @param {string} prefix
  */
-const wordBeforeCursor = (value, cursor) =>
-  value.slice(0, cursor).split(/\s/).pop() ?? "";
+const startsWith = (name, prefix) => !!name?.toLowerCase().startsWith(prefix);
+
+/**
+ * Users and instruments the word being typed can expand to, none unless it opens with @ or #.
+ * @param {string} typed
+ * @param {import("../../../common/common.lib.js").SlimUser[]} users
+ * @param {import("../../../common/common.lib.js").Instrument[]} instruments
+ * @returns {{token: string, name: string, detail: string}[]}
+ */
+const suggestionsFor = (typed, users, instruments) => {
+  const prefix = typed.slice(1).toLowerCase();
+  if (typed.startsWith("@")) {
+    return users
+      .filter(
+        (user) =>
+          !user.is_bot &&
+          [user.username, user.first_name, user.last_name].some((name) =>
+            startsWith(name, prefix),
+          ),
+      )
+      .slice(0, MAX_SUGGESTIONS)
+      .map((user) => ({
+        token: `@${user.username}`,
+        name: user.username,
+        detail: `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim(),
+      }));
+  }
+  if (typed.startsWith("#")) {
+    return instruments
+      .filter((instrument) =>
+        [instrument.name, instrument.telescope?.nickname].some((name) =>
+          startsWith(name, prefix),
+        ),
+      )
+      .slice(0, MAX_SUGGESTIONS)
+      .map((instrument) => ({
+        token: `#${instrument.name}`,
+        name: instrument.name,
+        detail: instrument.telescope?.nickname ?? "",
+      }));
+  }
+  return [];
+};
 
 /**
  * @param {Object} props
@@ -38,63 +79,41 @@ const wordBeforeCursor = (value, cursor) =>
 export const CommentComposer = ({ sourceId, channel, origin }) => {
   const [text, setText] = useState("");
   const [cursor, setCursor] = useState(0);
+  const [caretToRestore, setCaretToRestore] = useState(
+    /** @type {number|null} */ (null),
+  );
   const [attachment, setAttachment] = useState(
-    /** @type {import("../../sources.lib.js").CommentAttachment|null} */ (null),
+    /** @type {import("../../sources.lib.js").CommentAttachment|undefined} */ (undefined),
   );
   const [groupIds, setGroupIds] = useState(/** @type {number[]} */ ([]));
   const [isPickingGroups, setIsPickingGroups] = useState(false);
   const { users } = useUsers();
   const { instruments } = useInstruments();
   const postComment = usePostSourceComment();
-  /** @type {React.MutableRefObject<any>} */
+  /** @type {React.RefObject<HTMLIonTextareaElement>} */
   const textarea = useRef(null);
-  /** @type {React.MutableRefObject<HTMLTextAreaElement|null>} */
-  const nativeInput = useRef(null);
-  /** @type {React.MutableRefObject<HTMLInputElement|null>} */
+  /** @type {React.RefObject<HTMLInputElement>} */
   const fileInput = useRef(null);
 
+  // The value only reaches the DOM on commit, so the caret can only be moved from an effect.
   useEffect(() => {
-    textarea.current?.getInputElement().then((/** @type {any} */ element) => {
-      nativeInput.current = element;
+    if (caretToRestore === null) return;
+    setCaretToRestore(null);
+    textarea.current?.getInputElement().then((native) => {
+      native.focus();
+      native.setSelectionRange(caretToRestore, caretToRestore);
     });
-  }, []);
+  }, [caretToRestore]);
 
-  const typed = wordBeforeCursor(text, cursor);
-  const prefix = typed.slice(1).toLowerCase();
-  /** @type {{token: string, name: string, detail: string}[]} */
-  let suggestions = [];
-  if (typed.startsWith("@")) {
-    suggestions = (users ?? [])
-      .filter((user) => !user.is_bot)
-      .filter((user) =>
-        [user.username, user.first_name, user.last_name].some((name) =>
-          name?.toLowerCase().startsWith(prefix),
-        ),
-      )
-      .slice(0, MAX_SUGGESTIONS)
-      .map((user) => ({
-        token: `@${user.username}`,
-        name: user.username,
-        detail: `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim(),
-      }));
-  } else if (typed.startsWith("#")) {
-    suggestions = (instruments ?? [])
-      .filter((instrument) =>
-        [instrument.name, instrument.telescope?.nickname].some((name) =>
-          name?.toLowerCase().startsWith(prefix),
-        ),
-      )
-      .slice(0, MAX_SUGGESTIONS)
-      .map((instrument) => ({
-        token: `#${instrument.name}`,
-        name: instrument.name,
-        detail: instrument.telescope?.nickname ?? "",
-      }));
-  }
+  const typed = text.slice(0, cursor).split(/\s/).pop() ?? "";
+  const suggestions = suggestionsFor(typed, users ?? [], instruments ?? []);
 
-  const handleInput = (/** @type {string} */ value) => {
+  /** @param {import("@ionic/core").TextareaCustomEvent<import("@ionic/core").TextareaInputEventDetail>} event */
+  const handleInput = ({ detail }) => {
+    const value = String(detail.value ?? "");
+    const native = /** @type {HTMLTextAreaElement|null} */ (detail.event?.target ?? null);
     setText(value);
-    setCursor(nativeInput.current?.selectionStart ?? value.length);
+    setCursor(native?.selectionStart ?? value.length);
   };
 
   /** @param {string} token */
@@ -103,39 +122,30 @@ export const CommentComposer = ({ sourceId, channel, origin }) => {
     const moved = start + token.length + 1;
     setText(`${text.slice(0, start)}${token} ${text.slice(cursor)}`);
     setCursor(moved);
-    nativeInput.current?.focus();
-    requestAnimationFrame(() => nativeInput.current?.setSelectionRange(moved, moved));
+    setCaretToRestore(moved);
   };
 
-  const handleFileChange = async (/** @type {any} */ event) => {
-    const file = event.target.files?.[0];
+  /** @param {React.ChangeEvent<HTMLInputElement>} event */
+  const handleFileChange = async ({ target }) => {
+    const file = target.files?.[0];
     if (file) {
       setAttachment({ name: file.name, body: await readAsDataUrl(file) });
     }
-    event.target.value = "";
+    target.value = "";
   };
 
-  const handlePostComment = async () => {
-    const value = text.trim();
-    if ((!value && !attachment) || postComment.isPending) {
-      return;
-    }
-    const response = await postComment
-      .mutateAsync({
-        sourceId,
-        text: value,
-        channel,
-        origin,
-        attachment: attachment ?? undefined,
-        groupIds: groupIds.length > 0 ? groupIds : undefined,
-      })
-      .catch(() => null);
-    if (response?.status === 200) {
-      setText("");
-      setCursor(0);
-      setAttachment(null);
-    }
-  };
+  const handlePostComment = () =>
+    postComment.mutate(
+      { sourceId, text: text.trim(), channel, origin, attachment, groupIds },
+      {
+        onSuccess: (response) => {
+          if (response.status !== 200) return;
+          setText("");
+          setCursor(0);
+          setAttachment(undefined);
+        },
+      },
+    );
 
   return (
     <>
@@ -156,7 +166,7 @@ export const CommentComposer = ({ sourceId, channel, origin }) => {
       {(attachment || groupIds.length > 0) && (
         <div className="composer-extras">
           {attachment && (
-            <IonChip onClick={() => setAttachment(null)}>
+            <IonChip onClick={() => setAttachment(undefined)}>
               <IonIcon icon={attach} />
               {attachment.name}
               <IonIcon icon={closeCircle} />
@@ -183,7 +193,7 @@ export const CommentComposer = ({ sourceId, channel, origin }) => {
           autoGrow
           placeholder={channel ? `Message ${channel}` : "Message"}
           value={text}
-          onIonInput={(e) => handleInput(`${e.detail.value ?? ""}`)}
+          onIonInput={handleInput}
         />
         <IonButton
           fill="clear"

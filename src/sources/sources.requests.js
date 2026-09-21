@@ -59,7 +59,7 @@ export async function fetchSource({ userInfo, sourceId, params = {} }) {
  * @returns {Promise<import("./sources.lib.js").Comment[]>}
  */
 export const fetchSourceComments = async ({ userInfo, sourceId, channel }) => {
-  let response = await CapacitorHttp.get({
+  const response = await CapacitorHttp.get({
     url: `${userInfo.instance.url}/api/sources/${sourceId}/comments`,
     headers: {
       Authorization: `token ${userInfo.token}`,
@@ -77,7 +77,7 @@ export const fetchSourceComments = async ({ userInfo, sourceId, channel }) => {
  * @returns {Promise<string[]>}
  */
 export const fetchCommentChannels = async ({ userInfo, sourceId }) => {
-  let response = await CapacitorHttp.get({
+  const response = await CapacitorHttp.get({
     url: `${userInfo.instance.url}/api/sources/${sourceId}/comments/channels`,
     headers: {
       Authorization: `token ${userInfo.token}`,
@@ -95,7 +95,7 @@ export const fetchCommentChannels = async ({ userInfo, sourceId }) => {
  * @returns {Promise<{dataUrl: string, contentType: string}>}
  */
 export const fetchCommentAttachment = async ({ userInfo, sourceId, commentId }) => {
-  let response = await CapacitorHttp.get({
+  const response = await CapacitorHttp.get({
     url: `${userInfo.instance.url}/api/sources/${sourceId}/comments/${commentId}/attachment`,
     headers: {
       Authorization: `token ${userInfo.token}`,
