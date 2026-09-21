@@ -106,6 +106,9 @@ export const QUERY_KEYS = {
   INSTRUMENTS: "instruments",
   USERS: "users",
   TAG_OPTIONS: "tagOptions",
+  CONFIG: "config",
+  ASSISTANT_CONVERSATIONS: "assistantConversations",
+  ASSISTANT_MESSAGES: "assistantMessages",
 };
 
 /**

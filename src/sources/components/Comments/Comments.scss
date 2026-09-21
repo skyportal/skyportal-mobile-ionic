@@ -1,3 +1,5 @@
+$fab-icon-size: 1.75rem;
+$fab-icon-shift: $fab-icon-size * 0.125;
 $bubble-font-size: 0.92rem;
 $bubble-line-height: 1.25;
 $bubble-padding-y: 0.55rem;
@@ -6,6 +8,44 @@ $bubble-height: calc(#{$bubble-padding-y} * 2 + #{$bubble-font-size} * #{$bubble
 .comments-fab {
   margin-bottom: 0.5rem;
   margin-right: 0.5rem;
+
+  .fab-icon {
+    font-size: $fab-icon-size;
+  }
+
+  .split-icon {
+    position: relative;
+    width: $fab-icon-size;
+    height: $fab-icon-size;
+
+    ion-icon {
+      position: absolute;
+      font-size: $fab-icon-size;
+    }
+
+    ion-icon:first-child {
+      top: -$fab-icon-shift;
+      left: -$fab-icon-shift;
+      clip-path: polygon(0 0, 0 110%, 110% 0);
+    }
+
+    ion-icon:last-child {
+      top: $fab-icon-shift;
+      left: $fab-icon-shift;
+      clip-path: polygon(100% 100%, -10% 100%, 100% -10%);
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 141%;
+      height: 5%;
+      background: currentColor;
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+  }
 }
 
 .comments-modal {
@@ -22,7 +62,13 @@ $bubble-height: calc(#{$bubble-padding-y} * 2 + #{$bubble-font-size} * #{$bubble
     }
   }
 
-  ion-segment {
+  .space-tabs {
+    --padding-start: 0;
+    --padding-end: 0;
+    --min-height: 0;
+  }
+
+  .channel-segment {
     padding: 0 0.5rem 0.25rem;
   }
 
@@ -38,6 +84,21 @@ $bubble-height: calc(#{$bubble-padding-y} * 2 + #{$bubble-font-size} * #{$bubble
       justify-content: center;
       padding-top: 2rem;
       font-size: 0.8rem;
+    }
+
+    .thread-thinking {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+
+      .thinking-logo {
+        width: 1.1rem;
+        height: 1.1rem;
+        animation: assistant-spin 1.2s linear infinite;
+      }
     }
 
     .thread-separator {
@@ -113,6 +174,65 @@ $bubble-height: calc(#{$bubble-padding-y} * 2 + #{$bubble-font-size} * #{$bubble
         line-height: $bubble-line-height;
         word-break: break-word;
         white-space: pre-wrap;
+      }
+
+      // Markdown brings its own block spacing, pre-wrap would double it.
+      .bubble.markdown {
+        white-space: normal;
+
+        p + p,
+        ul,
+        ol,
+        pre,
+        table {
+          margin-top: 0.4em;
+        }
+
+        ul,
+        ol {
+          margin-bottom: 0;
+          padding-left: 1.1em;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+          margin-top: 0.4em;
+          font-size: 1em;
+        }
+
+        code {
+          padding: 0 0.2em;
+          border-radius: 0.25rem;
+          background: rgba(var(--ion-color-medium-rgb), 0.25);
+          font-size: 0.9em;
+        }
+
+        pre {
+          overflow-x: auto;
+          margin-bottom: 0;
+          padding: 0.4rem 0.5rem;
+          border-radius: 0.5rem;
+          background: rgba(var(--ion-color-medium-rgb), 0.25);
+
+          code {
+            padding: 0;
+            background: none;
+          }
+        }
+
+        table {
+          border-collapse: collapse;
+          font-size: 0.9em;
+        }
+
+        th,
+        td {
+          padding: 0.15em 0.4em;
+          border: 1px solid rgba(var(--ion-color-medium-rgb), 0.4);
+        }
+
+        a {
+          color: inherit;
+        }
       }
 
       .highlight {
@@ -286,5 +406,11 @@ $bubble-height: calc(#{$bubble-padding-y} * 2 + #{$bubble-font-size} * #{$bubble
     img {
       max-width: 100%;
     }
+  }
+}
+
+@keyframes assistant-spin {
+  to {
+    transform: rotate(360deg);
   }
 }

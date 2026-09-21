@@ -1,13 +1,17 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import config from "../config.js";
 import { fetchUserProfile } from "../onboarding/onboarding.lib.js";
 import {
+  deleteAssistantConversation,
+  fetchAssistantConversations,
+  fetchAssistantMessages,
   fetchConfig,
   fetchGroups,
   fetchAllocationsApiClassname,
   fetchInstrumentForms,
   fetchInstruments,
-  fetchUsers
+  fetchUsers,
+  postAssistantMessage
 } from "./common.requests.js";
 import { useContext } from "react";
 import { UserContext } from "./common.context.js";
@@ -170,17 +174,29 @@ export const useUserAccessibleGroups = () => {
 };
 
 /**
+ * @returns {{config: import("./common.requests.js").SkyPortalConfig|undefined, status: QueryStatus, error: any|undefined}}
+ */
+export const useInstanceConfig = () => {
+  const { userInfo } = useContext(UserContext);
+  const { data, status, error } = useQuery({
+    queryKey: [QUERY_KEYS.CONFIG],
+    queryFn: () => fetchConfig(userInfo),
+  });
+  return {
+    config: data,
+    status,
+    error,
+  };
+};
+
+/**
  *
  * @returns {{bandpassesColors: import("./common.requests.js").BandpassesColors|undefined,status: QueryStatus, error: any|undefined}}
  */
 export const useBandpassesColors = () => {
-  const { userInfo } = useContext(UserContext);
-  const { data, status, error } = useQuery({
-    queryKey: [QUERY_KEYS.BANDPASS_COLORS],
-    queryFn: () => fetchConfig(userInfo),
-  });
+  const { config, status, error } = useInstanceConfig();
   return {
-    bandpassesColors: data?.bandpassesColors,
+    bandpassesColors: config?.bandpassesColors,
     status,
     error,
   };
@@ -261,4 +277,89 @@ export const useInstruments = () => {
     status,
     error,
   };
+}
+
+/**
+ * @param {boolean} [enableFetch=true] - If false, the query will not be executed
+ * @returns {{conversations: string[]|undefined, status: QueryStatus, error: any|undefined}}
+ */
+export const useAssistantConversations = (enableFetch = true) => {
+  const { userInfo } = useContext(UserContext);
+  const { data, status, error } = useQuery({
+    queryKey: [QUERY_KEYS.ASSISTANT_CONVERSATIONS],
+    queryFn: () => fetchAssistantConversations(userInfo),
+    enabled: enableFetch,
+  });
+  return {
+    conversations: data,
+    status,
+    error,
+  };
+}
+
+/**
+ * @param {string} channel - Conversation to read
+ * @param {boolean} [enableFetch=true] - If false, the query will not be executed
+ * @returns {{messages: import("./common.requests.js").AssistantMessage[]|undefined, status: QueryStatus, error: any|undefined}}
+ */
+export const useAssistantMessages = (channel, enableFetch = true) => {
+  const { userInfo } = useContext(UserContext);
+  const { data, status, error } = useQuery({
+    queryKey: [QUERY_KEYS.ASSISTANT_MESSAGES, channel],
+    queryFn: () => fetchAssistantMessages(userInfo, channel),
+    enabled: enableFetch && !!channel,
+    // The answer is written back out of band and no socket announces it here.
+    refetchInterval: ({ state }) =>
+      state.data?.length && !state.data[state.data.length - 1].system ? 2000 : false,
+  });
+  return {
+    messages: data,
+    status,
+    error,
+  };
+}
+
+export const useAskAssistant = () => {
+  const { userInfo } = useContext(UserContext);
+  const queryClient = useQueryClient();
+  const errorToast = useErrorToast();
+  return useMutation({
+    /**
+     * @param {Object} params
+     * @param {string} params.text
+     * @param {string} params.channel
+     * @param {string} [params.contextType]
+     * @param {string} [params.contextId]
+     * @returns {Promise<*>}
+     */
+    mutationFn: (params) => postAssistantMessage({ userInfo, ...params }),
+    onSuccess: (response, { channel }) => {
+      if (response.status !== 200) {
+        errorToast(response.data?.message || "The assistant is not responding right now");
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ASSISTANT_MESSAGES, channel] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ASSISTANT_CONVERSATIONS] });
+    },
+    onError: () => errorToast("The assistant is not responding right now"),
+  });
+}
+
+export const useDeleteAssistantConversation = () => {
+  const { userInfo } = useContext(UserContext);
+  const queryClient = useQueryClient();
+  const errorToast = useErrorToast();
+  return useMutation({
+    /** @param {string} channel */
+    mutationFn: (channel) => deleteAssistantConversation(userInfo, channel),
+    onSuccess: (response) => {
+      if (response.status !== 200) {
+        errorToast(response.data?.message || "Failed to delete the conversation");
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ASSISTANT_CONVERSATIONS] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ASSISTANT_MESSAGES] });
+    },
+    onError: () => errorToast("Failed to delete the conversation"),
+  });
 }
