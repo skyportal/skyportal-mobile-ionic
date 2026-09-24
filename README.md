@@ -66,6 +66,9 @@ npm run dev:ios
 npm run dev:android
 ```
 
+`npm run dev:ios` points the native project at the local dev server.
+Run `npx cap sync ios` before archiving a release build.
+
 The above commands will spin up the development server and ask you to choose your device among a list of connected
 devices. Select the device you want to deploy the app to.  
 For physical devices, if it is your first time deploying on this device, you might
