@@ -7,7 +7,7 @@ import {
   IonText
 } from "@ionic/react";
 import { formatDateTime } from "../../../common/common.lib.js";
-import { FollowupRequestModal } from "./FollowupRequestModal.jsx";
+import { FollowupRequestDetailsModal } from "./FollowupRequestDetailsModal.jsx";
 import { useState } from "react";
 
 /** @typedef {import("../../../scanning/scanning.lib.js").Candidate} Candidate */
@@ -88,7 +88,7 @@ export const FollowupRequests = ({source, requestType = "triggered"}) => {
             </div>
           )}
       </IonAccordionGroup>
-      <FollowupRequestModal followupRequest={openFollowupRequest} setOpenFollowupRequest={setOpenFollowupRequest} />
+      <FollowupRequestDetailsModal followupRequest={openFollowupRequest} setOpenFollowupRequest={setOpenFollowupRequest} />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import "./FollowupRequestModal.scss";
+import "./FollowupRequestDetailsModal.scss";
 import { formatDateTime } from "../../../common/common.lib.js";
 import {
   IonButton,
@@ -22,7 +22,7 @@ import {IonList} from "@ionic/react";
  * @param {Function} props.setOpenFollowupRequest
  * @returns {JSX.Element}
  */
-export const FollowupRequestModal = ({followupRequest, setOpenFollowupRequest}) => {
+export const FollowupRequestDetailsModal = ({followupRequest, setOpenFollowupRequest}) => {
   return (
     <IonModal
       isOpen={followupRequest !== null}

@@ -5,6 +5,7 @@ import { starOutline, star } from "ionicons/icons";
 import { useState } from "react";
 import { useAddSourceToFavorites, useRemoveSourceFromFavorites } from "../../sources.hooks.js";
 import { useHistory } from "react-router";
+import { Tags } from "../Tags/Tags.jsx";
 
 /**
  * @param {Object} props
@@ -48,6 +49,7 @@ export const SourceListItem = ({ source, isFavorite }) => {
                  icon={favorite ? star : starOutline}
                  onClick={handleToggleFavorite} />
       </div>
+      <Tags tags={source.tags} sourceId={source.id} />
       <div className="created">
         <div className="label">Created:</div>
         <div className="value">

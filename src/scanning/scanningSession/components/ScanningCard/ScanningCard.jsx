@@ -1,6 +1,5 @@
 import "./ScanningCard.scss";
-import { THUMBNAIL_TYPES } from "../../../../sources/sources.lib.js";
-import { Thumbnail } from "../../../../sources/components/Thumbnail/Thumbnail.jsx";
+import { ThumbnailList } from "../../../../sources/components/Thumbnail/ThumbnailList.jsx";
 import { PinnedAnnotations } from "../../../../sources/components/PinnedAnnotations/PinnedAnnotations.jsx";
 import { PhotometryChart } from "../../../../sources/components/PhotometryChart/PhotometryChart.jsx";
 import { memo, useRef } from "react";
@@ -8,9 +7,9 @@ import { ScanningCardSkeleton } from "./ScanningCardSkeleton.jsx";
 import { IonChip } from "@ionic/react";
 import { SourceInfo } from "../../../../sources/components/SourceInfo/SourceInfo.jsx";
 import { FollowupRequests } from "../../../../sources/components/FollowupRequests/FollowupRequests.jsx";
-import { Comments } from "../../../../sources/components/Comments/Comments.jsx";
 import { SpectraList } from "../../../../sources/components/Spectra/SpectraList.jsx";
 import { GroupsModal } from "../../../../sources/components/GroupsModal/GroupsModal.jsx";
+import { Tags } from "../../../../sources/components/Tags/Tags.jsx";
 import { AnnotationsViewerModal } from "../../../../sources/components/PinnedAnnotations/AnnotationsViewerModal.jsx";
 
 /**
@@ -55,12 +54,9 @@ const ScanningCardBase = ({
           <div className="pagination-indicator">
             {currentIndex + 1}/{nbCandidates}
           </div>
+          <Tags tags={candidate.tags} sourceId={candidate.id} />
         </div>
-        <div className="thumbnails-container">
-          {Object.keys(THUMBNAIL_TYPES).map((type) => (
-            <Thumbnail key={type} source={candidate} type={type} />
-          ))}
-        </div>
+        <ThumbnailList source={candidate} isCandidate />
         <PinnedAnnotations
           source={candidate}
           onButtonClick={() => annotationsModal.current?.present()}
@@ -73,7 +69,6 @@ const ScanningCardBase = ({
           />
         </div>
         <SourceInfo source={candidate} />
-        <Comments comments={candidate.comments} />
         <SpectraList sourceId={candidate.id} isInView={isInView} />
         <FollowupRequests source={candidate} requestType={"triggered"} />
         <FollowupRequests source={candidate} requestType={"forced_photometry"}/>

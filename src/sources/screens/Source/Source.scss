@@ -7,7 +7,7 @@
     height: 100%;
     grid-template-rows: auto auto auto 41% auto;
     grid-row-gap: 0.5rem;
-    padding: 0.5rem 0.5rem 2.5rem 0.5rem;
+    padding: 0.5rem 0.5rem 4.5rem 0.5rem;
     background-color: var(--ion-color-light);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: scroll;
@@ -22,6 +22,7 @@
 
     .header {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       width: 100%;
@@ -36,13 +37,11 @@
       .source-groups-chip {
         margin: 0;
       }
-    }
 
-    .thumbnails-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      row-gap: 0.2rem;
+      .tags {
+        flex-basis: 100%;
+        margin-top: 0.3rem;
+      }
     }
 
     .plot-container {

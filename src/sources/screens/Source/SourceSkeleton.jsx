@@ -1,7 +1,6 @@
 import "./Source.scss";
 import { IonSkeletonText } from "@ionic/react";
-import { THUMBNAIL_TYPES } from "../../sources.lib.js";
-import { ThumbnailSkeleton } from "../../components/Thumbnail/ThumbnailSkeleton.jsx";
+import { ThumbnailListSkeleton } from "../../components/Thumbnail/ThumbnailListSkeleton.jsx";
 import { PinnedAnnotationsSkeleton } from "../../components/PinnedAnnotations/PinnedAnnotationsSkeleton.jsx";
 
 /**
@@ -30,11 +29,7 @@ export const SourceSkeleton = ({ animated = false, visible = true }) => {
           />
         </div>
       </div>
-      <div className="thumbnails-container">
-        {Object.keys(THUMBNAIL_TYPES).map((type) => (
-          <ThumbnailSkeleton key={type} type={type} animated={animated} />
-        ))}
-      </div>
+      <ThumbnailListSkeleton animated={animated} />
       <PinnedAnnotationsSkeleton animated={animated} />
       <div className="plot-container">
         <IonSkeletonText animated={animated} />

@@ -6,7 +6,7 @@ import {
   IonChip,
   IonContent,
   IonHeader,
-  IonPage, IonText,
+  IonPage,
   IonTitle,
   IonToolbar,
   useIonAlert,
@@ -15,8 +15,7 @@ import {
 import { useParams } from "react-router";
 import { useFetchSource, useUpdateSourceGroups } from "../../sources.hooks.js";
 import React, { useEffect, useRef, useState } from "react";
-import { THUMBNAIL_TYPES } from "../../sources.lib.js";
-import { Thumbnail } from "../../components/Thumbnail/Thumbnail.jsx";
+import { ThumbnailList } from "../../components/Thumbnail/ThumbnailList.jsx";
 import {
   PinnedAnnotations
 } from "../../components/PinnedAnnotations/PinnedAnnotations.jsx";
@@ -26,15 +25,16 @@ import {
 import {
   SourceInfo
 } from "../../components/SourceInfo/SourceInfo.jsx";
-import { Comments } from "../../components/Comments/Comments.jsx";
+import { CommentsPanel } from "../../components/Comments/CommentsPanel.jsx";
 import { SpectraList } from "../../components/Spectra/SpectraList.jsx";
 import { FollowupRequests } from "../../components/FollowupRequests/FollowupRequests.jsx";
 import {
   AnnotationsViewerModal
 } from "../../components/PinnedAnnotations/AnnotationsViewerModal.jsx";
 import { GroupsModal } from "../../components/GroupsModal/GroupsModal.jsx";
+import { Tags } from "../../components/Tags/Tags.jsx";
 import { SourceSkeleton } from "./SourceSkeleton.jsx";
-import { RequestFollowupModal } from "../../components/FollowupRequests/RequestFollowupModal.jsx";
+import { NewFollowupRequestModal } from "../../components/FollowupRequests/NewFollowupRequestModal.jsx";
 import { QUERY_KEYS } from "../../../common/common.lib.js";
 import { useQueryClient } from "@tanstack/react-query";
 import { useConfirmAlert, useErrorToast, useUserAccessibleGroups } from "../../../common/common.hooks.js";
@@ -174,18 +174,9 @@ export function Source() {
                 >
                   Manage groups
                 </IonChip>
+                <Tags tags={source.tags} sourceId={source.id} />
               </div>
-              <div className="thumbnails-container">
-                {source.thumbnails?.length > 0 ? Object.keys(THUMBNAIL_TYPES).map((type) => (
-                  <Thumbnail key={type} source={source} type={type} />
-                )) : (
-                  <div>
-                    <IonText color="secondary">
-                      no thumbnails found...
-                    </IonText>
-                  </div>
-                )}
-              </div>
+              <ThumbnailList source={source} />
               <PinnedAnnotations
                 source={source}
                 onButtonClick={() => annotationsModal.current?.present()}
@@ -196,7 +187,6 @@ export function Source() {
                 />
               </div>
               <SourceInfo source={source} />
-              <Comments comments={source.comments} />
               <SpectraList sourceId={source.id} />
               <FollowupRequests source={source} requestType={"triggered"} />
               <FollowupRequests source={source} requestType={"forced_photometry"}/>
@@ -207,13 +197,14 @@ export function Source() {
             {/* Modals */}
             <GroupsModal groups={source.groups} title={`Saved to ${source.groups.length} groups`} modal={groupsModal} />
             <AnnotationsViewerModal source={source} modal={annotationsModal}/>
-            <RequestFollowupModal sourceId={source.id} submitRequestCallback={handleFollowupRequestSubmitted} modal={requestFollowupModal} />
+            <NewFollowupRequestModal sourceId={source.id} submitRequestCallback={handleFollowupRequestSubmitted} modal={requestFollowupModal} />
           </div>
           ) :
           <div className="source-page">
             <SourceSkeleton animated={true} visible={loading} />
           </div>
         }
+        {source && <CommentsPanel sourceId={source.id} />}
       </IonContent>
     </IonPage>
   );

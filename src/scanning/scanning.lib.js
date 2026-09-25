@@ -1,12 +1,12 @@
 /** @typedef {import("../common/common.lib.js").Group} Group */
 /** @typedef {import("../sources/sources.lib.js").Source} Source */
 /** @typedef {import("../sources/sources.lib.js").FollowupRequest} FollowupRequest */
-/** @typedef {import("../sources/sources.lib.js").Comment} Comment */
 /** @typedef {import("../sources/sources.lib.js").Thumbnail} Thumbnail */
 /** @typedef {import("../sources/sources.lib.js").Spectra} Spectra */
 /** @typedef {import("../sources/sources.lib.js").Photometry} Photometry */
 /** @typedef {import("../sources/sources.lib.js").Classification} Classification */
 /** @typedef {import("../sources/sources.lib.js").Annotation} Annotation */
+/** @typedef {import("../sources/sources.lib.js").Tag} Tag */
 
 /**
  * @typedef {Object} ScanningProfile
@@ -34,9 +34,9 @@
  * @property {Group[]} saved_groups - Groups the candidate has been saved to
  * @property {Classification[]} classifications - Classifications of the candidate
  * @property {FollowupRequest[]} followup_requests - Follow-up requests
- * @property {Comment[]} comments - Comments on the follow-up request
  * @property {string} tns_name - TNS name
  * @property {Spectra[]} spectra - Spectra of the candidate
+ * @property {Tag[]} tags - Tags attached to the candidate
  */
 
 /**
@@ -77,7 +77,7 @@ import moment from "moment-timezone";
 /**
  * @type {Object.<SavedStatus, string>}
  */
-export const SAVED_STATUS = {
+const SAVED_STATUS = {
   ALL: "all",
   SAVED_TO_ALL_SELECTED: "savedToAllSelected",
   SAVED_TO_ANY_SELECTED: "savedToAnySelected",
@@ -314,22 +314,6 @@ export const getVegaPlotSpec = ({
       },
     ],
   });
-};
-
-/**
- * Parse a string of integers separated by commas
- * @param {string} intListString
- * @returns {number[]}
- */
-export const parseIntList = (intListString) => {
-  try {
-    return intListString
-      .split(",")
-      .filter((/** @type {string} **/ id) => id !== "")
-      .map((/** @type {string} **/ id) => parseInt(id));
-  } catch (e) {
-    return [];
-  }
 };
 
 /**

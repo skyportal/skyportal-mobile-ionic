@@ -6,6 +6,15 @@
   justify-content: center;
   width: 32%;
 
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-decoration: none;
+  }
+
   .thumbnail-name {
     font-size: 0.6rem;
     font-weight: 500;
@@ -19,6 +28,7 @@
     position: relative;
     border: 0.5px rgba(82, 100, 117, 0.3) solid;
     overflow: hidden;
+    container-type: inline-size;
 
     img.cutout,
     .thumbnail-skeleton-img {
@@ -26,8 +36,37 @@
       height: auto;
     }
 
+    img.cutout {
+      opacity: 0;
+
+      &.loaded {
+        opacity: 1;
+      }
+
+      &.inverted {
+        filter: invert(1);
+      }
+    }
+
     .thumbnail-skeleton-img {
+      position: absolute;
+      top: 0;
+      left: 0;
       height: 100%;
+      margin: 0;
+    }
+
+    .thumbnail-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background: #eee;
+      text-align: center;
+      font-size: 12cqi;
+      font-weight: bold;
+      color: rgba(0, 0, 0, 0.75);
     }
 
     .crosshairs {
