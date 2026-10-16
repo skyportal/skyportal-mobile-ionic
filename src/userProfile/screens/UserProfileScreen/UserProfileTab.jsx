@@ -121,7 +121,7 @@ export const UserProfileTab = () => {
     });
   };
 
-  const avatarSize = "90";
+  const avatarSize = 90;
   return (
     <IonPage className="profile-tab">
       <IonHeader>
@@ -147,7 +147,7 @@ export const UserProfileTab = () => {
                   />
                   <img
                     alt={`${userProfile.first_name} ${userProfile.last_name}`}
-                    src={`${userProfile.gravatar_url}&s=${avatarSize}`}
+                    src={`${userProfile.gravatar_url}&s=${avatarSize * 3}`}
                   />
                 </IonAvatar>
                 <IonItem className="profile-name">
