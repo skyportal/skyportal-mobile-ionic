@@ -19,9 +19,14 @@
       justify-content: center;
       gap: 2rem;
 
-      .placeholder-avatar{
+      .profile-avatar{
         position: relative;
-        top: -95px;
+
+        .placeholder-avatar,
+        img{
+          position: absolute;
+          inset: 0;
+        }
       }
 
       .profile-name{
