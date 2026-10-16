@@ -137,16 +137,17 @@ export const UserProfileTab = () => {
               <div className="profile-top">
                 <IonAvatar
                   slot="start"
+                  className="profile-avatar"
                   style={{ width: `${avatarSize}px`, height: `${avatarSize}px` }}
                 >
-                  <img
-                    alt={`${userProfile.first_name} ${userProfile.last_name}`}
-                    src={`${userProfile.gravatar_url}&s=${avatarSize}`}
-                  />
                   <IonIcon
                     icon={personCircle}
                     className="placeholder-avatar"
                     style={{ color: bgColor(), fontSize: `${avatarSize}px` }}
+                  />
+                  <img
+                    alt={`${userProfile.first_name} ${userProfile.last_name}`}
+                    src={`${userProfile.gravatar_url}&s=${avatarSize}`}
                   />
                 </IonAvatar>
                 <IonItem className="profile-name">
